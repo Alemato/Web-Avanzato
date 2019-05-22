@@ -21,7 +21,7 @@ public class LessonSerializer extends StdSerializer<Lesson> {
     public void serialize(Lesson lesson, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
 
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeNumberField("id", lesson.getIdLesson());
+        jsonGenerator.writeNumberField("idLesson", lesson.getIdLesson());
         jsonGenerator.writeStringField("name", lesson.getName());
         jsonGenerator.writeNumberField("price", lesson.getPrice());
         jsonGenerator.writeStringField("date", lesson.getDate().toString());
@@ -29,6 +29,8 @@ public class LessonSerializer extends StdSerializer<Lesson> {
         jsonGenerator.writeStringField("publicationDate", lesson.getPublicationDate().toString());
         jsonGenerator.writeStringField("startTime", lesson.getStartTime().toString());
         jsonGenerator.writeStringField("endTime", lesson.getEndTime().toString());
+        jsonGenerator.writeStringField("createDate",lesson.getCreateDate().toString());
+        jsonGenerator.writeStringField("updateDate",lesson.getUpdateDate().toString());
         jsonGenerator.writeNumberField("idSubject", lesson.getIdSubject());
         jsonGenerator.writeEndObject();
     }

@@ -1,20 +1,23 @@
 package it.mytutor.domain;
 
 import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 public class Lesson {
 
-    private Long idLesson;
+    private Integer idLesson;
     private String name;
-    private Double price; //TODO verificare il tipo della variabile price(LESSON)
+    private Double price;
     private Date date;
     private String description;
-    private Date publicationDate; //TODO verificare il tipo della variabile publicationDate(LESSON)
-    private Timestamp startTime; //TODO verificare il tipo della variabile startTime(LESSON)
-    private Timestamp endTime;   //TODO verificare il tipo della variabile endTime(LESSON)
-    private Long idSubject;
+    private Date publicationDate;
+    private Time startTime;
+    private Time endTime;
+    private Timestamp createDate;
+    private Timestamp updateDate;
+    private Integer idSubject;
 
     //COSTRUTTORI
 
@@ -22,7 +25,17 @@ public class Lesson {
         super();
     }
 
-    public Lesson(String name, Double price, Date date, String description, Date publicationDate, Timestamp startTime, Timestamp endTime) {
+    public Lesson(String name, Date date, String description, Date publicationDate, Time startTime, Time endTime) {
+        super();
+        this.name = name;
+        this.date = date;
+        this.description = description;
+        this.publicationDate = publicationDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
+    public Lesson(String name, Double price, Date date, String description, Date publicationDate, Time startTime, Time endTime) {
         super();
         this.name = name;
         this.price = price;
@@ -33,7 +46,7 @@ public class Lesson {
         this.endTime = endTime;
     }
 
-    public Lesson(Long idLesson, String name, Double price, Date date, String description, Date publicationDate, Timestamp startTime, Timestamp endTime, Long idSubject) {
+    public Lesson(Integer idLesson, String name, Double price, Date date, String description, Date publicationDate, Time startTime, Time endTime, Timestamp createDate, Timestamp updateDate, Integer idSubject) {
         super();
         this.idLesson = idLesson;
         this.name = name;
@@ -43,12 +56,14 @@ public class Lesson {
         this.publicationDate = publicationDate;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.createDate = createDate;
+        this.updateDate = updateDate;
         this.idSubject = idSubject;
     }
 
     //GETTER
 
-    public Long getIdLesson() {
+    public Integer getIdLesson() {
         return idLesson;
     }
 
@@ -72,21 +87,29 @@ public class Lesson {
         return publicationDate;
     }
 
-    public Timestamp getStartTime() {
+    public Time getStartTime() {
         return startTime;
     }
 
-    public Timestamp getEndTime() {
+    public Time getEndTime() {
         return endTime;
     }
 
-    public Long getIdSubject() {
+    public Timestamp getCreateDate() {
+        return createDate;
+    }
+
+    public Timestamp getUpdateDate() {
+        return updateDate;
+    }
+
+    public Integer getIdSubject() {
         return idSubject;
     }
 
-    //SETTER
 
-    public void setIdLesson(Long idLesson) {
+    //SETTER
+    public void setIdLesson(Integer idLesson) {
         this.idLesson = idLesson;
     }
 
@@ -110,45 +133,54 @@ public class Lesson {
         this.publicationDate = publicationDate;
     }
 
-    public void setStartTime(Timestamp startTime) {
+    public void setStartTime(Time startTime) {
         this.startTime = startTime;
     }
 
-    public void setEndTime(Timestamp endTime) {
+    public void setEndTime(Time endTime) {
         this.endTime = endTime;
     }
 
-    public void setIdSubject(Long idSubject) {
+    public void setCreateDate(Timestamp createDate) {
+        this.createDate = createDate;
+    }
+
+    public void setUpdateDate(Timestamp updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public void setIdSubject(Integer idSubject) {
         this.idSubject = idSubject;
     }
 
     //EQUALS
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Lesson)) return false;
         Lesson lesson = (Lesson) o;
-        return getIdLesson().equals(lesson.getIdLesson()) &&
+        return Objects.equals(getIdLesson(), lesson.getIdLesson()) &&
                 getName().equals(lesson.getName()) &&
-                getPrice().equals(lesson.getPrice()) &&
+                Objects.equals(getPrice(), lesson.getPrice()) &&
                 getDate().equals(lesson.getDate()) &&
                 getDescription().equals(lesson.getDescription()) &&
                 getPublicationDate().equals(lesson.getPublicationDate()) &&
                 getStartTime().equals(lesson.getStartTime()) &&
                 getEndTime().equals(lesson.getEndTime()) &&
-                getIdSubject().equals(lesson.getIdSubject());
+                Objects.equals(getCreateDate(), lesson.getCreateDate()) &&
+                Objects.equals(getUpdateDate(), lesson.getUpdateDate()) &&
+                Objects.equals(getIdSubject(), lesson.getIdSubject());
     }
+
 
     //HASHCODE
-
     @Override
     public int hashCode() {
-        return Objects.hash(getIdLesson(), getName(), getPrice(), getDate(), getDescription(), getPublicationDate(), getStartTime(), getEndTime(), getIdSubject());
+        return Objects.hash(getIdLesson(), getName(), getPrice(), getDate(), getDescription(), getPublicationDate(), getStartTime(), getEndTime(), getCreateDate(), getUpdateDate(), getIdSubject());
     }
 
-    //TOSTRING
 
+    //TOSTRING
     @Override
     public String toString() {
         return "Lesson{" +
@@ -160,6 +192,8 @@ public class Lesson {
                 ", publicationDate=" + publicationDate +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
+                ", createDate=" + createDate +
+                ", updateDate=" + updateDate +
                 ", idSubject=" + idSubject +
                 '}';
     }
