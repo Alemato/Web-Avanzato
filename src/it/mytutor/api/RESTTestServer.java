@@ -10,7 +10,7 @@ public class RESTTestServer {
     @GET
     @Consumes("application/json")
     @Produces("text/plain")
-    public String testserverstring(){
+    public String testserverstring() {
         return "FUNZIONA" ;
     }
 
