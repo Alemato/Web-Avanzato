@@ -8,7 +8,7 @@ import javax.ws.rs.Produces;
 @Path("test")
 public class RESTTestServer {
     @GET
-    @Consumes("application/jason")
+    @Consumes("application/json")
     @Produces("text/plain")
     public String testserverstring(){
         return "FUNZIONA" ;
