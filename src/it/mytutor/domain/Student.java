@@ -5,11 +5,11 @@ import java.util.Objects;
 
 public class Student {
 
-    private Long idStudent;
+    private Integer idStudent;
     private String studyGrade;
     private Timestamp createDate;
     private Timestamp updateDate;
-    private Long idUser;
+    private Integer idUser;
 
     //COSTRUTTORI
 
@@ -22,7 +22,7 @@ public class Student {
         this.studyGrade = studyGrade;
     }
 
-    public Student(Long idStudent, String studyGrade, Timestamp createDate, Timestamp updateDate, Long idUser) {
+    public Student(Integer idStudent, String studyGrade, Timestamp createDate, Timestamp updateDate, Integer idUser) {
         super();
         this.idStudent = idStudent;
         this.studyGrade = studyGrade;
@@ -33,7 +33,7 @@ public class Student {
 
     //GETTER
 
-    public Long getIdStudent() {
+    public Integer getIdStudent() {
         return idStudent;
     }
 
@@ -49,13 +49,13 @@ public class Student {
         return updateDate;
     }
 
-    public Long getIdUser() {
+    public Integer getIdUser() {
         return idUser;
     }
 
     //SETTER
 
-    public void setIdStudent(Long idStudent) {
+    public void setIdStudent(Integer idStudent) {
         this.idStudent = idStudent;
     }
 
@@ -71,31 +71,31 @@ public class Student {
         this.updateDate = updateDate;
     }
 
-    public void setIdUser(Long idUser) {
+    public void setIdUser(Integer idUser) {
         this.idUser = idUser;
     }
 
 
     //EQUALS
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Student)) return false;
         Student student = (Student) o;
         return getIdStudent().equals(student.getIdStudent()) &&
-                getStudyGrade().equals(student.getStudyGrade()) &&
+                Objects.equals(getStudyGrade(), student.getStudyGrade()) &&
                 getCreateDate().equals(student.getCreateDate()) &&
                 getUpdateDate().equals(student.getUpdateDate()) &&
                 getIdUser().equals(student.getIdUser());
     }
 
-    //HASHCODE
 
+    //HASHCODE
     @Override
     public int hashCode() {
         return Objects.hash(getIdStudent(), getStudyGrade(), getCreateDate(), getUpdateDate(), getIdUser());
     }
+
 
     //TOSTRING
 

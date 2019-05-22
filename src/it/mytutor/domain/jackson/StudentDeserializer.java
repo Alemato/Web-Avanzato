@@ -25,11 +25,11 @@ public class StudentDeserializer extends StdDeserializer<Student> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Student student = new Student();
-        student.setIdStudent(node.get("idStudent").asLong());
+        student.setIdStudent(node.get("idStudent").asInt());
         student.setStudyGrade(node.get("studyGrade").asText());
         student.setCreateDate(Timestamp.valueOf(node.get("createDate").asText()));
         student.setUpdateDate(Timestamp.valueOf(node.get("updateDate").asText()));
-        student.setIdUser(node.get("idUser").asLong());
+        student.setIdUser(node.get("idUser").asInt());
         return student;
     }
 }
