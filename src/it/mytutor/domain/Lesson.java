@@ -22,6 +22,17 @@ public class Lesson {
         super();
     }
 
+    public Lesson(String name, Double price, Date date, String description, Date publicationDate, Timestamp startTime, Timestamp endTime) {
+        super();
+        this.name = name;
+        this.price = price;
+        this.date = date;
+        this.description = description;
+        this.publicationDate = publicationDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
     public Lesson(Long idLesson, String name, Double price, Date date, String description, Date publicationDate, Timestamp startTime, Timestamp endTime, Long idSubject) {
         super();
         this.idLesson = idLesson;
