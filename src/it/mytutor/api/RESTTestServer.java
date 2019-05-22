@@ -9,7 +9,7 @@ import javax.ws.rs.Produces;
 public class RESTTestServer {
     @GET
     @Consumes("application/jason")
-    @Produces("text/plani")
+    @Produces("text/plain")
     public String testserverstring(){
         return "FUNZIONA" ;
     }
