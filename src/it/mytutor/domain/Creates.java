@@ -111,10 +111,11 @@ public class Creates {
 
 
     private String userListerToString(List<User> userList){
-        String userListToString="";
+        String userListToString="[";
         for (User user: userList) {
-            userListToString = userListToString.concat(user.toString());
+            userListToString = userListToString.concat(", ").concat(user.toString());
         }
+        userListToString =userListToString.concat("]");
         return userListToString;
     }
 
