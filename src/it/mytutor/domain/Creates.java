@@ -1,30 +1,44 @@
 package it.mytutor.domain;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Creates {
     private Integer idCreates;
+    private String name;
     private Timestamp createDate;
     private Timestamp updateDate;
-    private Integer idUser;
-    private Integer idChat;
+    private List<User> userListser = new ArrayList<User>();
+    private Chat chat;
 
     //COSTRUTTORI
-
-    public Creates(Integer idCreates, Timestamp createDate, Timestamp updateDate, Integer idUser, Integer idChat) {
+    public Creates() {
         super();
-        this.idCreates = idCreates;
-        this.createDate = createDate;
-        this.updateDate = updateDate;
-        this.idUser = idUser;
-        this.idChat = idChat;
     }
 
+    public Creates(String name) {
+        super();
+        name = name;
+    }
+
+    public Creates(Integer idCreates, String name, Timestamp createDate, Timestamp updateDate, List<User> userListser, Chat chat) {
+        this.idCreates = idCreates;
+        name = name;
+        this.createDate = createDate;
+        this.updateDate = updateDate;
+        this.userListser = userListser;
+        this.chat = chat;
+    }
 
     //GETTER
     public Integer getIdCreates() {
         return idCreates;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Timestamp getCreateDate() {
@@ -35,12 +49,12 @@ public class Creates {
         return updateDate;
     }
 
-    public Integer getIdUser() {
-        return idUser;
+    public List<User> getUserListser() {
+        return userListser;
     }
 
-    public Integer getIdChat() {
-        return idChat;
+    public Chat getChat() {
+        return chat;
     }
 
 
@@ -48,6 +62,10 @@ public class Creates {
     //SETTER
     public void setIdCreates(Integer idCreates) {
         this.idCreates = idCreates;
+    }
+
+    public void setName(String name) {
+        name = name;
     }
 
     public void setCreateDate(Timestamp createDate) {
@@ -58,15 +76,18 @@ public class Creates {
         this.updateDate = updateDate;
     }
 
-    public void setIdUser(Integer idUser) {
-        this.idUser = idUser;
+    public void setUserListser(List<User> userListser) {
+        this.userListser = userListser;
     }
 
-    public void setIdChat(Integer idChat) {
-        this.idChat = idChat;
+    public void setChat(Chat chat) {
+        this.chat = chat;
     }
 
-
+    //AGGIUNGI USER
+    public void addUserInList(User user){
+        this.userListser.add(user);
+    }
 
     //EQUALS
     @Override
@@ -75,28 +96,40 @@ public class Creates {
         if (!(o instanceof Creates)) return false;
         Creates creates = (Creates) o;
         return getIdCreates().equals(creates.getIdCreates()) &&
+                getName().equals(creates.getName()) &&
                 getCreateDate().equals(creates.getCreateDate()) &&
                 getUpdateDate().equals(creates.getUpdateDate()) &&
-                getIdUser().equals(creates.getIdUser()) &&
-                getIdChat().equals(creates.getIdChat());
+                getUserListser().equals(creates.getUserListser()) &&
+                getChat().equals(creates.getChat());
     }
 
     //HASHCODE
     @Override
     public int hashCode() {
-        return Objects.hash(getIdCreates(), getCreateDate(), getUpdateDate(), getIdUser(), getIdChat());
+        return Objects.hash(getIdCreates(), getName(), getCreateDate(), getUpdateDate(), getUserListser(), getChat());
+    }
+
+
+    private String userListerToString(List<User> userList){
+        String userListToString="";
+        for (User user: userList) {
+            userListToString = userListToString.concat(user.toString());
+        }
+        return userListToString;
     }
 
 
     //TOSTRING
+
     @Override
     public String toString() {
         return "Creates{" +
                 "idCreates=" + idCreates +
+                ", Name='" + name +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
-                ", idUser=" + idUser +
-                ", idChat=" + idChat +
+                ", userListser=" + userListerToString(this.userListser) +
+                ", chat=" + chat.toString() +
                 '}';
     }
 }
