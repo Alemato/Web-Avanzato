@@ -1,15 +1,15 @@
 package it.mytutor.domain;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Objects;
 
-public class Student {
+public class Student extends User {
 
     private Integer idStudent;
     private String studyGrade;
-    private Timestamp createDate;
-    private Timestamp updateDate;
-    private Integer idUser;
+    private Timestamp createDateStudent;
+    private Timestamp updateDateStudent;
 
     //COSTRUTTORI
 
@@ -17,19 +17,68 @@ public class Student {
         super();
     }
 
-    public Student(String studyGrade) {
-        super();
+    /**
+     * COSTRUTTORE SENZA ID USER E ID STUDENTE E TIMESTAMP
+     * @param email
+     * @param password
+     * @param name
+     * @param surname
+     * @param birtday
+     * @param language
+     * @param studyGrade
+     */
+    public Student(String email, String password, String name, String surname, Date birtday, Boolean language, String studyGrade) {
+        super(email, password, name, surname, birtday, language);
         this.studyGrade = studyGrade;
     }
 
-    public Student(Integer idStudent, String studyGrade, Timestamp createDate, Timestamp updateDate, Integer idUser) {
-        super();
+
+    /**
+     * COSTRUTTORE SENZA ID USER E TIMESTAMP USER E TUTTO STUDENTE
+     * @param email
+     * @param password
+     * @param name
+     * @param surname
+     * @param birtday
+     * @param language
+     * @param idStudent
+     * @param studyGrade
+     * @param createDateStudent
+     * @param updateDateStudent
+     */
+    public Student(String email, String password, String name, String surname, Date birtday, Boolean language, Integer idStudent, String studyGrade, Timestamp createDateStudent, Timestamp updateDateStudent) {
+        super(email, password, name, surname, birtday, language);
         this.idStudent = idStudent;
         this.studyGrade = studyGrade;
-        this.createDate = createDate;
-        this.updateDate = updateDate;
-        this.idUser = idUser;
+        this.createDateStudent = createDateStudent;
+        this.updateDateStudent = updateDateStudent;
     }
+
+    /**
+     * COSTRUTTORE CON TUTTI I DATI
+     * @param idUser
+     * @param email
+     * @param password
+     * @param name
+     * @param surname
+     * @param birtday
+     * @param language
+     * @param image
+     * @param createDate
+     * @param updateDate
+     * @param idStudent
+     * @param studyGrade
+     * @param createDateStudent
+     * @param updateDateStudent
+     */
+    public Student(Integer idUser, String email, String password, String name, String surname, Date birtday, Boolean language, String image, Timestamp createDate, Timestamp updateDate, Integer idStudent, String studyGrade, Timestamp createDateStudent, Timestamp updateDateStudent) {
+        super(idUser, email, password, name, surname, birtday, language, image, createDate, updateDate);
+        this.idStudent = idStudent;
+        this.studyGrade = studyGrade;
+        this.createDateStudent = createDateStudent;
+        this.updateDateStudent = updateDateStudent;
+    }
+
 
     //GETTER
 
@@ -41,17 +90,14 @@ public class Student {
         return studyGrade;
     }
 
-    public Timestamp getCreateDate() {
-        return createDate;
+    public Timestamp getCreateDateStudent() {
+        return createDateStudent;
     }
 
-    public Timestamp getUpdateDate() {
-        return updateDate;
+    public Timestamp getUpdateDateStudent() {
+        return updateDateStudent;
     }
 
-    public Integer getIdUser() {
-        return idUser;
-    }
 
     //SETTER
 
@@ -63,39 +109,33 @@ public class Student {
         this.studyGrade = studyGrade;
     }
 
-    public void setCreateDate(Timestamp createDate) {
-        this.createDate = createDate;
+    public void setCreateDateStudent(Timestamp createDateStudent) {
+        this.createDateStudent = createDateStudent;
     }
 
-    public void setUpdateDate(Timestamp updateDate) {
-        this.updateDate = updateDate;
+    public void setUpdateDateStudent(Timestamp updateDateStudent) {
+        this.updateDateStudent = updateDateStudent;
     }
-
-    public void setIdUser(Integer idUser) {
-        this.idUser = idUser;
-    }
-
 
     //EQUALS
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Student)) return false;
+        if (!super.equals(o)) return false;
         Student student = (Student) o;
         return getIdStudent().equals(student.getIdStudent()) &&
-                Objects.equals(getStudyGrade(), student.getStudyGrade()) &&
-                getCreateDate().equals(student.getCreateDate()) &&
-                getUpdateDate().equals(student.getUpdateDate()) &&
-                getIdUser().equals(student.getIdUser());
+                getStudyGrade().equals(student.getStudyGrade()) &&
+                getCreateDateStudent().equals(student.getCreateDateStudent()) &&
+                getUpdateDateStudent().equals(student.getUpdateDateStudent());
     }
-
 
     //HASHCODE
     @Override
     public int hashCode() {
-        return Objects.hash(getIdStudent(), getStudyGrade(), getCreateDate(), getUpdateDate(), getIdUser());
+        return Objects.hash(super.hashCode(), getIdStudent(), getStudyGrade(), getCreateDateStudent(), getUpdateDateStudent());
     }
-
 
     //TOSTRING
 
@@ -104,9 +144,8 @@ public class Student {
         return "Student{" +
                 "idStudent=" + idStudent +
                 ", studyGrade='" + studyGrade + '\'' +
-                ", createDate=" + createDate +
-                ", updateDate=" + updateDate +
-                ", getIdUser=" + idUser +
+                ", createDateStudent=" + createDateStudent +
+                ", updateDateStudent=" + updateDateStudent +
                 '}';
     }
 }
