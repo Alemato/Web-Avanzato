@@ -8,11 +8,11 @@ public class Booking {
 
     private Integer idBooking;
     private Date date;
-    private boolean lessonState;
+    private Integer lessonState;
     private Timestamp createDate;
     private Timestamp updateDate;
-    private Integer idStudent;
-    private Integer idLesson;
+    private Student student;
+    private Lesson lesson;
 
     //COSTRUTTORI
 
@@ -20,22 +20,23 @@ public class Booking {
         super();
     }
 
-    public Booking(Date date, boolean lessonState) {
+    public Booking(Date date, Integer lessonState) {
         super();
         this.date = date;
         this.lessonState = lessonState;
     }
 
-    public Booking(Integer idBooking, Date date, boolean lessonState, Timestamp createDate, Timestamp updateDate, Integer idStudent, Integer idLesson) {
-        super();
+    public Booking(Integer idBooking, Date date, Integer lessonState, Timestamp createDate, Timestamp updateDate, Student student, Lesson lesson) {
         this.idBooking = idBooking;
         this.date = date;
         this.lessonState = lessonState;
         this.createDate = createDate;
         this.updateDate = updateDate;
-        this.idStudent = idStudent;
-        this.idLesson = idLesson;
+        this.student = student;
+        this.lesson = lesson;
     }
+
+
 
     //GETTER
 
@@ -47,7 +48,7 @@ public class Booking {
         return date;
     }
 
-    public boolean isLessonState() {
+    public Integer getLessonState() {
         return lessonState;
     }
 
@@ -59,13 +60,15 @@ public class Booking {
         return updateDate;
     }
 
-    public Integer getIdStudent() {
-        return idStudent;
+    public Student getStudent() {
+        return student;
     }
 
-    public Integer getIdLesson() {
-        return idLesson;
+    public Lesson getLesson() {
+        return lesson;
     }
+
+
 
     //SETTER
 
@@ -77,7 +80,7 @@ public class Booking {
         this.date = date;
     }
 
-    public void setLessonState(boolean lessonState) {
+    public void setLessonState(Integer lessonState) {
         this.lessonState = lessonState;
     }
 
@@ -89,12 +92,12 @@ public class Booking {
         this.updateDate = updateDate;
     }
 
-    public void setIdStudent(Integer idStudent) {
-        this.idStudent = idStudent;
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
-    public void setIdLesson(Integer idLesson) {
-        this.idLesson = idLesson;
+    public void setLesson(Lesson lesson) {
+        this.lesson = lesson;
     }
 
 
@@ -104,25 +107,24 @@ public class Booking {
         if (this == o) return true;
         if (!(o instanceof Booking)) return false;
         Booking booking = (Booking) o;
-        return isLessonState() == booking.isLessonState() &&
-                getIdBooking().equals(booking.getIdBooking()) &&
+        return getIdBooking().equals(booking.getIdBooking()) &&
                 getDate().equals(booking.getDate()) &&
+                getLessonState().equals(booking.getLessonState()) &&
                 getCreateDate().equals(booking.getCreateDate()) &&
                 getUpdateDate().equals(booking.getUpdateDate()) &&
-                getIdStudent().equals(booking.getIdStudent()) &&
-                getIdLesson().equals(booking.getIdLesson());
+                getStudent().equals(booking.getStudent()) &&
+                getLesson().equals(booking.getLesson());
     }
-
 
     //HASHCODE
     @Override
     public int hashCode() {
-        return Objects.hash(getIdBooking(), getDate(), isLessonState(), getCreateDate(), getUpdateDate(), getIdStudent(), getIdLesson());
+        return Objects.hash(getIdBooking(), getDate(), getLessonState(), getCreateDate(), getUpdateDate(), getStudent(), getLesson());
     }
 
 
-    //TOSTRING
 
+    //TOSTRING
     @Override
     public String toString() {
         return "Booking{" +
@@ -131,8 +133,8 @@ public class Booking {
                 ", lessonState=" + lessonState +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
-                ", idStudent=" + idStudent +
-                ", idLesson=" + idLesson +
+                ", student=" + student.toString() +
+                ", lesson=" + lesson.toString() +
                 '}';
     }
 }
