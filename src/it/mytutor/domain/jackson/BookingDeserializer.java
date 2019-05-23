@@ -26,13 +26,13 @@ public class BookingDeserializer extends StdDeserializer<Booking> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Booking booking = new Booking();
-        booking.setIdBooking(node.get("idBooking").asInt());                       //TODO da capire se arriva già con id
-        booking.setDate(Date.valueOf(node.get("date").asText()));
-        booking.setLessonState(node.get("lessonState").asBoolean());
-        booking.setCreateDate(Timestamp.valueOf(node.get("createDate").asText()));  //TODO da capire se arriva già con createDate
-        booking.setUpdateDate(Timestamp.valueOf(node.get("updateDate").asText()));  //TODO da capire se arriva già con UpdateDate
-        booking.setIdStudent(node.get("idStudent").asInt());                       //TODO da capire se arriva già con id
-        booking.setIdLesson(node.get("idLesson").asInt());
+//        booking.setIdBooking(node.get("idBooking").asInt());                       //TODO da capire se arriva già con id
+//        booking.setDate(Date.valueOf(node.get("date").asText()));
+//        booking.setLessonState(node.get("lessonState").asBoolean());
+//        booking.setCreateDate(Timestamp.valueOf(node.get("createDate").asText()));  //TODO da capire se arriva già con createDate
+//        booking.setUpdateDate(Timestamp.valueOf(node.get("updateDate").asText()));  //TODO da capire se arriva già con UpdateDate
+//        booking.setIdStudent(node.get("idStudent").asInt());                       //TODO da capire se arriva già con id
+//        booking.setIdLesson(node.get("idLesson").asInt());
         return booking;
     }
 }

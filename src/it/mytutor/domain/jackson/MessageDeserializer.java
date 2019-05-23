@@ -24,13 +24,13 @@ public class MessageDeserializer extends StdDeserializer<Message> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Message message = new Message();
-        message.setIdMessage(node.get("idMessage").asInt());
-        message.setText(node.get("text").asText());
-        message.setSendDate(Timestamp.valueOf(node.get("sendDate").asText()));
-        message.setCreateDate(Timestamp.valueOf(node.get("createDate").asText()));
-        message.setUpdateDate(Timestamp.valueOf(node.get("updateDate").asText()));
-        message.setIdChat(node.get("idChat").asInt());
-        message.setIdUser(node.get("idUser").asInt());
+//        message.setIdMessage(node.get("idMessage").asInt());
+//        message.setText(node.get("text").asText());
+//        message.setSendDate(Timestamp.valueOf(node.get("sendDate").asText()));
+//        message.setCreateDate(Timestamp.valueOf(node.get("createDate").asText()));
+//        message.setUpdateDate(Timestamp.valueOf(node.get("updateDate").asText()));
+//        message.setIdChat(node.get("idChat").asInt());
+//        message.setIdUser(node.get("idUser").asInt());
         return message;
     }
 }

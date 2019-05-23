@@ -21,13 +21,13 @@ public class BookingSerializer extends StdSerializer<Booking> {
     public void serialize(Booking booking, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
 
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeNumberField("idBooking", booking.getIdBooking());
-        jsonGenerator.writeStringField("date", booking.getDate().toString());
-        jsonGenerator.writeBooleanField("lessonState", booking.isLessonState());
-        jsonGenerator.writeStringField("createDate", booking.getCreateDate().toString());
-        jsonGenerator.writeStringField("updateDate", booking.getUpdateDate().toString());
-        jsonGenerator.writeNumberField("idStudent", booking.getIdStudent());
-        jsonGenerator.writeNumberField("idLesson", booking.getIdLesson());
+//        jsonGenerator.writeNumberField("idBooking", booking.getIdBooking());
+//        jsonGenerator.writeStringField("date", booking.getDate().toString());
+//        jsonGenerator.writeBooleanField("lessonState", booking.isLessonState());
+//        jsonGenerator.writeStringField("createDate", booking.getCreateDate().toString());
+//        jsonGenerator.writeStringField("updateDate", booking.getUpdateDate().toString());
+//        jsonGenerator.writeNumberField("idStudent", booking.getIdStudent());
+//        jsonGenerator.writeNumberField("idLesson", booking.getIdLesson());
         jsonGenerator.writeEndObject();
     }
 }
