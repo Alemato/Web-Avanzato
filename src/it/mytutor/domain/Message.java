@@ -1,7 +1,11 @@
 package it.mytutor.domain;
 
+import org.omg.PortableInterceptor.USER_EXCEPTION;
+
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Message {
@@ -10,8 +14,8 @@ public class Message {
     private Timestamp sendDate;
     private Timestamp createDate;
     private Timestamp updateDate;
-    private Integer idChat;
-    private Integer idUser;
+    private Chat chat;
+    private List<User> user= new ArrayList<User>();
 
     //COSTRUTTORI
 
@@ -25,15 +29,14 @@ public class Message {
         this.sendDate = sendDate;
     }
 
-    public Message(Integer idMessage, String text, Timestamp sendDate, Timestamp createDate, Timestamp updateDate, Integer idChat, Integer idUser) {
-        super();
+    public Message(Integer idMessage, String text, Timestamp sendDate, Timestamp createDate, Timestamp updateDate, Chat chat, List<User> user) {
         this.idMessage = idMessage;
         this.text = text;
         this.sendDate = sendDate;
         this.createDate = createDate;
         this.updateDate = updateDate;
-        this.idChat = idChat;
-        this.idUser = idUser;
+        this.chat = chat;
+        this.user = user;
     }
 
     //GETTER
@@ -58,12 +61,12 @@ public class Message {
         return updateDate;
     }
 
-    public Integer getIdChat() {
-        return idChat;
+    public Chat getIdChat() {
+        return chat;
     }
 
-    public Integer getIdUser() {
-        return idUser;
+    public List<User> getIdUser() {
+        return user;
     }
 
 
@@ -89,12 +92,12 @@ public class Message {
         this.updateDate = updateDate;
     }
 
-    public void setIdChat(Integer idChat) {
-        this.idChat = idChat;
+    public void setIdChat(Chat chat) {
+        this.chat = chat;
     }
 
-    public void setIdUser(Integer idUser) {
-        this.idUser = idUser;
+    public void setIdUser(List<User> user) {
+        this.user = user;
     }
 
     //EQUALS
@@ -119,8 +122,16 @@ public class Message {
         return Objects.hash(getIdMessage(), getText(), getSendDate(), getCreateDate(), getUpdateDate(), getIdChat(), getIdUser());
     }
 
-    //TOSTRING
+    private String userListerToString(List<User> userList){
+        String userListToString="[";
+        for (User user: userList) {
+            userListToString = userListToString.concat(", ").concat(user.toString());
+        }
+        userListToString =userListToString.concat("]");
+        return userListToString;
+    }
 
+    //TOSTRING
     @Override
     public String toString() {
         return "Message{" +
@@ -129,8 +140,8 @@ public class Message {
                 ", sendDate=" + sendDate +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
-                ", idChat=" + idChat +
-                ", idUser=" + idUser +
+                ", idChat=" + chat.toString() +
+                ", idUser=" + userListerToString(user) +
                 '}';
     }
 }
