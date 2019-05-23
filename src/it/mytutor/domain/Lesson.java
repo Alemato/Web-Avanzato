@@ -3,6 +3,8 @@ package it.mytutor.domain;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Lesson {
@@ -10,14 +12,14 @@ public class Lesson {
     private Integer idLesson;
     private String name;
     private Double price;
-    private Date date;
+    private List<Date> date = new ArrayList<Date>();
     private String description;
     private Date publicationDate;
-    private Time startTime;
-    private Time endTime;
+    private List<Time> startTime = new ArrayList<Time>();
+    private List<Time> endTime= new ArrayList<Time>();
     private Timestamp createDate;
     private Timestamp updateDate;
-    private Integer idSubject;
+    private Subject subject;
 
     //COSTRUTTORI
 
@@ -25,28 +27,15 @@ public class Lesson {
         super();
     }
 
-    public Lesson(String name, Date date, String description, Date publicationDate, Time startTime, Time endTime) {
-        super();
-        this.name = name;
-        this.date = date;
-        this.description = description;
-        this.publicationDate = publicationDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
-    }
-
-    public Lesson(String name, Double price, Date date, String description, Date publicationDate, Time startTime, Time endTime) {
+    public Lesson(String name, Double price, String description, Date publicationDate) {
         super();
         this.name = name;
         this.price = price;
-        this.date = date;
         this.description = description;
         this.publicationDate = publicationDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
     }
 
-    public Lesson(Integer idLesson, String name, Double price, Date date, String description, Date publicationDate, Time startTime, Time endTime, Timestamp createDate, Timestamp updateDate, Integer idSubject) {
+    public Lesson(Integer idLesson, String name, Double price, List<Date> date, String description, Date publicationDate, List<Time> startTime, List<Time> endTime, Timestamp createDate, Timestamp updateDate, Subject subject) {
         super();
         this.idLesson = idLesson;
         this.name = name;
@@ -58,7 +47,7 @@ public class Lesson {
         this.endTime = endTime;
         this.createDate = createDate;
         this.updateDate = updateDate;
-        this.idSubject = idSubject;
+        this.subject = subject;
     }
 
     //GETTER
@@ -75,7 +64,7 @@ public class Lesson {
         return price;
     }
 
-    public Date getDate() {
+    public List<Date> getDate() {
         return date;
     }
 
@@ -87,11 +76,11 @@ public class Lesson {
         return publicationDate;
     }
 
-    public Time getStartTime() {
+    public List<Time> getStartTime() {
         return startTime;
     }
 
-    public Time getEndTime() {
+    public List<Time> getEndTime() {
         return endTime;
     }
 
@@ -103,12 +92,13 @@ public class Lesson {
         return updateDate;
     }
 
-    public Integer getIdSubject() {
-        return idSubject;
+    public Subject getSubject() {
+        return subject;
     }
 
 
     //SETTER
+
     public void setIdLesson(Integer idLesson) {
         this.idLesson = idLesson;
     }
@@ -121,7 +111,7 @@ public class Lesson {
         this.price = price;
     }
 
-    public void setDate(Date date) {
+    public void setDate(List<Date> date) {
         this.date = date;
     }
 
@@ -133,11 +123,11 @@ public class Lesson {
         this.publicationDate = publicationDate;
     }
 
-    public void setStartTime(Time startTime) {
+    public void setStartTime(List<Time> startTime) {
         this.startTime = startTime;
     }
 
-    public void setEndTime(Time endTime) {
+    public void setEndTime(List<Time> endTime) {
         this.endTime = endTime;
     }
 
@@ -149,9 +139,10 @@ public class Lesson {
         this.updateDate = updateDate;
     }
 
-    public void setIdSubject(Integer idSubject) {
-        this.idSubject = idSubject;
+    public void setSubject(Subject subject) {
+        this.subject = subject;
     }
+
 
     //EQUALS
     @Override
@@ -159,26 +150,51 @@ public class Lesson {
         if (this == o) return true;
         if (!(o instanceof Lesson)) return false;
         Lesson lesson = (Lesson) o;
-        return Objects.equals(getIdLesson(), lesson.getIdLesson()) &&
+        return getIdLesson().equals(lesson.getIdLesson()) &&
                 getName().equals(lesson.getName()) &&
-                Objects.equals(getPrice(), lesson.getPrice()) &&
+                getPrice().equals(lesson.getPrice()) &&
                 getDate().equals(lesson.getDate()) &&
                 getDescription().equals(lesson.getDescription()) &&
                 getPublicationDate().equals(lesson.getPublicationDate()) &&
                 getStartTime().equals(lesson.getStartTime()) &&
                 getEndTime().equals(lesson.getEndTime()) &&
-                Objects.equals(getCreateDate(), lesson.getCreateDate()) &&
-                Objects.equals(getUpdateDate(), lesson.getUpdateDate()) &&
-                Objects.equals(getIdSubject(), lesson.getIdSubject());
+                getCreateDate().equals(lesson.getCreateDate()) &&
+                getUpdateDate().equals(lesson.getUpdateDate()) &&
+                getSubject().equals(lesson.getSubject());
     }
-
 
     //HASHCODE
     @Override
     public int hashCode() {
-        return Objects.hash(getIdLesson(), getName(), getPrice(), getDate(), getDescription(), getPublicationDate(), getStartTime(), getEndTime(), getCreateDate(), getUpdateDate(), getIdSubject());
+        return Objects.hash(getIdLesson(), getName(), getPrice(), getDate(), getDescription(), getPublicationDate(), getStartTime(), getEndTime(), getCreateDate(), getUpdateDate(), getSubject());
     }
 
+    private String dateToString(List<Date> dateList){
+        String dateString ="[";
+        for (Date date: dateList){
+            dateString = dateString.concat(", ").concat(date.toString());
+        }
+        dateString = dateString.concat("]");
+        return dateString;
+    }
+
+    private String startTimeToString(List<Time> timeList){
+        String startTimeString="[";
+        for (Time startTime: timeList){
+            startTimeString = startTimeString.concat(", ").concat(startTime.toString());
+        }
+        startTimeString=startTimeString.concat("]");
+        return startTimeString;
+    }
+
+    private String endTimeToString(List<Time> timeList){
+        String endTimeString="[";
+        for (Time endTime: timeList){
+            endTimeString = endTimeString.concat(", ").concat(endTime.toString());
+        }
+        endTimeString=endTimeString.concat("]");
+        return endTimeString;
+    }
 
     //TOSTRING
     @Override
@@ -187,14 +203,14 @@ public class Lesson {
                 "idLesson=" + idLesson +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", date=" + date +
+                ", date=" + dateToString(date) +
                 ", description='" + description + '\'' +
                 ", publicationDate=" + publicationDate +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
+                ", startTime=" + startTimeToString(startTime) +
+                ", endTime=" + endTimeToString(endTime) +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
-                ", idSubject=" + idSubject +
+                ", subject=" + subject.toString() +
                 '}';
     }
 }
