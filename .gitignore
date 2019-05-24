@@ -70,3 +70,6 @@ fabric.properties
 *.iml
 .idea/artifacts
 dataSources.xml
+
+#idea
+/idea
