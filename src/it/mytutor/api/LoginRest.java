@@ -22,6 +22,7 @@ public class LoginRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String getAuthToken(@PathParam("SID") String sid){
+        System.out.println("Accedo al sid");
         return "<h1 style=\"" +
                 "color: red; "+
                 "margin: auto; " +
@@ -31,7 +32,8 @@ public class LoginRest {
     }
 
     @Path("{SID}/chats")
-    public ChatsRest getChatsRest(){
-        return new ChatsRest();
+    public ChatsRest getChatsRest(@PathParam("SID") String sid){
+        System.out.println("Accedo al chats");
+        return new ChatsRest(sid);
     }
 }
