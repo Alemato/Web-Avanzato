@@ -36,4 +36,10 @@ public class LoginRest {
         System.out.println("Accedo al chats");
         return new ChatsRest(sid);
     }
+
+    @Path("{SID}/prenotazioni-lezioni}")
+    public PrenotazioniLezioniRest getLezzioniPrenotazioni(@PathParam("SID") String sid){
+        System.out.println("Accedo a Lezzioni-Prenotazioni");
+        return new PrenotazioniLezioniRest(sid);
+    }
 }

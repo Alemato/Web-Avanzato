@@ -4,32 +4,28 @@ import java.sql.*;
 
 public class DaoFactory {
 
-    private static String URL="";
-    private static String USER="";
-    private static String PASSWORD="";
-    private static String DRIVER="";
+    private static String URL = "";
+    private static String USER = "";
+    private static String PASSWORD = "";
+    private static String DRIVER = "";
 
 
     /*connessione con il database*/
 
 
     public static Connection getConnection() throws DatabaseException {
-        Connection conn=null;
+        Connection conn = null;
         try {
             Class.forName(DRIVER).newInstance();
-            conn=DriverManager.getConnection(URL,USER,PASSWORD);
+            conn = DriverManager.getConnection(URL, USER, PASSWORD);
             conn.setAutoCommit(false);
-        }
-       catch (SQLException e){
-          throw new DatabaseException(e.getMessage());
-       }
-        catch (ClassNotFoundException e){
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
+        } catch (ClassNotFoundException e) {
             System.out.println(e.getMessage());
-        }
-        catch(InstantiationException e) {
+        } catch (InstantiationException e) {
             System.out.println(e.getMessage());
-        }
-        catch (IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             System.out.println(e.getMessage());
 
         }
@@ -39,16 +35,15 @@ public class DaoFactory {
     }
 
 
-
     public static void closeDbConnection(Connection conn, ResultSet rs, PreparedStatement prs) {
         try {
-            if(rs!=null)
+            if (rs != null)
                 rs.close();
-            if (prs!=null)
+            if (prs != null)
                 prs.close();
-            if (conn!=null)
+            if (conn != null)
                 conn.close();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println();
         }
 
