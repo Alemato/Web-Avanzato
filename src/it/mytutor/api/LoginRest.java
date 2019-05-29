@@ -50,8 +50,14 @@ public class LoginRest {
     }
 
     @Path("{SID}/profili")
-    public  Profili getProfili(@PathParam("SID") String sid){
+    public  ProfiliRest getProfili(@PathParam("SID") String sid){
         System.out.println("Accedo a Profili");
-        return new Profili(sid);
+        return new ProfiliRest(sid);
+    }
+
+    @Path("{SID}/materie")
+    public  MaterieRest getMaterie(@PathParam("SID") String sid){
+        System.out.println("Accedo a Materie");
+        return new MaterieRest(sid);
     }
 }
