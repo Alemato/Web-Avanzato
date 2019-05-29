@@ -4,10 +4,10 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 @Path("auth/{SID}/profili")
-public class Profili {
+public class ProfiliRest {
     private  String sid;
 
-    public Profili(@PathParam("SID") String sid){
+    public ProfiliRest(@PathParam("SID") String sid){
         this.sid=sid;
     }
 
