@@ -48,4 +48,10 @@ public class LoginRest {
         System.out.println("Accedo a Lezzioni");
         return new LezioniRest(sid);
     }
+
+    @Path("{SID}/profili")
+    public  Profili getProfili(@PathParam("SID") String sid){
+        System.out.println("Accedo a Profili");
+        return new Profili(sid);
+    }
 }
