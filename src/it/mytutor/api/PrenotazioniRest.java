@@ -3,19 +3,20 @@ package it.mytutor.api;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-//@Path("auth/{SID}/lezioni")
-public class LezioniRest {
+@Path("auth/{SID}/lezioni/{LID}/prenotazioni")
+public class PrenotazioniRest {
     private String sid;
+    private String lid;
 
-    public LezioniRest(@PathParam("SID") String sid) {
+    public PrenotazioniRest(@PathParam("SID") String sid, @PathParam("LID") String lid){
         this.sid = sid;
+        this.lid = lid;
     }
-
 
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
-    public String getLezioni(@QueryParam("filtro") String filtro, @QueryParam("numero") String numero, @QueryParam("sotto") String sotto){
+    public String getPrenotazioni(@QueryParam("filtro") String filtro){
         System.out.println("il sid è: "+sid);
         // vedp se ha un SID valido
         LoginRest loginRest = new LoginRest();
@@ -25,14 +26,14 @@ public class LezioniRest {
                 "margin: auto; " +
                 "width: fit-content; " +
                 "margin-top: 20%;\" " +
-                ">Componente Lezioni con @QueryParam(\"filtro\"):" + filtro +", @QueryParam(\"numero\"):" + numero  +" (a default vale null) e @QueryParam(\"sotto\"):" + sotto + " (a default vale null)</h1>";
+                ">Componente Prenotazioni con @QueryParam(\"filtro\"):" + filtro + " (a default vale null)</h1>";
     }
 
-    @Path("{LID}")
+    @Path("{PID}")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
-    public String getLezioniByID(@PathParam("LID") Integer lid,@QueryParam("numero") String numero, @QueryParam("sotto") String sotto){
+    public String getPrenotazioniByID(@PathParam("PID") String pid){
         System.out.println("il sid è: "+sid);
         // vedp se ha un SID valido
         LoginRest loginRest = new LoginRest();
@@ -42,13 +43,6 @@ public class LezioniRest {
                 "margin: auto; " +
                 "width: fit-content; " +
                 "margin-top: 20%;\" " +
-                ">Componente Lezioni con @PathParam(\"LID\"): "+ lid +", @QueryParam(\"numero\"):" + numero  +" (a default vale null) e @QueryParam(\"sotto\"):" + sotto + " (a default vale null)</h1>";
+                ">Componente Prenotazioni By ID con @PathParam(\"PID\"):" + pid + " (a default vale null)</h1>";
     }
-
-
-    @Path("{LID}/prenotazioni")
-    public  PrenotazioniRest getPrenotazioni(@PathParam("LID") String lid){
-        return new PrenotazioniRest(sid, lid);
-    }
-
 }
