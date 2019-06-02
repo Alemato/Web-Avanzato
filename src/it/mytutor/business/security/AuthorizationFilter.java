@@ -22,7 +22,40 @@ import java.util.List;
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class AuthorizationFilter implements ContainerRequestFilter {
+    @Override
+    public void filter(ContainerRequestContext requestContext) throws IOException {
 
+        // Get the HTTP Authorization header from the request
+        String authorizationHeader =
+                requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+
+        // Check if the HTTP Authorization header is present and formatted correctly
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new NotAuthorizedException("Authorization header must be provided");
+        }
+
+        // Extract the token from the HTTP Authorization header
+        String token = authorizationHeader.substring("Bearer".length()).trim();
+
+        try {
+
+            // Validate the token
+            validateToken(token);
+
+        } catch (Exception e) {
+            requestContext.abortWith(
+                    Response.status(Response.Status.UNAUTHORIZED).build());
+        }
+    }
+
+    private void validateToken(String token) throws Exception {
+        // Check if it was issued by the server and if it's not expired
+        // Throw an Exception if the token is invalid
+
+        if(!token.equals("gd0p8mqeterjhat091r61b773s0username")) throw new Exception("TOKEN NON VALIDO");
+    }
+
+/*
     @Context
     private ResourceInfo resourceInfo;
 
@@ -95,7 +128,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         // Check if the user contains one of the allowed roles
         // Throw an Exception if the user has not permission to execute the method
         return !allowedRoles.contains(Role.valueOf(userRole));
-    }
+    }*/
 }
 
     /*@Context

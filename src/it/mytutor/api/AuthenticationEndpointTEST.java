@@ -17,21 +17,29 @@ public class AuthenticationEndpointTEST {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_HTML)
     public Response authenticateUser(@FormParam("username") String username, @FormParam("password") String password) {
-        String role = null;
-        // controllo la password e username
-        if (username != null && password != null) {
-            if (username.equals("user") && password.equals("123456789")) {
-                role = "ADMIN";
-            }
-        }
-        if (role != null) {
-            return Response.ok(createToken(username, role), MediaType.TEXT_HTML).build();
-        } else {
+        try {
+
+            // Authenticate the user using the credentials provided
+            authenticate(username, password);
+
+            // Issue a token for the user
+            String token = createToken(username);
+
+            // Return the token on the response
+            return Response.ok(token).build();
+
+        } catch (Exception e) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
     }
 
-    private String createToken(String username, String role) {
+    private void authenticate(String username, String password) throws Exception {
+        // Authenticate against a database, LDAP, file or whatever
+        // Throw an Exception if the credentials are invalid
+        if(!username.equals("user") && !password.equals("123456789")) throw new Exception("Errore user e password non corrette");
+    }
+
+    private String createToken(String username) {
         // creazione della data di scadenza
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.HOUR_OF_DAY, 3);

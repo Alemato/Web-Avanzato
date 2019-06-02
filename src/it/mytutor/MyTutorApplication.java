@@ -1,6 +1,7 @@
 package it.mytutor;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import it.mytutor.business.security.AuthorizationFilter;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -14,6 +15,7 @@ public class MyTutorApplication extends ResourceConfig {
 
         //Scanning package api per definizione dei componenti REST
         packages("it.mytutor.api");
+        packages("it.mytutor.business.security");
 
         //registrazione per logging delle richieste http
         register(new LoggingFeature(Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME),

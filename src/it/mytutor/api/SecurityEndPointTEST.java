@@ -19,7 +19,7 @@ public class SecurityEndPointTEST {
 
     @Path("/admin")
     @GET
-    @Secured({Role.ADMIN})
+    @Secured
     @Produces(MediaType.TEXT_HTML)
     public String getADMIN(){
         return "IS SECURE AND ADMIN";
