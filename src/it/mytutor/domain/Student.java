@@ -1,9 +1,16 @@
 package it.mytutor.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.mytutor.domain.jackson.StudentDeserializer;
+import it.mytutor.domain.jackson.StudentSerializer;
+
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Objects;
 
+@JsonSerialize(using = StudentSerializer.class)
+@JsonDeserialize(using = StudentDeserializer.class)
 public class Student extends User {
 
     private Integer idStudent;
