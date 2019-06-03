@@ -1,8 +1,15 @@
 package it.mytutor.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.mytutor.domain.jackson.ChatDeserializer;
+import it.mytutor.domain.jackson.ChatSerializer;
+
 import java.sql.Timestamp;
 import java.util.Objects;
 
+@JsonSerialize(using = ChatSerializer.class)
+@JsonDeserialize(using = ChatDeserializer.class)
 public class Chat {
     private Integer idChat;
     private String name;
