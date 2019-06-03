@@ -18,12 +18,17 @@ public class SubjectSerializer extends StdSerializer<Subject> {
 
     @Override
     public void serialize(Subject subject, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        jsonGenerator.writeStartObject();
+        jsonGenerator.writeStartObject("subject");
         jsonGenerator.writeNumberField("idSubject", subject.getIdSubject());
+
         jsonGenerator.writeStringField("macroSubject", subject.getMacroSubject());
+
         jsonGenerator.writeStringField("microSubject", subject.getMicroSubject());
+
         jsonGenerator.writeStringField("createDate", subject.getCreateDate().toString());
         jsonGenerator.writeStringField("updateDate",subject.getUpdateDate().toString());
+
         jsonGenerator.writeEndObject();
+        jsonGenerator.close();
     }
 }
