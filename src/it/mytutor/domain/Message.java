@@ -1,5 +1,9 @@
 package it.mytutor.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.mytutor.domain.jackson.MessageDeserializer;
+import it.mytutor.domain.jackson.MessageSerializer;
 import org.omg.PortableInterceptor.USER_EXCEPTION;
 
 import java.sql.Date;
@@ -8,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@JsonSerialize(using = MessageSerializer.class)
+@JsonDeserialize(using = MessageDeserializer.class)
 public class Message {
     private Integer idMessage;
     private String text;
