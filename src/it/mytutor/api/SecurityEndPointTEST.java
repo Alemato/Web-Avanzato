@@ -1,6 +1,5 @@
 package it.mytutor.api;
 
-import it.mytutor.business.security.Role;
 import it.mytutor.business.security.Secured;
 
 import javax.ws.rs.GET;
@@ -17,12 +16,12 @@ public class SecurityEndPointTEST {
         return "NOT SECURE";
     }
 
-    @Path("/admin")
+    @Path("/all")
     @GET
     @Secured
     @Produces(MediaType.TEXT_HTML)
-    public String getADMIN(){
-        return "IS SECURE AND ADMIN";
+    public String getALL(){
+        return "IS SECURE ALL";
     }
 
 }

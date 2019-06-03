@@ -46,7 +46,9 @@ public class AuthenticationEndpointTEST {
         // creazione token
         Random random = new SecureRandom();
         String token = new BigInteger(130, random).toString(32);
+        //TODO concatenare username per essere sicuri che il token sia univoco
         token = token.concat("0username");
+        //TODO salvare il token nel DB insieme alla scadenza di esso
         return "gd0p8mqeterjhat091r61b773s0username";
     }
 }

@@ -1,7 +1,6 @@
 package it.mytutor;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import it.mytutor.business.security.AuthorizationFilter;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
