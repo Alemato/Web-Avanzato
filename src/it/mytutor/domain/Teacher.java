@@ -1,12 +1,20 @@
 package it.mytutor.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.mytutor.domain.jackson.TeacherDeserializer;
+import it.mytutor.domain.jackson.TeacherSerializer;
+
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Objects;
 
+@JsonSerialize(using = TeacherSerializer.class)
+@JsonDeserialize(using = TeacherDeserializer.class)
 public class Teacher extends User{
     private Integer idTeacher;
     private Integer postCode;
+    //TODO City non andrebbe con la minuscola?
     private String City;
     private String region;
     private String street;
