@@ -1,5 +1,10 @@
 package it.mytutor.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.mytutor.domain.jackson.LessonDeserializer;
+import it.mytutor.domain.jackson.LessonSerializer;
+
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -7,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@JsonSerialize(using = LessonSerializer.class)
+@JsonDeserialize(using = LessonDeserializer.class)
 public class Lesson {
 
     private Integer idLesson;
