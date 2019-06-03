@@ -1,8 +1,15 @@
 package it.mytutor.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.mytutor.domain.jackson.SubjectDeserializer;
+import it.mytutor.domain.jackson.SubjectSerializer;
+
 import java.sql.Timestamp;
 import java.util.Objects;
 
+@JsonSerialize(using = SubjectSerializer.class)
+@JsonDeserialize(using = SubjectDeserializer.class)
 public class Subject {
     private Integer idSubject;
     private String macroSubject;
