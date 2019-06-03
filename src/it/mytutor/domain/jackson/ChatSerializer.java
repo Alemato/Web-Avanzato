@@ -19,11 +19,12 @@ public class ChatSerializer extends StdSerializer<Chat> {
 
     @Override
     public void serialize(Chat chat, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        jsonGenerator.writeStartObject();
+        jsonGenerator.writeStartObject("chat");
         jsonGenerator.writeNumberField("idChat",chat.getIdChat());
         jsonGenerator.writeStringField("name", chat.getName());
         jsonGenerator.writeStringField("createDate", chat.getCreateDate().toString());
         jsonGenerator.writeStringField("updateDate", chat.getUpdateDate().toString());
         jsonGenerator.writeEndObject();
+        jsonGenerator.close();
     }
 }
