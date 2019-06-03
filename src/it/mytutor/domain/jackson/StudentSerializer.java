@@ -18,13 +18,17 @@ public class StudentSerializer extends StdSerializer<Student> {
 
     @Override
     public void serialize(Student student, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        jsonGenerator.writeStartObject("student");
 
-        jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idStudent", student.getIdStudent());
+
         jsonGenerator.writeStringField("studyGrade", student.getStudyGrade());
-        jsonGenerator.writeStringField("createDate", student.getCreateDate().toString());
-        jsonGenerator.writeStringField("updateDate", student.getUpdateDate().toString());
-        jsonGenerator.writeNumberField("idUser", student.getIdStudent());
+
+        jsonGenerator.writeStringField("createDate", student.getCreateDateStudent().toString());
+        jsonGenerator.writeStringField("updateDate", student.getUpdateDateStudent().toString());
+
+        jsonGenerator.writeNumberField("idUser", student.getIdUser());
         jsonGenerator.writeEndObject();
+        jsonGenerator.close();
     }
 }
