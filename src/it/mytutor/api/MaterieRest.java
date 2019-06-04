@@ -1,29 +1,36 @@
 package it.mytutor.api;
 
+import it.mytutor.business.security.Secured;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-@Path("auth/{SID}/materie")
+@Path("auth/materie")
 public class MaterieRest {
-    private String sid;
-
-    public MaterieRest(@PathParam("SID") String sid){
-        this.sid=sid;
-    }
 
     @GET
+    @Secured
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String getMaterie(@QueryParam("filtro") String filtro){
-        System.out.println("il sid è: "+sid);
-        // vedp se ha un SID valido
-        LoginRest loginRest = new LoginRest();
-        System.out.println(loginRest.getAuthToken(sid));
         return "<h1 style=\"" +
                 "color: red; "+
                 "margin: auto; " +
                 "width: fit-content; " +
                 "margin-top: 20%;\" " +
-                ">Componente Lezioni con @QueryParam(\"filtro\"):" + filtro + " (a default vale null)</h1>";
+                ">Componente Materie con @QueryParam(\"filtro\"):" + filtro + " (a default vale null)</h1>";
+    }
+
+    @POST
+    @Secured
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_HTML)
+    public String creaMaterie(){
+        return "<h1 style=\"" +
+                "color: red; "+
+                "margin: auto; " +
+                "width: fit-content; " +
+                "margin-top: 20%;\" " +
+                ">Crea Materie</h1>";
     }
 }

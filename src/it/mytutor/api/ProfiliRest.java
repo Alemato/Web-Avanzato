@@ -1,24 +1,18 @@
 package it.mytutor.api;
 
+import it.mytutor.business.security.Secured;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-@Path("auth/{SID}/profili")
+@Path("auth/profili")
 public class ProfiliRest {
-    private  String sid;
-
-    public ProfiliRest(@PathParam("SID") String sid){
-        this.sid=sid;
-    }
 
     @GET
+    @Secured
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String getProfili(@QueryParam("filtro") String filtro){
-        System.out.println("il sid è: "+sid);
-        // vedp se ha un SID valido
-        LoginRest loginRest = new LoginRest();
-        System.out.println(loginRest.getAuthToken(sid));
         return "<h1 style=\"" +
                 "color: red; "+
                 "margin: auto; " +
@@ -29,13 +23,10 @@ public class ProfiliRest {
 
     @Path("{UID}")
     @GET
+    @Secured
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String getProfiliByID(@PathParam("UID") String uid){
-        System.out.println("il sid è: "+sid);
-        // vedp se ha un SID valido
-        LoginRest loginRest = new LoginRest();
-        System.out.println(loginRest.getAuthToken(sid));
         return "<h1 style=\"" +
                 "color: red; "+
                 "margin: auto; " +

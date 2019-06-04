@@ -1,15 +1,15 @@
 package it.mytutor.api;
 
+import it.mytutor.business.security.Secured;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-@Path("auth/{SID}/lezioni/{LID}/prenotazioni")
+@Path("auth/lezioni/{LID}/prenotazioni")
 public class PrenotazioniRest {
-    private String sid;
     private String lid;
 
-    public PrenotazioniRest(@PathParam("SID") String sid, @PathParam("LID") String lid){
-        this.sid = sid;
+    public PrenotazioniRest(@PathParam("LID") String lid){
         this.lid = lid;
     }
 
@@ -17,10 +17,6 @@ public class PrenotazioniRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String getPrenotazioni(@QueryParam("filtro") String filtro){
-        System.out.println("il sid è: "+sid);
-        // vedp se ha un SID valido
-        LoginRest loginRest = new LoginRest();
-        System.out.println(loginRest.getAuthToken(sid));
         return "<h1 style=\"" +
                 "color: red; "+
                 "margin: auto; " +
@@ -29,20 +25,30 @@ public class PrenotazioniRest {
                 ">Componente Prenotazioni con @QueryParam(\"filtro\"):" + filtro + " (a default vale null)</h1>";
     }
 
-    @Path("{PID}")
-    @GET
+    @POST
+    @Secured
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
-    public String getPrenotazioniByID(@PathParam("PID") String pid){
-        System.out.println("il sid è: "+sid);
-        // vedp se ha un SID valido
-        LoginRest loginRest = new LoginRest();
-        System.out.println(loginRest.getAuthToken(sid));
+    public String creaPrenotazione(){
         return "<h1 style=\"" +
                 "color: red; "+
                 "margin: auto; " +
                 "width: fit-content; " +
                 "margin-top: 20%;\" " +
-                ">Componente Prenotazioni By ID con @PathParam(\"PID\"):" + pid + " (a default vale null)</h1>";
+                ">Crea Prenotazione</h1>";
+    }
+
+    @Path("{PID}")
+    @POST
+    @Secured
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_HTML)
+    public String rispostaTheacher(@PathParam("PID") String pid){
+        return "<h1 style=\"" +
+                "color: red; "+
+                "margin: auto; " +
+                "width: fit-content; " +
+                "margin-top: 20%;\" " +
+                ">Risposta a prenotazione con @PathParam(\"PID\"):" + pid + " (a default vale null)</h1>";
     }
 }
