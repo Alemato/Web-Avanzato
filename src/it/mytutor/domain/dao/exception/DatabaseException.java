@@ -1,4 +1,4 @@
-package it.mytutor.domain.Dao;
+package it.mytutor.domain.dao.exception;
 
 
 public class DatabaseException extends Exception  {
