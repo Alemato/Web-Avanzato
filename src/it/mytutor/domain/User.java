@@ -1,10 +1,17 @@
 package it.mytutor.domain;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+//@JsonSerialize(using = UserSerializer.class)
+//@JsonDeserialize(using = UserDeserializer.class)
 public class User {
     private Integer idUser;
     private String email;

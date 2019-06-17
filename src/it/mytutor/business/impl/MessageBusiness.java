@@ -7,12 +7,15 @@ import it.mytutor.domain.User;
 
 import java.util.List;
 
+import static it.mytutor.business.impl.test.TestBusinness.simulateFindAllMessageByChat;
+
 public class MessageBusiness implements MessageInterface {
     // TODO costruttore Messaggio
 
     @Override
     public List<Message> findAllMessageByChat(Chat chat) {
-        return null;
+
+        return  simulateFindAllMessageByChat();
     }
 
     @Override
