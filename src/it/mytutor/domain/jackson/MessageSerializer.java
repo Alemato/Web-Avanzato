@@ -41,16 +41,16 @@ public class MessageSerializer extends StdSerializer<Message> {
         for (User user: message.getIdUser()){
             jsonGenerator.writeFieldName("user");
             jsonGenerator.writeStartObject();
-            jsonGenerator.writeStringField("user",user.getIdUser().toString());
-            jsonGenerator.writeStringField("user",user.getEmail());
-            jsonGenerator.writeStringField("user",user.getPassword());
-            jsonGenerator.writeStringField("user",user.getName());
-            jsonGenerator.writeStringField("user",user.getSurname());
-            jsonGenerator.writeStringField("user",user.getBirtday().toString());
-            jsonGenerator.writeStringField("user",user.getLanguage().toString());
-            jsonGenerator.writeStringField("user",user.getImage());
-            jsonGenerator.writeStringField("user",user.getCreateDate().toString());
-            jsonGenerator.writeStringField("user",user.getUpdateDate().toString());
+            jsonGenerator.writeStringField("iduser",user.getIdUser().toString());
+            jsonGenerator.writeStringField("email",user.getEmail());
+            jsonGenerator.writeStringField("password",user.getPassword());
+            jsonGenerator.writeStringField("name",user.getName());
+            jsonGenerator.writeStringField("surname",user.getSurname());
+            jsonGenerator.writeStringField("birtday",user.getBirtday().toString());
+            jsonGenerator.writeStringField("language",user.getLanguage().toString());
+            jsonGenerator.writeStringField("image",user.getImage());
+            jsonGenerator.writeStringField("createDate",user.getCreateDate().toString());
+            jsonGenerator.writeStringField("updateDate",user.getUpdateDate().toString());
             jsonGenerator.writeEndObject();
         }
         jsonGenerator.writeEndArray();
