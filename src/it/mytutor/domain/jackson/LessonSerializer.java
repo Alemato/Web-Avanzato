@@ -32,7 +32,7 @@ public class LessonSerializer extends StdSerializer<Lesson> {
         jsonGenerator.writeFieldName("dates");
         jsonGenerator.writeStartArray();
         for (Date date: lesson.getDate()){
-            jsonGenerator.writeStringField("date", date.toString());
+            jsonGenerator.writeString(date.toString());
         }
         jsonGenerator.writeEndArray();
 
@@ -43,7 +43,7 @@ public class LessonSerializer extends StdSerializer<Lesson> {
         jsonGenerator.writeFieldName("startTimes");
         jsonGenerator.writeStartArray();
         for (Time startTime: lesson.getStartTime()){
-            jsonGenerator.writeStringField("startTime", startTime.toString());
+            jsonGenerator.writeString(startTime.toString());
         }
         jsonGenerator.writeEndArray();
 
@@ -51,15 +51,20 @@ public class LessonSerializer extends StdSerializer<Lesson> {
         jsonGenerator.writeFieldName("endTimes");
         jsonGenerator.writeStartArray();
         for (Time endTime: lesson.getEndTime()){
-            jsonGenerator.writeStringField("endTime", endTime.toString());
+            jsonGenerator.writeString(endTime.toString());
         }
         jsonGenerator.writeEndArray();
 
         jsonGenerator.writeStringField("createDate",lesson.getCreateDate().toString());
         jsonGenerator.writeStringField("updateDate",lesson.getUpdateDate().toString());
 
-        jsonGenerator.writeStartObject();
-        jsonGenerator.writeObjectField("idSubject", lesson.getSubject());
+        jsonGenerator.writeFieldName("subject");
+        jsonGenerator.writeStartObject("subject");
+        jsonGenerator.writeStringField("idSubject", lesson.getSubject().getIdSubject().toString());
+        jsonGenerator.writeStringField("macroSubject", lesson.getSubject().getMacroSubject());
+        jsonGenerator.writeStringField("microSubject", lesson.getSubject().getMicroSubject());
+        jsonGenerator.writeStringField("createTime", lesson.getSubject().getCreateDate().toString());
+        jsonGenerator.writeStringField("updateTime", lesson.getSubject().getUpdateDate().toString());
         jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();
 
