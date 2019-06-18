@@ -76,7 +76,7 @@ public class LessonDeserializer extends StdDeserializer<Lesson> {
 //        lesson.setUpdateDate(Timestamp.valueOf(node.get("updateDate").asText()));   //TODO da capire se arriva già
 
         Subject subject = new Subject();
-        JsonNode subjectNode = node.get("idSubject");
+        JsonNode subjectNode = node.get("subject");
         subject.setIdSubject(subjectNode.get("idSubject").asInt());
         subject.setMacroSubject(subjectNode.get("macroSubject").asText());
         subject.setMicroSubject(subjectNode.get("microSubject").asText());

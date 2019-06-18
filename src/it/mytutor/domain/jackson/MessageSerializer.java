@@ -23,23 +23,34 @@ public class MessageSerializer extends StdSerializer<Message> {
         jsonGenerator.writeStartObject("message");
 
         jsonGenerator.writeNumberField("idMessage",message.getIdMessage());
-
         jsonGenerator.writeStringField("text", message.getText());
-
         jsonGenerator.writeStringField("sendDate",message.getSendDate().toString());
-
         jsonGenerator.writeStringField("createDate",message.getCreateDate().toString());
         jsonGenerator.writeStringField("updateDate",message.getUpdateDate().toString());
 
+        jsonGenerator.writeFieldName("chat");
         jsonGenerator.writeStartObject("chat");
-        jsonGenerator.writeObjectField("chat", message.getIdChat());
+        jsonGenerator.writeStringField("idChat", message.getIdChat().getIdChat().toString());
+        jsonGenerator.writeStringField("name", message.getIdChat().getName());
+        jsonGenerator.writeStringField("createDate", message.getIdChat().getCreateDate().toString());
+        jsonGenerator.writeStringField("updateDate", message.getIdChat().getUpdateDate().toString());
         jsonGenerator.writeEndObject();
 
         jsonGenerator.writeFieldName("users");
         jsonGenerator.writeStartArray();
         for (User user: message.getIdUser()){
+            jsonGenerator.writeFieldName("user");
             jsonGenerator.writeStartObject();
-            jsonGenerator.writeObjectField("user",user);
+            jsonGenerator.writeStringField("iduser",user.getIdUser().toString());
+            jsonGenerator.writeStringField("email",user.getEmail());
+            jsonGenerator.writeStringField("password",user.getPassword());
+            jsonGenerator.writeStringField("name",user.getName());
+            jsonGenerator.writeStringField("surname",user.getSurname());
+            jsonGenerator.writeStringField("birtday",user.getBirtday().toString());
+            jsonGenerator.writeStringField("language",user.getLanguage().toString());
+            jsonGenerator.writeStringField("image",user.getImage());
+            jsonGenerator.writeStringField("createDate",user.getCreateDate().toString());
+            jsonGenerator.writeStringField("updateDate",user.getUpdateDate().toString());
             jsonGenerator.writeEndObject();
         }
         jsonGenerator.writeEndArray();

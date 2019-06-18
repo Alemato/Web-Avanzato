@@ -1,10 +1,15 @@
 package it.mytutor.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+//@JsonSerialize(using = CreatesSerializer.class)
+//@JsonDeserialize(using = CreatesDeserializer.class)
 public class Creates {
     private Integer idCreates;
     private String name;
