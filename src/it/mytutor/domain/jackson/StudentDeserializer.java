@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import it.mytutor.domain.Student;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 public class StudentDeserializer extends StdDeserializer<Student> {
@@ -29,10 +30,14 @@ public class StudentDeserializer extends StdDeserializer<Student> {
 
         student.setStudyGrade(node.get("studyGrade").asText());
 
-//        student.setCreateDate(Timestamp.valueOf(node.get("createDate").asText()));
-//        student.setUpdateDate(Timestamp.valueOf(node.get("updateDate").asText()));
-
-        student.setIdUser(node.get("idUser").asInt());
+        JsonNode userNode = node.get("user");
+        student.setIdUser(userNode.get("idUser").asInt());
+        student.setEmail(userNode.get("email").asText());
+        student.setName(userNode.get("name").asText());
+        student.setSurname(userNode.get("surname").asText());
+        student.setBirtday(Date.valueOf(userNode.get("birthday").asText()));
+        student.setLanguage(Boolean.getBoolean(userNode.get("language").asText()));
+        student.setImage(userNode.get("image").asText());
         return student;
     }
 }
