@@ -18,7 +18,7 @@ public class User {
     private String password;
     private String name;
     private String surname;
-    private Date birtday;
+    private Date birthday;
     private Boolean language;
     private String image;
     private Timestamp createDate;
@@ -30,22 +30,22 @@ public class User {
         super();
     }
 
-    public User(String email, String password, String name, String surname, Date birtday, Boolean language) {
+    public User(String email, String password, String name, String surname, Date birthday, Boolean language) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.surname = surname;
-        this.birtday = birtday;
+        this.birthday = birthday;
         this.language = language;
     }
 
-    public User(Integer idUser, String email, String password, String name, String surname, Date birtday, Boolean language, String image, Timestamp createDate, Timestamp updateDate) {
+    public User(Integer idUser, String email, String password, String name, String surname, Date birthday, Boolean language, String image, Timestamp createDate, Timestamp updateDate) {
         this.idUser = idUser;
         this.email = email;
         this.password = password;
         this.name = name;
         this.surname = surname;
-        this.birtday = birtday;
+        this.birthday = birthday;
         this.language = language;
         this.image = image;
         this.createDate = createDate;
@@ -75,7 +75,7 @@ public class User {
     }
 
     public Date getBirtday() {
-        return birtday;
+        return birthday;
     }
 
     public Boolean getLanguage() {
@@ -116,8 +116,8 @@ public class User {
         this.surname = surname;
     }
 
-    public void setBirtday(Date birtday) {
-        this.birtday = birtday;
+    public void setBirtday(Date birthday) {
+        this.birthday = birthday;
     }
 
     public void setLanguage(Boolean language) {
@@ -171,7 +171,7 @@ public class User {
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
-                ", birtday=" + birtday +
+                ", birthday=" + birthday +
                 ", language=" + language +
                 ", image='" + image + '\'' +
                 ", createDate=" + createDate +
