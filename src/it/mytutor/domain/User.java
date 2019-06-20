@@ -74,7 +74,7 @@ public class User {
         return surname;
     }
 
-    public Date getBirtday() {
+    public Date getBirthday() {
         return birthday;
     }
 
@@ -148,7 +148,7 @@ public class User {
                 getPassword().equals(user.getPassword()) &&
                 getName().equals(user.getName()) &&
                 getSurname().equals(user.getSurname()) &&
-                getBirtday().equals(user.getBirtday()) &&
+                getBirthday().equals(user.getBirthday()) &&
                 getLanguage().equals(user.getLanguage()) &&
                 Objects.equals(getImage(), user.getImage()) &&
                 getCreateDate().equals(user.getCreateDate()) &&
@@ -157,7 +157,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getIdUser(), getEmail(), getPassword(), getName(), getSurname(), getBirtday(), getLanguage(), getImage(), getCreateDate(), getUpdateDate());
+        return Objects.hash(getIdUser(), getEmail(), getPassword(), getName(), getSurname(), getBirthday(), getLanguage(), getImage(), getCreateDate(), getUpdateDate());
     }
 
 
