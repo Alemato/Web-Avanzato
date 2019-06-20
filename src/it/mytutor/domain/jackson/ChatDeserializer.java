@@ -24,13 +24,12 @@ public class ChatDeserializer extends StdDeserializer<Chat> {
     public Chat deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
-        Chat chat= new Chat();
+        Chat chat = new Chat();
+
         chat.setIdChat(node.get("idChat").asInt());
 
         chat.setName(node.get("name").asText());
 
-//        chat.setCreateDate(Timestamp.valueOf(node.get("createDate").asText()));
-//        chat.setUpdateDate(Timestamp.valueOf(node.get("updateDate").asText()));
         return chat;
     }
 }
