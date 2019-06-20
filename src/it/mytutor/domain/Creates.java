@@ -15,7 +15,7 @@ public class Creates {
     private String name;
     private Timestamp createDate;
     private Timestamp updateDate;
-    private List<User> userListser = new ArrayList<User>();
+    private List<User> userListser = new ArrayList<User>();   // lista contenente i due user coinvolti nella chat
     private Chat chat;
 
     //COSTRUTTORI
@@ -25,12 +25,12 @@ public class Creates {
 
      public Creates(String name) {
         super();
-        name = name;
+        this.name = name;
     }
 
     public Creates(Integer idCreates, String name, Timestamp createDate, Timestamp updateDate, List<User> userListser, Chat chat) {
         this.idCreates = idCreates;
-        name = name;
+        this.name = name;
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.userListser = userListser;
