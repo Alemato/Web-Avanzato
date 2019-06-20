@@ -1,6 +1,6 @@
 package it.mytutor.business.security;
 
-public enum Role {
+public enum MyRoles {
     ADMIN,
     STUDENT,
     TEACHER
