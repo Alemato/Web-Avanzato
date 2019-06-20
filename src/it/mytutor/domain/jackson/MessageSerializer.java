@@ -39,18 +39,8 @@ public class MessageSerializer extends StdSerializer<Message> {
         jsonGenerator.writeFieldName("users");
         jsonGenerator.writeStartArray();
         for (User user: message.getIdUser()){
-            jsonGenerator.writeFieldName("user");
-            jsonGenerator.writeStartObject();
-            jsonGenerator.writeStringField("iduser",user.getIdUser().toString());
-            jsonGenerator.writeStringField("email",user.getEmail());
-            jsonGenerator.writeStringField("password",user.getPassword());
-            jsonGenerator.writeStringField("name",user.getName());
-            jsonGenerator.writeStringField("surname",user.getSurname());
-            jsonGenerator.writeStringField("birtday",user.getBirtday().toString());
-            jsonGenerator.writeStringField("language",user.getLanguage().toString());
-            jsonGenerator.writeStringField("image",user.getImage());
-            jsonGenerator.writeStringField("createDate",user.getCreateDate().toString());
-            jsonGenerator.writeStringField("updateDate",user.getUpdateDate().toString());
+            jsonGenerator.writeStringField("idUser",user.getIdUser().toString());
+
             jsonGenerator.writeEndObject();
         }
         jsonGenerator.writeEndArray();
