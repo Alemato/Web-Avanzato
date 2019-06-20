@@ -49,14 +49,7 @@ public class MessageDeserializer extends StdDeserializer<Message> {
         while (usersIterator.hasNext()) {
             JsonNode userNode = usersIterator.next();
             User user = new User();
-            user.setIdUser(userNode.findPath("user").findPath("idUser").asInt());
-            user.setEmail(userNode.findPath("user").findPath("email").asText());
-            user.setPassword(userNode.findPath("user").findPath("password").asText());
-            user.setName(userNode.findPath("user").findPath("name").asText());
-            user.setSurname(userNode.findPath("user").findPath("surname").asText());
-            user.setBirtday(Date.valueOf(userNode.findPath("user").findPath("birtday").asText()));
-            user.setLanguage(userNode.findPath("user").findPath("language").asBoolean());
-            user.setImage(userNode.findPath("user").findPath("image").asText());
+            user.setIdUser(userNode.findPath("idUser").asInt());
             userList.add(user);
         }
         message.setIdUser(userList);
