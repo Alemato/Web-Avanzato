@@ -13,17 +13,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SubjectDao implements SubjectDaoInterface {
-    private static final String GET_SUBJECT_BY_ID_STATEMENT="select * from Subject where id=?";
+    private static final String GET_SUBJECT_BY_ID_STATEMENT="select * from Subject where IdSubject=?";
     private static final String GET_SUBJECT_BY_NAME_STATEMENT="select * from Subject where macroSubject=?";
     private static final String UPDATE_SUBJECT_STATEMENT="update Subject set macroSubject=?, microSubject=? where idSubject=?";
     private static final String CREATE_SUBJECT_STATEMENT="insert into Subject(macroSubject,microSubject) values(?,?)";
     private static final String GET_ALL_SUBJECT_STATEMENT="select * from Subject";
-    private static final String DELETE_SUBJECT_STATEMENT="delete from Subject where id=? ";
+
 
     private void configureSubject(Subject subject, ResultSet resultSet) throws DatabaseException {
         try {
+            subject.setIdSubject(resultSet.getInt("IdSubject"));
             subject.setMacroSubject(resultSet.getString("macroSubject"));
             subject.setMicroSubject(resultSet.getString("microSubject"));
+            subject.setCreateDate(resultSet.getTimestamp("createDate"));
+            subject.setCreateDate(resultSet.getTimestamp("updateDate"));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -176,26 +179,4 @@ public class SubjectDao implements SubjectDaoInterface {
         return Subejcts;
     }
 
-    @Override
-    public void deleteSubject(Subject subject) throws DatabaseException {
-        Connection conn= DaoFactory.getConnection();
-        if (conn==null){
-            throw new DatabaseException("Connection is null");
-        }
-        ResultSet rs=null;
-        PreparedStatement prs=null;
-        try {
-            prs = conn.prepareStatement(DELETE_SUBJECT_STATEMENT);
-            if (prs == null) {
-                throw new DatabaseException("Statement is null");
-            }
-            prs.setInt(1,subject.getIdSubject());
-        prs.executeQuery();
-        }catch(SQLException e){
-            throw new DatabaseException(e.getMessage());
-        }finally {
-            DaoFactory.closeDbConnection(conn,rs,prs);
-        }
-
-    }
-}
+  }

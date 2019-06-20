@@ -2,6 +2,7 @@ package it.mytutor.domain.dao.implement;
 
 
 import it.mytutor.domain.User;
+import it.mytutor.domain.dao.interfaces.TeacherDaoInterface;
 import it.mytutor.domain.dao.daofactory.DaoFactory;
 import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.interfaces.UserDaoInterface;
@@ -16,10 +17,10 @@ import java.util.List;
 
 
 public class UserDao implements UserDaoInterface {
-    private static final String CREATE_USER_STATEMENT = "insert into User(Email,Password,Name,Surname,Birtday,Language) values(?,?,?,?,?,?)";
-    private static final String DELETE_USER_STATEMENT = "delete from User where id=?";
-    private static final String UPDATE_USER_STATEMENT = "update User set Email=?,Password=?,Name=?,Surname=?,Birtday=?,Language=? where id=? ";
-    private static final String GET_USER_BY_ID_STATEMENT = "select * from User where id=?";
+    private static final String CREATE_USER_STATEMENT = "insert into User(Email,Password,Name,Surname,Birtday,Language,Image) values(?,?,?,?,?,?,?)";
+
+    private static final String UPDATE_USER_STATEMENT = "update User set Email=?,Password=?,Name=?,Surname=?,Birtday=?,Language=?,Image=? where idUser=? ";
+    private static final String GET_USER_BY_ID_STATEMENT = "select * from User where idUser=?";
     private static final String GET_USER_BY_NAME_STATEMENT = "select * from User where Name=?";
     private static final String GET_USER_BY_EMAIL_STATEMENT = "select * from User where Email=?";
     private static final String GET_ALL_USER_STATEMENT = "select * from User";
@@ -27,12 +28,13 @@ public class UserDao implements UserDaoInterface {
     private void configureUser(User user, ResultSet resultSet) throws DatabaseException {
         try {
             user.setIdUser(resultSet.getInt("idUser"));
-            user.setEmail(resultSet.getString("email"));
-            user.setPassword(resultSet.getString("password"));
-            user.setName(resultSet.getString("name"));
-            user.setSurname(resultSet.getString("surname"));
-            user.setBirtday(resultSet.getDate("birtday;"));
-            user.setLanguage(resultSet.getBoolean("language"));
+            user.setEmail(resultSet.getString("Email"));
+            user.setPassword(resultSet.getString("Password"));
+            user.setName(resultSet.getString("Name"));
+            user.setSurname(resultSet.getString("Surname"));
+            user.setBirtday(resultSet.getDate("Birtday;"));
+            user.setImage(resultSet.getString("Image"));
+            user.setLanguage(resultSet.getBoolean("Language"));
             user.setCreateDate(resultSet.getTimestamp("CreateDate"));
             user.setUpdateDate(resultSet.getTimestamp("UpdateDate"));
 
@@ -72,9 +74,12 @@ public class UserDao implements UserDaoInterface {
             prs.setString(2, usr.getPassword());
             prs.setString(3, usr.getName());
             prs.setString(4, usr.getSurname());
-            prs.setString(5, usr.getBirtday().toString());
-            prs.setString(6, usr.getLanguage().toString());
+            prs.setDate(5, usr.getBirthday());
+            prs.setBoolean(6, usr.getLanguage());
+            prs.setString(7,usr.getImage());
+
             prs.executeQuery();
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -84,34 +89,10 @@ public class UserDao implements UserDaoInterface {
         }
     }
 
-    @Override
-    public void delete(User usr) throws DatabaseException {
-        Connection conn = DaoFactory.getConnection();
-        if (conn == null) {
-            throw new DatabaseException("Connection is null");
-        }
-        ResultSet rs = null;
-        PreparedStatement prs = null;
-        try {
-            prs = conn.prepareStatement(DELETE_USER_STATEMENT);
-            if (prs == null) {
-                throw new DatabaseException("Statement is null");
-            }
-            prs.setInt(1, usr.getIdUser());
-            prs.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
-
-        } finally {
-            DaoFactory.closeDbConnection(conn, rs, prs);
-
-        }
-    }
 
 
     @Override
-    public void modifyUser(User usr) throws DatabaseException {
+    public void modifyUser(User usr, int id) throws DatabaseException {
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -125,11 +106,12 @@ public class UserDao implements UserDaoInterface {
             }
             prs.setString(1, usr.getEmail());
             prs.setString(2, usr.getPassword());
-            prs.setString(7, usr.getIdUser().toString());
             prs.setString(3, usr.getName());
             prs.setString(4, usr.getSurname());
-            prs.setString(5, usr.getBirtday().toString());
-            prs.setString(6, usr.getLanguage().toString());
+            prs.setDate(5, usr.getBirthday());
+            prs.setBoolean(6, usr.getLanguage());
+            prs.setString(7,usr.getImage());
+            prs.setInt(8,id);
             prs.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -139,7 +121,6 @@ public class UserDao implements UserDaoInterface {
         }
     }
 
-    ;
 
     @Override
     public User getUserById(int id) throws DatabaseException {

@@ -9,9 +9,9 @@ import java.util.List;
 public interface UserDaoInterface {
     void createUser(User usr) throws DatabaseException;
 
-    void delete(User usr) throws DatabaseException;
 
-    void modifyUser(User usr) throws DatabaseException;
+
+    void modifyUser(User usr, int id) throws DatabaseException;
 
     User getUserById(int id) throws DatabaseException;
 
