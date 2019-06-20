@@ -37,18 +37,13 @@ public class BookingDeserializer extends StdDeserializer<Booking> {
 
         booking.setLessonState(node.get("lessonState").asInt());
 
-//        booking.setCreateDate(Timestamp.valueOf(node.get("createDate").asText()));  //TODO da capire se arriva già con createDate
-//        booking.setUpdateDate(Timestamp.valueOf(node.get("updateDate").asText()));  //TODO da capire se arriva già con UpdateDate
-
-        //TODO da capire se basta l'id dello studente
         Student student = new Student();
-        student.setIdStudent(node.findPath("student").findPath("idStudent").asInt());
+        student.setIdStudent(node.findPath("idStudent").asInt());
         booking.setStudent(student);
 
-        //TODO da capire se basta l'id della lezione
         Lesson lesson = new Lesson();
-        lesson.setIdLesson(node.findPath("lesson").findPath("idLesson").asInt());
-//
+        lesson.setIdLesson(node.findPath("idLesson").asInt());
+
         booking.setLesson(lesson);
 
         return booking;
