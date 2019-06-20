@@ -20,6 +20,7 @@ public class Booking {
     private Timestamp updateDate;
     private Student student;
     private Lesson lesson;
+   // private Planning planning;
 
     //COSTRUTTORI
 
@@ -75,7 +76,7 @@ public class Booking {
         return lesson;
     }
 
-
+   // public Planning getPlanning() {return planning;}
 
     //SETTER
 
@@ -107,6 +108,7 @@ public class Booking {
         this.lesson = lesson;
     }
 
+    //public void setPlanning(Planning planning) {this.planning=planning;}
 
     //EQUALS
     @Override
@@ -120,13 +122,13 @@ public class Booking {
                 getCreateDate().equals(booking.getCreateDate()) &&
                 getUpdateDate().equals(booking.getUpdateDate()) &&
                 getStudent().equals(booking.getStudent()) &&
-                getLesson().equals(booking.getLesson());
+                getLesson().equals(booking.getLesson());//&&getPlanning().equals(booking.getPlanning());
     }
 
     //HASHCODE
     @Override
     public int hashCode() {
-        return Objects.hash(getIdBooking(), getDate(), getLessonState(), getCreateDate(), getUpdateDate(), getStudent(), getLesson());
+        return Objects.hash(getIdBooking(), getDate(), getLessonState(), getCreateDate(), getUpdateDate(), getStudent(), getLesson());//.getPlanning();)
     }
 
 
@@ -142,6 +144,7 @@ public class Booking {
                 ", updateDate=" + updateDate +
                 ", student=" + student.toString() +
                 ", lesson=" + lesson.toString() +
+                //", planning=" + planning.toString() +
                 '}';
     }
 }
