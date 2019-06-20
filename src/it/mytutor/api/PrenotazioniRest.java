@@ -1,7 +1,5 @@
 package it.mytutor.api;
 
-import it.mytutor.business.security.Secured;
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -40,7 +38,6 @@ public class PrenotazioniRest {
 
     @Path("{PID}")
     @POST
-    @Secured
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String rispostaTheacher(@PathParam("PID") String pid){

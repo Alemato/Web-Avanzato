@@ -9,7 +9,6 @@ import javax.ws.rs.core.MediaType;
 public class PrenotazioniLezioniRest {
 
     @GET
-    @Secured
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String getMessaggi(@QueryParam("filtro") String filtro){

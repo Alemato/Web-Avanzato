@@ -1,7 +1,5 @@
 package it.mytutor.api.test;
 
-import it.mytutor.business.security.Secured;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -18,7 +16,6 @@ public class SecurityEndPointTEST {
 
     @Path("/all")
     @GET
-    @Secured
     @Produces(MediaType.TEXT_HTML)
     public String getALL(){
         return "IS SECURE ALL";

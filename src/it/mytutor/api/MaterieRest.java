@@ -1,7 +1,5 @@
 package it.mytutor.api;
 
-import it.mytutor.business.security.Secured;
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -9,7 +7,6 @@ import javax.ws.rs.core.MediaType;
 public class MaterieRest {
 
     @GET
-    @Secured
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String getMaterie(@QueryParam("filtro") String filtro){
@@ -22,7 +19,6 @@ public class MaterieRest {
     }
 
     @POST
-    @Secured
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String creaMaterie(){

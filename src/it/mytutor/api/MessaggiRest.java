@@ -1,7 +1,5 @@
 package it.mytutor.api;
 
-import it.mytutor.business.security.Secured;
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -21,7 +19,6 @@ public class MessaggiRest {
     }
 
     @POST
-    @Secured
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String getMessaggi(@PathParam("CID") String cid){
@@ -36,7 +33,6 @@ public class MessaggiRest {
 
     @Path("{MID}")
     @GET
-    @Secured
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String getMessaggi(@PathParam("CID") String cid, @PathParam("MID") String mid, @QueryParam("numero") Integer numero, @QueryParam("sotto") Integer sotto){

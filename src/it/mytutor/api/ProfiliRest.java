@@ -23,7 +23,6 @@ public class ProfiliRest {
 
     @Path("{UID}")
     @GET
-    @Secured
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String getProfiliByID(@PathParam("UID") String uid){

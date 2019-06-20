@@ -1,7 +1,5 @@
 package it.mytutor.api;
 
-import it.mytutor.business.security.Secured;
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -20,7 +18,6 @@ public class LoginRest {
     }
 
     @POST
-    @Secured
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String getAuthToken(){
@@ -33,7 +30,6 @@ public class LoginRest {
     }
 
     @DELETE
-    @Secured
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String deleteToken(){

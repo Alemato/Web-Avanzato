@@ -1,7 +1,5 @@
 package it.mytutor.api;
 
-import it.mytutor.business.security.Secured;
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -9,7 +7,6 @@ import javax.ws.rs.core.MediaType;
 public class LezioniRest {
 
     @GET
-    @Secured
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String getLezioni(@QueryParam("filtro") String filtro, @QueryParam("numero") String numero, @QueryParam("sotto") String sotto){
@@ -22,7 +19,6 @@ public class LezioniRest {
     }
 
     @POST
-    @Secured
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String creaLezione(){
@@ -38,7 +34,6 @@ public class LezioniRest {
 
     @Path("{LID}")
     @GET
-    @Secured
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String getLezioniByID(@PathParam("LID") Integer lid,@QueryParam("numero") String numero, @QueryParam("sotto") String sotto){
@@ -52,7 +47,6 @@ public class LezioniRest {
 
     @Path("{LID}")
     @PUT
-    @Secured
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String modificaLezione(@PathParam("LID") Integer lid){
