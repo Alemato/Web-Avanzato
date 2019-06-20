@@ -9,6 +9,7 @@ import it.mytutor.domain.Subject;
 import it.mytutor.domain.Teacher;
 
 import java.io.IOException;
+import java.sql.Date;
 
 public class TeacherDeserializer extends StdDeserializer<Teacher> {
     public TeacherDeserializer(){ this(null); }
@@ -33,6 +34,15 @@ public class TeacherDeserializer extends StdDeserializer<Teacher> {
         teacher.setStreetNumber(node.get("streetNumber").asText());
 
         teacher.setByography(node.get("byography").asText());
+
+        JsonNode userNode = node.get("user");
+        teacher.setIdUser(userNode.get("idUser").asInt());
+        teacher.setEmail(userNode.get("email").asText());
+        teacher.setName(userNode.get("name").asText());
+        teacher.setSurname(userNode.get("surname").asText());
+        teacher.setBirtday(Date.valueOf(userNode.get("birthday").asText()));
+        teacher.setLanguage(Boolean.getBoolean(userNode.get("language").asText()));
+        teacher.setImage(userNode.get("image").asText());
 
         return teacher;
     }
