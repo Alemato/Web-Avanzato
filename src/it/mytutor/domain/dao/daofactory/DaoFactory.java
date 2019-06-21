@@ -1,4 +1,6 @@
-package it.mytutor.domain.Dao;
+package it.mytutor.domain.dao.daofactory;
+
+import it.mytutor.domain.dao.exception.DatabaseException;
 
 import java.sql.*;
 

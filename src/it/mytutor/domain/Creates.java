@@ -1,16 +1,21 @@
 package it.mytutor.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+//@JsonSerialize(using = CreatesSerializer.class)
+//@JsonDeserialize(using = CreatesDeserializer.class)
 public class Creates {
     private Integer idCreates;
     private String name;
     private Timestamp createDate;
     private Timestamp updateDate;
-    private List<User> userListser = new ArrayList<User>();
+    private List<User> userListser = new ArrayList<User>();   // lista contenente i due user coinvolti nella chat
     private Chat chat;
 
     //COSTRUTTORI
@@ -18,14 +23,14 @@ public class Creates {
         super();
     }
 
-    public Creates(String name) {
+     public Creates(String name) {
         super();
-        name = name;
+        this.name = name;
     }
 
     public Creates(Integer idCreates, String name, Timestamp createDate, Timestamp updateDate, List<User> userListser, Chat chat) {
         this.idCreates = idCreates;
-        name = name;
+        this.name = name;
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.userListser = userListser;

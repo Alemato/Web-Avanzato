@@ -30,8 +30,6 @@ public class SubjectDeserializer extends StdDeserializer<Subject> {
 
         subject.setMicroSubject(node.get("microSubject").asText());
 
-//        subject.setCreateDate(Timestamp.valueOf(node.get("createDate").asText()));
-//        subject.setUpdateDate(Timestamp.valueOf(node.get("updateDate").asText()));
         return subject;
     }
 }

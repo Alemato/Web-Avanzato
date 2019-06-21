@@ -6,12 +6,15 @@ import it.mytutor.domain.User;
 
 import java.util.List;
 
+import static it.mytutor.business.impl.test.TestBusinness.simulateFindAllChatByUser;
+
+
 public class ChatBusiness implements ChatInterface {
     // TODO COSTRUTTORE CHAT
 
     @Override
     public List<Chat> findAllChatByUser(User user) {
-        return null;
+        return simulateFindAllChatByUser();
     }
 
     @Override

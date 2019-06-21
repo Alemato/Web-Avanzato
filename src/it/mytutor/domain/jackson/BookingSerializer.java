@@ -26,12 +26,11 @@ public class BookingSerializer extends StdSerializer<Booking> {
         jsonGenerator.writeNumberField("lessonState", booking.getLessonState());
         jsonGenerator.writeStringField("createDate", booking.getCreateDate().toString());
         jsonGenerator.writeStringField("updateDate", booking.getUpdateDate().toString());
-        jsonGenerator.writeStartObject();
-        jsonGenerator.writeObjectField("student", booking.getStudent());
-        jsonGenerator.writeEndObject();
-        jsonGenerator.writeStartObject();
-        jsonGenerator.writeObjectField("lesson", booking.getLesson());
-        jsonGenerator.writeEndObject();
+
+        jsonGenerator.writeStringField("idStudent", booking.getStudent().getIdStudent().toString());
+
+        jsonGenerator.writeStringField("idLesson", booking.getLesson().getIdLesson().toString());
+
         jsonGenerator.writeEndObject();
         jsonGenerator.close();
     }

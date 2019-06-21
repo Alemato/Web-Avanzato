@@ -9,12 +9,15 @@ import it.mytutor.domain.Teacher;
 import java.sql.Date;
 import java.util.List;
 
+import static it.mytutor.business.impl.test.TestBusinness.simulateFindAllBooking;
+
 public class BookingBusiness implements BookingInterface {
     //TODO Costruttore Booking
 
     @Override
     public List<Booking> findAllBooking() {
-        return null;
+
+        return simulateFindAllBooking();
     }
 
     @Override
