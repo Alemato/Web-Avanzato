@@ -24,7 +24,7 @@ public class PrenotazioniRest {
     }
 
     @POST
-    @Secured
+
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String creaPrenotazione(){

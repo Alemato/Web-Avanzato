@@ -1,6 +1,5 @@
 package it.mytutor.api;
 
-import it.mytutor.business.security.Secured;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

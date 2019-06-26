@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 public class User {
     private Integer idUser;
     private String email;
+    private Integer roles;
     private String password;
     private String name;
     private String surname;
@@ -30,8 +31,9 @@ public class User {
         super();
     }
 
-    public User(String email, String password, String name, String surname, Date birthday, Boolean language) {
+    public User(String email, Integer roles, String password, String name, String surname, Date birthday, Boolean language) {
         this.email = email;
+        this.roles = roles;
         this.password = password;
         this.name = name;
         this.surname = surname;
@@ -39,9 +41,10 @@ public class User {
         this.language = language;
     }
 
-    public User(Integer idUser, String email, String password, String name, String surname, Date birthday, Boolean language, String image, Timestamp createDate, Timestamp updateDate) {
+    public User(Integer idUser, String email, Integer roles, String password, String name, String surname, Date birthday, Boolean language, String image, Timestamp createDate, Timestamp updateDate) {
         this.idUser = idUser;
         this.email = email;
+        this.roles = roles;
         this.password = password;
         this.name = name;
         this.surname = surname;
@@ -61,6 +64,8 @@ public class User {
     public String getEmail() {
         return email;
     }
+
+    public Integer getRoles(){return roles;}
 
     public String getPassword() {
         return password;
@@ -104,6 +109,8 @@ public class User {
         this.email = email;
     }
 
+    public void setRoles(Integer roles) {this.roles = roles;}
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -145,19 +152,20 @@ public class User {
         User user = (User) o;
         return getIdUser().equals(user.getIdUser()) &&
                 getEmail().equals(user.getEmail()) &&
+                getRoles().equals(user.getRoles()) &&
                 getPassword().equals(user.getPassword()) &&
                 getName().equals(user.getName()) &&
                 getSurname().equals(user.getSurname()) &&
                 getBirthday().equals(user.getBirthday()) &&
                 getLanguage().equals(user.getLanguage()) &&
-                Objects.equals(getImage(), user.getImage()) &&
-                getCreateDate().equals(user.getCreateDate()) &&
-                getUpdateDate().equals(user.getUpdateDate());
+                getImage().equals(user.getImage()) &&
+                Objects.equals(getCreateDate(), user.getCreateDate()) &&
+                Objects.equals(getUpdateDate(), user.getUpdateDate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getIdUser(), getEmail(), getPassword(), getName(), getSurname(), getBirthday(), getLanguage(), getImage(), getCreateDate(), getUpdateDate());
+        return Objects.hash(getIdUser(), getEmail(), getRoles(), getPassword(), getName(), getSurname(), getBirthday(), getLanguage(), getImage(), getCreateDate(), getUpdateDate());
     }
 
 
@@ -168,6 +176,7 @@ public class User {
         return "User{" +
                 "idUser=" + idUser +
                 ", email='" + email + '\'' +
+                ", roles=" + roles +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +

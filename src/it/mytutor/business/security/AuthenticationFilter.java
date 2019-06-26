@@ -1,46 +1,51 @@
 package it.mytutor.business.security;
 
+import it.mytutor.business.exceptions.UserException;
+import it.mytutor.business.impl.UserBusiness;
+import it.mytutor.domain.User;
+
 import javax.annotation.Priority;
-import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
+
 
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
+    private UserBusiness userBusiness = new UserBusiness();
+
+    private AuthenticationTokenService authenticationTokenService = new AuthenticationTokenService();
+
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-
-        // Estraggo heder che contine il token
-        String authorizationHeader =
-                requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-
-        // Vedo se esiste e controllo che sia formato in modo consono
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new NotAuthorizedException("Authorization header must be provided");
+        String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String authenticationToken = authorizationHeader.substring(7);
+            handleTokenBasedAuthentication(authenticationToken, requestContext);
+            return;
         }
 
-        // Estraggo il token
-        String token = authorizationHeader.substring("Bearer".length()).trim();
+        // Other authentication schemes (such as Basic) could be supported
+    }
 
+    private void handleTokenBasedAuthentication(String authenticationToken, ContainerRequestContext requestContext) {
+
+        AuthenticationTokenDetails authenticationTokenDetails = authenticationTokenService.parseToken(authenticationToken);
         try {
-            // Valido il token
-            validateToken(token);
+            User utente = (User) userBusiness.findUserByUsername(authenticationTokenDetails.getUsername());
+            MyPrincipalImp authenticatedUserDetails = new MyPrincipalImp(utente);
 
-        } catch (Exception e) {
-            // Ritorno la risposta in caso in qui non sia valido
-            requestContext.abortWith(
-                    Response.status(Response.Status.UNAUTHORIZED).build());
+            boolean isSecure = requestContext.getSecurityContext().isSecure();
+            SecurityContext securityContext = new TokenBasedSecurityContext(authenticatedUserDetails, authenticationTokenDetails, isSecure);
+            requestContext.setSecurityContext(securityContext);
+        } catch (UserException e) {
+            e.printStackTrace();
         }
     }
 
-    private void validateToken(String token) throws Exception {
-        // TODO Cercare il token nel db e vedere se è scaduto nel caso sia scaduto eliminarlo
-        if (!token.equals("gd0p8mqeterjhat091r61b773s0username") && !token.equals("gd0p8mqeterjhat091r61b773s1username")) throw new Exception("TOKEN NON VALIDO");
-    }
 }

@@ -44,8 +44,8 @@ public class Teacher extends User{
      * @param streetNumber
      * @param byography
      */
-    public Teacher(String email, String password, String name, String surname, Date birtday, Boolean language, Integer postCode, String city, String region, String street, String streetNumber, String byography) {
-        super(email, password, name, surname, birtday, language);
+    public Teacher(String email, String password, String name, String surname, Date birtday, Boolean language, Integer postCode, String city, String region, String street, String streetNumber, String byography, Integer roles) {
+        super(email, roles, password, name, surname, birtday, language);
         this.postCode = postCode;
         City = city;
         this.region = region;
@@ -72,8 +72,8 @@ public class Teacher extends User{
      * @param crateDateTeacher
      * @param updateDateTeacher
      */
-    public Teacher(String email, String password, String name, String surname, Date birtday, Boolean language, Integer idTeacher, Integer postCode, String city, String region, String street, String streetNumber, String byography, Timestamp crateDateTeacher, Timestamp updateDateTeacher) {
-        super(email, password, name, surname, birtday, language);
+    public Teacher(String email, String password, String name, String surname, Date birtday, Boolean language, Integer idTeacher, Integer postCode, String city, String region, String street, String streetNumber, String byography, Timestamp crateDateTeacher, Timestamp updateDateTeacher, Integer roles) {
+        super(email,roles, password, name, surname, birtday, language);
         this.idTeacher = idTeacher;
         this.postCode = postCode;
         City = city;
@@ -108,8 +108,8 @@ public class Teacher extends User{
      * @param crateDateTeacher
      * @param updateDateTeacher
      */
-    public Teacher(Integer idUser, String email, String password, String name, String surname, Date birtday, Boolean language, String image, Timestamp createDate, Timestamp updateDate, Integer idTeacher, Integer postCode, String city, String region, String street, String streetNumber, String byography, Timestamp crateDateTeacher, Timestamp updateDateTeacher) {
-        super(idUser, email, password, name, surname, birtday, language, image, createDate, updateDate);
+    public Teacher(Integer idUser, String email, String password, String name, String surname, Date birtday, Boolean language, String image, Timestamp createDate, Timestamp updateDate, Integer idTeacher, Integer postCode, String city, String region, String street, String streetNumber, String byography, Timestamp crateDateTeacher, Timestamp updateDateTeacher,Integer roles ) {
+        super(idUser, email, roles, password, name, surname, birtday, language, image, createDate, updateDate);
         this.idTeacher = idTeacher;
         this.postCode = postCode;
         City = city;

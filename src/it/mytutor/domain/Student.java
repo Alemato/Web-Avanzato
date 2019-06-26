@@ -34,8 +34,8 @@ public class Student extends User {
      * @param language
      * @param studyGrade
      */
-    public Student(String email, String password, String name, String surname, Date birtday, Boolean language, String studyGrade) {
-        super(email, password, name, surname, birtday, language);
+    public Student(String email, String password, String name, String surname, Date birtday, Boolean language, Integer roles , String studyGrade) {
+        super(email, roles, password, name, surname, birtday, language);
         this.studyGrade = studyGrade;
     }
 
@@ -53,8 +53,8 @@ public class Student extends User {
      * @param createDateStudent
      * @param updateDateStudent
      */
-    public Student(String email, String password, String name, String surname, Date birtday, Boolean language, Integer idStudent, String studyGrade, Timestamp createDateStudent, Timestamp updateDateStudent) {
-        super(email, password, name, surname, birtday, language);
+    public Student(String email, String password, String name, String surname, Date birtday, Boolean language, Integer idStudent, String studyGrade, Timestamp createDateStudent, Timestamp updateDateStudent, Integer roles) {
+        super(email, roles,  password, name, surname, birtday, language);
         this.idStudent = idStudent;
         this.studyGrade = studyGrade;
         this.createDateStudent = createDateStudent;
@@ -78,8 +78,8 @@ public class Student extends User {
      * @param createDateStudent
      * @param updateDateStudent
      */
-    public Student(Integer idUser, String email, String password, String name, String surname, Date birtday, Boolean language, String image, Timestamp createDate, Timestamp updateDate, Integer idStudent, String studyGrade, Timestamp createDateStudent, Timestamp updateDateStudent) {
-        super(idUser, email, password, name, surname, birtday, language, image, createDate, updateDate);
+    public Student(Integer idUser, String email, String password, String name, String surname, Date birtday, Boolean language, String image, Timestamp createDate, Timestamp updateDate, Integer idStudent, String studyGrade, Timestamp createDateStudent, Timestamp updateDateStudent, Integer roles) {
+        super(idUser, email, roles, password, name, surname, birtday, language, image, createDate, updateDate);
         this.idStudent = idStudent;
         this.studyGrade = studyGrade;
         this.createDateStudent = createDateStudent;

@@ -1,6 +1,5 @@
 package it.mytutor.api;
 
-import it.mytutor.business.security.Secured;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -9,7 +8,6 @@ import javax.ws.rs.core.MediaType;
 public class ProfiliRest {
 
     @GET
-    @Secured
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public String getProfili(@QueryParam("filtro") String filtro){
