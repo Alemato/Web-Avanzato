@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import it.mytutor.domain.Lesson;
 import it.mytutor.domain.Planning;
+import it.mytutor.domain.Subject;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -25,13 +26,21 @@ public class PlanningDeserializer  extends StdDeserializer<Planning> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Planning planning = new Planning();
-        planning.setIdPlanning(node.get("idPlanning").asInt());
         planning.setDate(Date.valueOf(node.get("date").asText()));
         planning.setStartTime(Time.valueOf(node.get("startTime").asText()));
         planning.setEndTime(Time.valueOf(node.get("endTime").asText()));
 
         Lesson lesson = new Lesson();
-        lesson.setIdLesson(node.get("idLesson").asInt());
+        lesson.setName(node.findPath("lesson").findPath("name").asText());
+        lesson.setPrice(node.findPath("lesson").findPath("price").asDouble());
+        lesson.setDescription(node.findPath("lesson").findPath("description").asText());
+        lesson.setPublicationDate(Date.valueOf(node.findPath("lesson").findPath("publicationDate").asText()));
+
+        Subject subject = new Subject();
+        subject.setMacroSubject(node.findPath("lesson").findPath("subject").findPath("macroSubject").asText());
+        subject.setMicroSubject(node.findPath("lesson").findPath("subject").findPath("microSubject").asText());
+        lesson.setSubject(subject);
+
         planning.setLesson(lesson);
 
         return planning;
