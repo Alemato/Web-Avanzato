@@ -14,7 +14,7 @@ public class Planning {
     private Time endTime;
     private Timestamp createDate;
     private Timestamp updateDate;
-    private Student student;
+
     private Lesson lesson;
 
     public Planning() { super(); }
@@ -26,14 +26,14 @@ public class Planning {
         this.endTime = endTime;
     }
 
-    public Planning(Integer idPlanning, Date date, Time startTime, Time endTime, Timestamp createDate, Timestamp updateDate, Student student, Lesson lesson) {
+    public Planning(Integer idPlanning, Date date, Time startTime, Time endTime, Timestamp createDate, Timestamp updateDate, Lesson lesson) {
         this.idPlanning = idPlanning;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
         this.createDate = createDate;
         this.updateDate = updateDate;
-        this.student = student;
+
         this.lesson = lesson;
     }
 
@@ -65,9 +65,7 @@ public class Planning {
         return updateDate;
     }
 
-    public Student getStudent() {
-        return student;
-    }
+
 
     public Lesson getLesson() {
         return lesson;
@@ -101,9 +99,7 @@ public class Planning {
         this.updateDate = updateDate;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
-    }
+
 
     public void setLesson(Lesson lesson) {
         this.lesson = lesson;
@@ -118,7 +114,6 @@ public class Planning {
                 ", endTime=" + endTime +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
-                ", student=" + student +
                 ", lesson=" + lesson +
                 '}';
     }
@@ -134,12 +129,11 @@ public class Planning {
                 Objects.equals(endTime, planning.endTime) &&
                 Objects.equals(createDate, planning.createDate) &&
                 Objects.equals(updateDate, planning.updateDate) &&
-                Objects.equals(student, planning.student) &&
                 Objects.equals(lesson, planning.lesson);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idPlanning, date, startTime, endTime, createDate, updateDate, student, lesson);
+        return Objects.hash(idPlanning, date, startTime, endTime, createDate, updateDate, lesson);
     }
 }
