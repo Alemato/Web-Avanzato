@@ -21,20 +21,15 @@ public class TeacherDeserializer extends StdDeserializer<Teacher> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Teacher teacher = new Teacher();
+        //TODO controllo per vedere se ricevere l'id oppure no, cioè se PUT o POST
         teacher.setIdTeacher(node.get("idTeacher").asInt());
 
         teacher.setPostCode(node.get("postCode").asInt());
-
         teacher.setCity(node.get("City").asText());
-
         teacher.setRegion(node.get("region").asText());
-
         teacher.setStreet(node.get("street").asText());
-
         teacher.setStreetNumber(node.get("streetNumber").asText());
-
         teacher.setByography(node.get("byography").asText());
-
         JsonNode userNode = node.get("user");
         teacher.setIdUser(userNode.get("idUser").asInt());
         teacher.setEmail(userNode.get("email").asText());
