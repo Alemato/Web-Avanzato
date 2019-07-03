@@ -25,9 +25,6 @@ public class ChatDeserializer extends StdDeserializer<Chat> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Chat chat = new Chat();
-
-        chat.setIdChat(node.get("idChat").asInt());
-
         chat.setName(node.get("name").asText());
 
         return chat;
