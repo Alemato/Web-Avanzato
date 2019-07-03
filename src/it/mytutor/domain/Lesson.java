@@ -19,11 +19,8 @@ public class Lesson {
     private Integer idLesson;
     private String name;
     private Double price;
-    private List<Date> date = new ArrayList<Date>();
     private String description;
     private Date publicationDate;
-    private List<Time> startTime = new ArrayList<Time>();
-    private List<Time> endTime= new ArrayList<Time>();
     private Timestamp createDate;
     private Timestamp updateDate;
     private Subject subject;
@@ -42,16 +39,15 @@ public class Lesson {
         this.publicationDate = publicationDate;
     }
 
-    public Lesson(Integer idLesson, String name, Double price, List<Date> date, String description, Date publicationDate, List<Time> startTime, List<Time> endTime, Timestamp createDate, Timestamp updateDate, Subject subject) {
+    public Lesson(Integer idLesson, String name, Double price,
+                  String description, Date publicationDate,
+                  Timestamp createDate, Timestamp updateDate, Subject subject) {
         super();
         this.idLesson = idLesson;
         this.name = name;
         this.price = price;
-        this.date = date;
         this.description = description;
         this.publicationDate = publicationDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.subject = subject;
@@ -70,11 +66,6 @@ public class Lesson {
     public Double getPrice() {
         return price;
     }
-
-    public List<Date> getDate() {
-        return date;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -82,15 +73,6 @@ public class Lesson {
     public Date getPublicationDate() {
         return publicationDate;
     }
-
-    public List<Time> getStartTime() {
-        return startTime;
-    }
-
-    public List<Time> getEndTime() {
-        return endTime;
-    }
-
     public Timestamp getCreateDate() {
         return createDate;
     }
@@ -118,10 +100,6 @@ public class Lesson {
         this.price = price;
     }
 
-    public void setDate(List<Date> date) {
-        this.date = date;
-    }
-
     public void setDescription(String description) {
         this.description = description;
     }
@@ -129,15 +107,6 @@ public class Lesson {
     public void setPublicationDate(Date publicationDate) {
         this.publicationDate = publicationDate;
     }
-
-    public void setStartTime(List<Time> startTime) {
-        this.startTime = startTime;
-    }
-
-    public void setEndTime(List<Time> endTime) {
-        this.endTime = endTime;
-    }
-
     public void setCreateDate(Timestamp createDate) {
         this.createDate = createDate;
     }
@@ -160,11 +129,8 @@ public class Lesson {
         return getIdLesson().equals(lesson.getIdLesson()) &&
                 getName().equals(lesson.getName()) &&
                 getPrice().equals(lesson.getPrice()) &&
-                getDate().equals(lesson.getDate()) &&
                 getDescription().equals(lesson.getDescription()) &&
                 getPublicationDate().equals(lesson.getPublicationDate()) &&
-                getStartTime().equals(lesson.getStartTime()) &&
-                getEndTime().equals(lesson.getEndTime()) &&
                 getCreateDate().equals(lesson.getCreateDate()) &&
                 getUpdateDate().equals(lesson.getUpdateDate()) &&
                 getSubject().equals(lesson.getSubject());
@@ -173,35 +139,37 @@ public class Lesson {
     //HASHCODE
     @Override
     public int hashCode() {
-        return Objects.hash(getIdLesson(), getName(), getPrice(), getDate(), getDescription(), getPublicationDate(), getStartTime(), getEndTime(), getCreateDate(), getUpdateDate(), getSubject());
+        return Objects.hash(getIdLesson(), getName(), getPrice(),
+                getDescription(), getPublicationDate(),
+                getCreateDate(), getUpdateDate(), getSubject());
     }
 
-    private String dateToString(List<Date> dateList){
-        String dateString ="[";
-        for (Date date: dateList){
-            dateString = dateString.concat(", ").concat(date.toString());
-        }
-        dateString = dateString.concat("]");
-        return dateString;
-    }
-
-    private String startTimeToString(List<Time> timeList){
-        String startTimeString="[";
-        for (Time startTime: timeList){
-            startTimeString = startTimeString.concat(", ").concat(startTime.toString());
-        }
-        startTimeString=startTimeString.concat("]");
-        return startTimeString;
-    }
-
-    private String endTimeToString(List<Time> timeList){
-        String endTimeString="[";
-        for (Time endTime: timeList){
-            endTimeString = endTimeString.concat(", ").concat(endTime.toString());
-        }
-        endTimeString=endTimeString.concat("]");
-        return endTimeString;
-    }
+//    private String dateToString(List<Date> dateList){
+//        String dateString ="[";
+//        for (Date date: dateList){
+//            dateString = dateString.concat(", ").concat(date.toString());
+//        }
+//        dateString = dateString.concat("]");
+//        return dateString;
+//    }
+//
+//    private String startTimeToString(List<Time> timeList){
+//        String startTimeString="[";
+//        for (Time startTime: timeList){
+//            startTimeString = startTimeString.concat(", ").concat(startTime.toString());
+//        }
+//        startTimeString=startTimeString.concat("]");
+//        return startTimeString;
+//    }
+//
+//    private String endTimeToString(List<Time> timeList){
+//        String endTimeString="[";
+//        for (Time endTime: timeList){
+//            endTimeString = endTimeString.concat(", ").concat(endTime.toString());
+//        }
+//        endTimeString=endTimeString.concat("]");
+//        return endTimeString;
+//    }
 
     //TOSTRING
     @Override
@@ -210,11 +178,8 @@ public class Lesson {
                 "idLesson=" + idLesson +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", date=" + dateToString(date) +
                 ", description='" + description + '\'' +
                 ", publicationDate=" + publicationDate +
-                ", startTime=" + startTimeToString(startTime) +
-                ", endTime=" + endTimeToString(endTime) +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
                 ", subject=" + subject.toString() +
