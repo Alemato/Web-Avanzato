@@ -26,10 +26,10 @@ public class StudentDeserializer extends StdDeserializer<Student> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Student student = new Student();
+        //TODO controllo per vedere se ricevere l'id oppure no, cioè se PUT o POST
         student.setIdStudent(node.get("idStudent").asInt());
 
         student.setStudyGrade(node.get("studyGrade").asText());
-
         JsonNode userNode = node.get("user");
         student.setIdUser(userNode.get("idUser").asInt());
         student.setEmail(userNode.get("email").asText());
