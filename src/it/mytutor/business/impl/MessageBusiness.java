@@ -20,7 +20,7 @@ public class MessageBusiness implements MessageInterface {
 
     @Override
     public List<Message> findAllMessageByUser(User user) {
-        return null;
+        return simulateFindAllMessageByChat();
     }
 
     @Override
