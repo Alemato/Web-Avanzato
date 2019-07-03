@@ -41,7 +41,7 @@ public class TestBusinness {
         booking.setCreateDate(timestamp);
         booking.setUpdateDate(timestamp);
         try {
-            booking.setLesson(generaLezione(1));
+            booking.setPlanning(generaPlanning(1));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -90,6 +90,48 @@ public class TestBusinness {
         return allLezioni;
     }
 
+
+    private static Planning generaPlanning(int i) throws ParseException {
+        Planning planning = new Planning();
+//        planning.setIdPlanning(i);
+        SimpleDateFormat sdfP = new SimpleDateFormat("yyyy-MM-dd");
+        String[] stringaDate = new String[]{"2019-06-18", "2019-05-22", "2019-06-13", "2019-06-16"};
+        planning.setDate(sdfP.parse(stringaDate[(i * 3) % 4]));
+        String[] stringStartTime = new String[]{"8:00:00", "9:00:00", "10:00:00", "11:00:00", "12:00:00", "14:00:00", "15:00:00", "16:00:00", "17:00:00", "18:00:00"};
+        Time startTimes = Time.valueOf(stringStartTime[(i * 3) % 10]);
+        String[] stringEndTime = new String[]{"9:00:00", "10:00:00", "11:00:00", "12:00:00", "14:00:00", "15:00:00", "16:00:00", "17:00:00", "18:00:00", "19:00:00"};
+        Time endTimes = Time.valueOf(stringEndTime[(i * 3) % 10]);
+        planning.setStartTime(startTimes);
+        planning.setEndTime(endTimes);
+        planning.setTeacher(generaTeacher(i));
+        planning.setLesson(generaLezione(i));
+        return planning;
+    }
+
+
+    private static Teacher generaTeacher(int i) throws ParseException {
+        Teacher teacher = new Teacher();
+        teacher.setIdUser(i);
+        teacher.setEmail("professore@gmail.it");
+        teacher.setRoles(2);
+        teacher.setPassword("123456789");
+        teacher.setName("Giovanni");
+        teacher.setSurname("Storti");
+        SimpleDateFormat sdfT = new SimpleDateFormat("yyyy-MM-dd");
+        teacher.setBirtday((Date) sdfT.parse("1980-07-22"));
+        teacher.setLanguage(true);
+        teacher.setImage("qwertyuiopasdfghjklzxcvbnm");
+        teacher.setIdTeacher(i);
+        teacher.setPostCode(123);
+        teacher.setCity("Pescasseroli");
+        teacher.setRegion("Abruzzo");
+        teacher.setStreet("via fasulla");
+        teacher.setStreetNumber("1A");
+        teacher.setByography("sono bravissimo");
+        return teacher;
+    }
+
+
     /**
      * Genera una Lesson
      * @param i indice usato per generare la Lesson
@@ -101,23 +143,23 @@ public class TestBusinness {
         String[] nomi = new String[]{"Matematica", "Fisica", "Informatica", "Network"};
         lesson.setName(nomi[(i * 3) % 4]);
         lesson.setPrice(10.00);
-        List<Date> date = new ArrayList<>();
-        String[] stringaDate = new String[]{"2019-06-18", "2019-05-22", "2019-06-13", "2019-06-16"};
+//        List<Date> date = new ArrayList<>();
+//        String[] stringaDate = new String[]{"2019-06-18", "2019-05-22", "2019-06-13", "2019-06-16"};
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
-        for (String aStringaDate : stringaDate) {
-            date.add((Date) sdf1.parse(stringaDate[(i * 3) % 4]));
-        }
+//        for (String aStringaDate : stringaDate) {
+//            date.add((Date) sdf1.parse(stringaDate[(i * 3) % 4]));
+//        }
 //        lesson.setDate(date);
         lesson.setDescription("Bellissima Lezione");
         lesson.setPublicationDate((Date) sdf1.parse("2019-04-22"));
-        List<Time> startTimes = new ArrayList<>();
-        List<Time> endTimes = new ArrayList<>();
-        String[] stringStartTime = new String[]{"8:00:00", "9:00:00", "10:00:00", "11:00:00", "12:00:00", "14:00:00", "15:00:00", "16:00:00", "17:00:00", "18:00:00"};
-        String[] stringEndTime = new String[]{"9:00:00", "10:00:00", "11:00:00", "12:00:00", "14:00:00", "15:00:00", "16:00:00", "17:00:00", "18:00:00", "19:00:00"};
-        for (int j = 0; j < 10; j++) {
-            startTimes.add(Time.valueOf(stringStartTime[(i * 3) % 10]));
-            endTimes.add(Time.valueOf(stringEndTime[(i * 3) % 10]));
-        }
+//        List<Time> startTimes = new ArrayList<>();
+//        List<Time> endTimes = new ArrayList<>();
+//        String[] stringStartTime = new String[]{"8:00:00", "9:00:00", "10:00:00", "11:00:00", "12:00:00", "14:00:00", "15:00:00", "16:00:00", "17:00:00", "18:00:00"};
+//        String[] stringEndTime = new String[]{"9:00:00", "10:00:00", "11:00:00", "12:00:00", "14:00:00", "15:00:00", "16:00:00", "17:00:00", "18:00:00", "19:00:00"};
+//        for (int j = 0; j < 10; j++) {
+//            startTimes.add(Time.valueOf(stringStartTime[(i * 3) % 10]));
+//            endTimes.add(Time.valueOf(stringEndTime[(i * 3) % 10]));
+//        }
 //        lesson.setStartTime(startTimes);
 //        lesson.setEndTime(endTimes);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
