@@ -24,6 +24,7 @@ public class Lesson {
     private Timestamp createDate;
     private Timestamp updateDate;
     private Subject subject;
+    private Teacher teacher;
 
     //COSTRUTTORI
 
@@ -31,17 +32,18 @@ public class Lesson {
         super();
     }
 
-    public Lesson(String name, Double price, String description, Date publicationDate) {
+    public Lesson(String name, Double price, String description, Date publicationDate, Teacher teacher) {
         super();
         this.name = name;
         this.price = price;
         this.description = description;
         this.publicationDate = publicationDate;
+        this.teacher=teacher;
     }
 
     public Lesson(Integer idLesson, String name, Double price,
                   String description, Date publicationDate,
-                  Timestamp createDate, Timestamp updateDate, Subject subject) {
+                  Timestamp createDate, Timestamp updateDate, Subject subject, Teacher teacher) {
         super();
         this.idLesson = idLesson;
         this.name = name;
@@ -51,6 +53,7 @@ public class Lesson {
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.subject = subject;
+        this.teacher=teacher;
     }
 
     //GETTER
@@ -85,6 +88,9 @@ public class Lesson {
         return subject;
     }
 
+    public Teacher getTeacher() {
+        return teacher;
+    }
 
     //SETTER
 
@@ -119,6 +125,9 @@ public class Lesson {
         this.subject = subject;
     }
 
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
+    }
 
     //EQUALS
     @Override
@@ -133,7 +142,8 @@ public class Lesson {
                 getPublicationDate().equals(lesson.getPublicationDate()) &&
                 getCreateDate().equals(lesson.getCreateDate()) &&
                 getUpdateDate().equals(lesson.getUpdateDate()) &&
-                getSubject().equals(lesson.getSubject());
+                getSubject().equals(lesson.getSubject()) &&
+                getTeacher().equals(lesson.getTeacher());
     }
 
     //HASHCODE
@@ -141,7 +151,7 @@ public class Lesson {
     public int hashCode() {
         return Objects.hash(getIdLesson(), getName(), getPrice(),
                 getDescription(), getPublicationDate(),
-                getCreateDate(), getUpdateDate(), getSubject());
+                getCreateDate(), getUpdateDate(), getSubject(), getTeacher());
     }
 
 
@@ -157,6 +167,7 @@ public class Lesson {
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
                 ", subject=" + subject.toString() +
+                ", teacher=" + teacher.toString() +
                 '}';
     }
 }
