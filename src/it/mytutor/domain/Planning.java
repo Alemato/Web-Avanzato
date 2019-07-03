@@ -14,11 +14,6 @@ public class Planning {
     private Time endTime;
     private Timestamp createDate;
     private Timestamp updateDate;
-
-
-
-
-
     private Teacher teacher;
     private Lesson lesson;
 
