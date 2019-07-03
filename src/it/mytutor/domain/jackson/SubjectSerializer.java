@@ -1,6 +1,7 @@
 package it.mytutor.domain.jackson;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import it.mytutor.domain.Subject;
@@ -17,17 +18,13 @@ public class SubjectSerializer extends StdSerializer<Subject> {
     }
 
     @Override
-    public void serialize(Subject subject, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        jsonGenerator.writeStartObject("subject");
+    public void serialize(Subject subject, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
+        jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idSubject", subject.getIdSubject());
-
         jsonGenerator.writeStringField("macroSubject", subject.getMacroSubject());
-
         jsonGenerator.writeStringField("microSubject", subject.getMicroSubject());
-
         jsonGenerator.writeStringField("createDate", subject.getCreateDate().toString());
         jsonGenerator.writeStringField("updateDate",subject.getUpdateDate().toString());
-
         jsonGenerator.writeEndObject();
         jsonGenerator.close();
     }
