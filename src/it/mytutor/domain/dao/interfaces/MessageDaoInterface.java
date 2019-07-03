@@ -8,13 +8,7 @@ import java.util.List;
 public interface MessageDaoInterface {
 
      void createMessage(Message message)throws DatabaseException;
-
-     void modifyMessage(Message message)throws DatabaseException;
-
-
-
      Message getMessagebyID(int id)throws DatabaseException;
-
      List<Message> getAllMessagesOfChat(int chatID)throws DatabaseException;
 
 }

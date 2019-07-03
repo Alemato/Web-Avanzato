@@ -16,9 +16,8 @@ public class LessonDao implements LessonDaoInterface {
     private static final String GET_LESSON_BY_ID_STATEMENT="select * from lesson where id=?";
     private static final String GET_LESSON_BY_SUBJECT_STATEMENT="select * from lesson where IdSubject=?";
     private static final String GET_LESSON_BY_NAME_STATEMENT="select * from Lesson where name=?";
-    private static final String UPDATE_LESSON_STATEMENT="update Lesson set name=?,price=?,date=?,startTime=?,endTime=?,publicationDate=?,description=?,IdSubject=? where IdLesson=?";
-
-    private static final String CREATE_LESSON_STATEMENT="insert into Lesson(name,price,publicationDate,description,IdSubject) values(?,?,?,?,?)";
+    private static final String UPDATE_LESSON_STATEMENT="update Lesson set name=?,price=?,publicationDate=?,description=?,IdSubject=? where IdLesson=?";
+    private static final String CREATE_LESSON_STATEMENT="insert into Lesson(name,price,publicationDate,description,IdSubject,IdTeacher) values(?,?,?,?,?,?)";
 
    private void configureLessonObject(Lesson lesson, ResultSet rs)throws DatabaseException {
        try {
@@ -62,9 +61,10 @@ public class LessonDao implements LessonDaoInterface {
             }
             prs.setString(1,lesson.getName());
             prs.setDouble(2,lesson.getPrice());
-            prs.setObject(3, lesson.getDate());
-            prs.setDate(4,lesson.getPublicationDate());
-            prs.setString(5,lesson.getDescription());
+            prs.setDate(3,lesson.getPublicationDate());
+            prs.setString(4,lesson.getDescription());
+            prs.setInt(5,lesson.getSubject().getIdSubject());
+            prs.setInt(6,lesson.getTeacher().getIdTeacher());
             prs.executeQuery();
 
         }catch (SQLException e){
@@ -210,13 +210,10 @@ public class LessonDao implements LessonDaoInterface {
                         }
                         prs.setString(1,lesson.getName());
                         prs.setDouble(2,lesson.getPrice());
-                        prs.setObject(3, lesson.getDate());
-                        prs.setObject(4,lesson.getStartTime());
-                        prs.setObject(5,lesson.getEndTime());
-                        prs.setDate(6,lesson.getPublicationDate());
-                        prs.setString(7,lesson.getDescription());
-                        prs.setObject(8,lesson.getSubject());
-                        prs.setInt(9,lesson.getIdLesson());
+                        prs.setDate(3,lesson.getPublicationDate());
+                        prs.setString(4,lesson.getDescription());
+                        prs.setObject(5,lesson.getSubject());
+                        prs.setInt(6,lesson.getIdLesson());
 
 
 

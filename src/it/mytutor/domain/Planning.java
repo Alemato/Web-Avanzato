@@ -14,7 +14,6 @@ public class Planning {
     private Time endTime;
     private Timestamp createDate;
     private Timestamp updateDate;
-
     private Lesson lesson;
 
     public Planning() { super(); }

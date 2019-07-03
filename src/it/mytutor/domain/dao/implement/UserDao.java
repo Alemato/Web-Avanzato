@@ -18,7 +18,6 @@ import java.util.List;
 
 public class UserDao implements UserDaoInterface {
     private static final String CREATE_USER_STATEMENT = "insert into User(Email,Password,Name,Surname,Birtday,Language,Image) values(?,?,?,?,?,?,?)";
-
     private static final String UPDATE_USER_STATEMENT = "update User set Email=?,Password=?,Name=?,Surname=?,Birtday=?,Language=?,Image=? where idUser=? ";
     private static final String GET_USER_BY_ID_STATEMENT = "select * from User where idUser=?";
     private static final String GET_USER_BY_NAME_STATEMENT = "select * from User where Name=?";
@@ -88,8 +87,6 @@ public class UserDao implements UserDaoInterface {
             DaoFactory.closeDbConnection(conn, rs, prs);
         }
     }
-
-
 
     @Override
     public void modifyUser(User usr, int id) throws DatabaseException {
@@ -250,6 +247,9 @@ public class UserDao implements UserDaoInterface {
 
         return users;
     }
+
+
+
 
 
 

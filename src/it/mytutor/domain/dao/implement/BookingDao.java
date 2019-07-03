@@ -19,8 +19,8 @@ import java.util.List;
 
 
 public class BookingDao  implements BookingDaoInterface {
-    private static final String CREATE_BOOKING_STATEMENT="insert into Booking(Date,LessonState,Idstudent,IdLesson) values(?,?,?,?,?)";
-    private static final String UPDATE_BOOKING_STATEMENT="update Booking set Date=?,LessonState=?,IdStudent=?,IdLesson=? where IdBooking=?";
+    private static final String CREATE_BOOKING_STATEMENT="insert into Booking(Date,LessonState,Idstudent,IdPlanning) values(?,?,?,?,?)";
+    private static final String UPDATE_BOOKING_STATEMENT="update Booking set Date=?,LessonState=?,IdStudent=?,IdPlanning=? where IdBooking=?";
     private static final String GET_ALL_BOOOKING_OF_A_STUDENT_STATEMENT="select * from Booking where IdStudent=? ";
     private static final String GET_BOOKING_BY_ID_STATEMENT="select * from Booking where IdBooking=?";
 
@@ -73,7 +73,7 @@ public class BookingDao  implements BookingDaoInterface {
         prs.setDate(1,booking.getDate());
         prs.setInt(2,booking.getLessonState());
         prs.setInt(3,booking.getStudent().getIdStudent());
-        prs.setInt(4,booking.getLesson().getIdLesson());
+        prs.setInt(4,booking.getPlanning().getIdPlanning());
         prs.executeQuery();
 
         } catch (SQLException e) {
@@ -100,7 +100,7 @@ public class BookingDao  implements BookingDaoInterface {
             prs.setDate(1,booking.getDate());
             prs.setInt(2,booking.getLessonState());
             prs.setInt(3,booking.getStudent().getIdStudent());
-            prs.setInt(4,booking.getLesson().getIdLesson());
+            prs.setInt(4,booking.getPlanning().getIdPlanning());
             prs.setInt(5,booking.getIdBooking());
             prs.executeUpdate();
         } catch (SQLException e) {

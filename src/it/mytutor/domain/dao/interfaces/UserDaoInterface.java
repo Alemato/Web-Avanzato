@@ -21,6 +21,7 @@ public interface UserDaoInterface {
 
     List<User> getAllUser() throws DatabaseException;
 
-
+   /* Boolean authentication(User usr, String pwd) throws DatabaseException;
+    //da fare */
 
 }

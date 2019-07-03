@@ -16,7 +16,7 @@ import java.util.List;
 
 public class MessageDao implements MessageDaoInterface {
     private static final String CREATE_MESSAGE_STATEMENT="insert into Message(text,sendDate,IdChat,IdUser) values (?,?,?,?)";
-    private static final String UPDATE_MESSAGE_STATEMENT="update Message set text=?, sendDate=?, IdChat=?, IdUser=? where IdMessage=?";
+
     private static final String GET_MESSAGE_BY_ID_STATEMENT="select * from Message where IdMessage=?";
     private static final String GET_ALL_MESSAGE_OF_CHAT_STATEMENT="select * from Subject where IdChat=?";
 
@@ -75,39 +75,6 @@ public class MessageDao implements MessageDaoInterface {
         }
 
     }
-
-
-    @Override
-    public void modifyMessage(Message message) throws DatabaseException {
-        Connection conn= DaoFactory.getConnection();
-        if (conn==null){
-            throw new DatabaseException("Connection is null");
-        }
-        ResultSet rs=null;
-        PreparedStatement prs=null;
-        try {
-            prs=conn.prepareStatement(UPDATE_MESSAGE_STATEMENT);
-            if(prs==null){
-                throw new DatabaseException("Statement is null");
-            }
-            prs.setString(1,message.getText());
-            prs.setTimestamp(2,message.getSendDate());
-            prs.setObject(3,message.getIdChat());
-            prs.setObject(4,message.getIdUser());
-            prs.setInt(5,message.getIdMessage());
-
-            prs.executeUpdate();
-
-        }catch(SQLException e){
-            throw new DatabaseException(e.getMessage());
-        }finally {
-            DaoFactory.closeDbConnection(conn,rs,prs);
-        }
-
-    }
-
-
-
     @Override
     public List<Message> getAllMessagesOfChat(int chatID) throws DatabaseException {
         List<Message> messages=new ArrayList<Message>();
@@ -138,7 +105,6 @@ public class MessageDao implements MessageDaoInterface {
         }
         return messages;
     }
-
     @Override
     public Message getMessagebyID(int id) throws DatabaseException {
         Message message=new Message();
