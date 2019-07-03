@@ -144,32 +144,6 @@ public class Lesson {
                 getCreateDate(), getUpdateDate(), getSubject());
     }
 
-//    private String dateToString(List<Date> dateList){
-//        String dateString ="[";
-//        for (Date date: dateList){
-//            dateString = dateString.concat(", ").concat(date.toString());
-//        }
-//        dateString = dateString.concat("]");
-//        return dateString;
-//    }
-//
-//    private String startTimeToString(List<Time> timeList){
-//        String startTimeString="[";
-//        for (Time startTime: timeList){
-//            startTimeString = startTimeString.concat(", ").concat(startTime.toString());
-//        }
-//        startTimeString=startTimeString.concat("]");
-//        return startTimeString;
-//    }
-//
-//    private String endTimeToString(List<Time> timeList){
-//        String endTimeString="[";
-//        for (Time endTime: timeList){
-//            endTimeString = endTimeString.concat(", ").concat(endTime.toString());
-//        }
-//        endTimeString=endTimeString.concat("]");
-//        return endTimeString;
-//    }
 
     //TOSTRING
     @Override
