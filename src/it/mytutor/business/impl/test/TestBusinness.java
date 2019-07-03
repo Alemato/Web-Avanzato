@@ -67,7 +67,7 @@ public class TestBusinness {
      * @param i indice usato per generare la chat
      * @return una chat
      */
-    private static Chat generateChat(int i){
+    public static Chat generateChat(int i){
         Chat chat = new Chat();
         chat.setIdChat(i);
         chat.setName("Chtat di prova");
@@ -107,7 +107,7 @@ public class TestBusinness {
         for (String aStringaDate : stringaDate) {
             date.add((Date) sdf1.parse(stringaDate[(i * 3) % 4]));
         }
-        lesson.setDate(date);
+//        lesson.setDate(date);
         lesson.setDescription("Bellissima Lezione");
         lesson.setPublicationDate((Date) sdf1.parse("2019-04-22"));
         List<Time> startTimes = new ArrayList<>();
@@ -118,8 +118,8 @@ public class TestBusinness {
             startTimes.add(Time.valueOf(stringStartTime[(i * 3) % 10]));
             endTimes.add(Time.valueOf(stringEndTime[(i * 3) % 10]));
         }
-        lesson.setStartTime(startTimes);
-        lesson.setEndTime(endTimes);
+//        lesson.setStartTime(startTimes);
+//        lesson.setEndTime(endTimes);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         lesson.setCreateDate(timestamp);
         lesson.setUpdateDate(timestamp);
@@ -155,11 +155,30 @@ public class TestBusinness {
         message.setUpdateDate(timestamp);
         message.setIdChat(generateChat(i));
         List<User> userList = new ArrayList<>();
-//        userList.add(UserBusiness(i));
-//        userList.add(UserBusiness(i+1));
+
+        userList.add(generateUserMessage(0));
+        userList.add(generateUserMessage(1));
         message.setIdUser(userList);
         return message;
 
+    }
+
+    private static User generateUser(int i){
+        User user = new User();
+        user.setIdUser(i);
+        user.setName("pippo");
+        user.setSurname("franco");
+        return user;
+    }
+
+    private static User generateUserMessage(int i){
+        User user = new User();
+        String names[] = {"mario", "pippo"};
+        String surnames[] = {"rossi", "franco"};
+        user.setIdUser(i);
+        user.setName(names[i]);
+        user.setSurname(surnames[i]);
+        return user;
     }
 
 
