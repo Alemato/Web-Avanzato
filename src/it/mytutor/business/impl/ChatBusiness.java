@@ -7,7 +7,7 @@ import it.mytutor.domain.User;
 import java.util.List;
 
 import static it.mytutor.business.impl.test.TestBusinness.simulateFindAllChatByUser;
-
+import static it.mytutor.business.impl.test.TestBusinness.generateChat;
 
 public class ChatBusiness implements ChatInterface {
     // TODO COSTRUTTORE CHAT
@@ -24,6 +24,6 @@ public class ChatBusiness implements ChatInterface {
 
     @Override
     public Chat findChatByID(Integer idChat) {
-        return null;
+        return generateChat(1);
     }
 }
