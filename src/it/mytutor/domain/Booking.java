@@ -19,7 +19,6 @@ public class Booking {
     private Timestamp createDate;
     private Timestamp updateDate;
     private Student student;
-    private Lesson lesson;
     private Planning planning;
 
     //COSTRUTTORI
@@ -34,14 +33,13 @@ public class Booking {
         this.lessonState = lessonState;
     }
 
-    public Booking(Integer idBooking, Date date, Integer lessonState, Timestamp createDate, Timestamp updateDate, Student student, Lesson lesson, Planning planning) {
+    public Booking(Integer idBooking, Date date, Integer lessonState, Timestamp createDate, Timestamp updateDate, Student student, Planning planning) {
         this.idBooking = idBooking;
         this.date = date;
         this.lessonState = lessonState;
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.student = student;
-        this.lesson = lesson;
         this.planning = planning;
     }
 
@@ -73,10 +71,6 @@ public class Booking {
         return student;
     }
 
-    public Lesson getLesson() {
-        return lesson;
-    }
-
     public Planning getPlanning() {return planning;}
 
     //SETTER
@@ -105,10 +99,6 @@ public class Booking {
         this.student = student;
     }
 
-    public void setLesson(Lesson lesson) {
-        this.lesson = lesson;
-    }
-
     public void setPlanning(Planning planning) {this.planning=planning;}
 
     //EQUALS
@@ -123,14 +113,13 @@ public class Booking {
                 getCreateDate().equals(booking.getCreateDate()) &&
                 getUpdateDate().equals(booking.getUpdateDate()) &&
                 getStudent().equals(booking.getStudent()) &&
-                getLesson().equals(booking.getLesson())&&
                 getPlanning().equals(booking.getPlanning());
     }
 
     //HASHCODE
     @Override
     public int hashCode() {
-        return Objects.hash(getIdBooking(), getDate(), getLessonState(), getCreateDate(), getUpdateDate(), getStudent(), getLesson(), getPlanning());
+        return Objects.hash(getIdBooking(), getDate(), getLessonState(), getCreateDate(), getUpdateDate(), getStudent(), getPlanning());
     }
 
 
@@ -145,7 +134,6 @@ public class Booking {
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
                 ", student=" + student.toString() +
-                ", lesson=" + lesson.toString() +
                 ", planning=" + planning.toString() +
                 '}';
     }
