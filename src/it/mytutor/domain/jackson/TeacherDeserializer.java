@@ -22,8 +22,9 @@ public class TeacherDeserializer extends StdDeserializer<Teacher> {
 
         Teacher teacher = new Teacher();
         //TODO controllo per vedere se ricevere l'id oppure no, cioè se PUT o POST
-        teacher.setIdTeacher(node.get("idTeacher").asInt());
-
+        if (node.get("idTeacher") != null) {
+            teacher.setIdTeacher(node.get("idTeacher").asInt());
+        }
         teacher.setPostCode(node.get("postCode").asInt());
         teacher.setCity(node.get("City").asText());
         teacher.setRegion(node.get("region").asText());
