@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import it.mytutor.domain.jackson.ChatDeserializer;
 import it.mytutor.domain.jackson.ChatSerializer;
+//import it.mytutor.domain.jackson.ChatDeserializer;
+//import it.mytutor.domain.jackson.ChatSerializer;
 
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -37,7 +39,6 @@ public class Chat {
     }
 
 
-
     //GETTER
 
     public Integer getIdChat() {
@@ -55,7 +56,6 @@ public class Chat {
     public Timestamp getUpdateDate() {
         return updateDate;
     }
-
 
 
     //SETTER
