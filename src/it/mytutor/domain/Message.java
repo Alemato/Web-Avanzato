@@ -21,7 +21,7 @@ public class Message {
     private Timestamp createDate;
     private Timestamp updateDate;
     private Chat chat;
-    private List<User> user= new ArrayList<User>();
+    private List<User> user = new ArrayList<User>();
 
     //COSTRUTTORI
 
