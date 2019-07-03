@@ -93,7 +93,7 @@ public class TestBusinness {
 
     private static Planning generaPlanning(int i) throws ParseException {
         Planning planning = new Planning();
-//        planning.setIdPlanning(i);
+        planning.setIdPlanning(i);
         SimpleDateFormat sdfP = new SimpleDateFormat("yyyy-MM-dd");
         String[] stringaDate = new String[]{"2019-06-18", "2019-05-22", "2019-06-13", "2019-06-16"};
         planning.setDate(sdfP.parse(stringaDate[(i * 3) % 4]));
@@ -103,7 +103,6 @@ public class TestBusinness {
         Time endTimes = Time.valueOf(stringEndTime[(i * 3) % 10]);
         planning.setStartTime(startTimes);
         planning.setEndTime(endTimes);
-        planning.setTeacher(generaTeacher(i));
         planning.setLesson(generaLezione(i));
         return planning;
     }
@@ -143,29 +142,15 @@ public class TestBusinness {
         String[] nomi = new String[]{"Matematica", "Fisica", "Informatica", "Network"};
         lesson.setName(nomi[(i * 3) % 4]);
         lesson.setPrice(10.00);
-//        List<Date> date = new ArrayList<>();
-//        String[] stringaDate = new String[]{"2019-06-18", "2019-05-22", "2019-06-13", "2019-06-16"};
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
-//        for (String aStringaDate : stringaDate) {
-//            date.add((Date) sdf1.parse(stringaDate[(i * 3) % 4]));
-//        }
-//        lesson.setDate(date);
         lesson.setDescription("Bellissima Lezione");
         lesson.setPublicationDate((Date) sdf1.parse("2019-04-22"));
-//        List<Time> startTimes = new ArrayList<>();
-//        List<Time> endTimes = new ArrayList<>();
-//        String[] stringStartTime = new String[]{"8:00:00", "9:00:00", "10:00:00", "11:00:00", "12:00:00", "14:00:00", "15:00:00", "16:00:00", "17:00:00", "18:00:00"};
-//        String[] stringEndTime = new String[]{"9:00:00", "10:00:00", "11:00:00", "12:00:00", "14:00:00", "15:00:00", "16:00:00", "17:00:00", "18:00:00", "19:00:00"};
-//        for (int j = 0; j < 10; j++) {
-//            startTimes.add(Time.valueOf(stringStartTime[(i * 3) % 10]));
-//            endTimes.add(Time.valueOf(stringEndTime[(i * 3) % 10]));
-//        }
-//        lesson.setStartTime(startTimes);
-//        lesson.setEndTime(endTimes);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         lesson.setCreateDate(timestamp);
         lesson.setUpdateDate(timestamp);
         lesson.setSubject(generaSubject(1));
+        lesson.setTeacher(generaTeacher(i));
+
         return lesson;
     }
 
