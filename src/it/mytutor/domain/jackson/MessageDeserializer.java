@@ -31,10 +31,7 @@ public class MessageDeserializer extends StdDeserializer<Message> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Message message = new Message();
-        message.setIdMessage(node.get("idMessage").asInt());
-
         message.setText(node.get("text").asText());
-
         message.setSendDate(Timestamp.valueOf(node.get("sendDate").asText()));
 
         Chat chat = new Chat();
