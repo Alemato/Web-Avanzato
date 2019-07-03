@@ -34,66 +34,13 @@ public class LessonDeserializer extends StdDeserializer<Lesson> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Lesson lesson = new Lesson();
-        lesson.setIdLesson(node.get("idLesson").asInt());                           //TODO da capire se arriva già con id
+        //TODO controllo per vedere se ricevere l'id oppure no, cioè se PUT o POST
+        lesson.setIdLesson(node.get("idLesson").asInt());
 
         lesson.setName(node.get("name").asText());
-
         lesson.setPrice(node.get("price").asDouble());
-
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-
-        List<Date> dateList = new ArrayList<Date>();
-        ArrayNode dates = (ArrayNode) node.get("dates");
-        Iterator<JsonNode> dateIterator = dates.elements();
-        while (dateIterator.hasNext()){
-            JsonNode dateNode = dateIterator.next();
-            String stringDate = String.valueOf(dateNode);
-
-            stringDate = stringDate.replace("\"","");
-
-
-            java.util.Date parsed = null;
-            try {
-                parsed = format.parse(stringDate);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            Date sqlDate = new Date(parsed.getTime());
-            dateList.add(sqlDate);
-        }
-        lesson.setDate(dateList);
-
         lesson.setDescription(node.get("description").asText());
-
         lesson.setPublicationDate(Date.valueOf(node.get("publicationDate").asText()));
-
-        List<Time> startTimeList = new ArrayList<Time>();
-        ArrayNode startTimes = (ArrayNode) node.get("startTimes");
-        System.out.println(startTimes.size());
-        for (JsonNode startTimeNode : startTimes) {
-            String stringStartTime = String.valueOf(startTimeNode);
-            stringStartTime = stringStartTime.replace("\"", "");
-            Time time = Time.valueOf(stringStartTime);
-            startTimeList.add(time);
-        }
-
-        lesson.setStartTime(startTimeList);
-        System.out.println(lesson.getStartTime());
-        System.out.println(lesson.getStartTime().size());
-        List<Time> endTimeList = new ArrayList<Time>();
-        ArrayNode endTimes = (ArrayNode) node.get("endTimes");
-        Iterator<JsonNode> endTimeIterator = endTimes.iterator();
-        while (endTimeIterator.hasNext()){
-            JsonNode endTimeNode = endTimeIterator.next();
-            String stringEndTime = String.valueOf(endTimeNode);
-            stringEndTime = stringEndTime.replace("\"","");
-            Time time = Time.valueOf(stringEndTime);
-            endTimeList.add(time);
-        }
-        lesson.setEndTime(endTimeList);
-
-//        lesson.setCreateDate(Timestamp.valueOf(node.get("createDate").asText()));   //TODO da capire se arriva già
-//        lesson.setUpdateDate(Timestamp.valueOf(node.get("updateDate").asText()));   //TODO da capire se arriva già
 
         Subject subject = new Subject();
         JsonNode subjectNode = node.get("subject");
