@@ -39,6 +39,12 @@ public class LessonSerializer extends StdSerializer<Lesson> {
         jsonGenerator.writeStringField("createTime", lesson.getSubject().getCreateDate().toString());
         jsonGenerator.writeStringField("updateTime", lesson.getSubject().getUpdateDate().toString());
         jsonGenerator.writeEndObject();
+        jsonGenerator.writeFieldName("teacher");
+        jsonGenerator.writeStartObject();
+        jsonGenerator.writeNumberField("idTeacher", lesson.getTeacher().getIdTeacher());
+        jsonGenerator.writeStringField("name", lesson.getTeacher().getName());
+        jsonGenerator.writeStringField("surname", lesson.getTeacher().getSurname());
+        jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();
         jsonGenerator.close();
     }
