@@ -1,6 +1,7 @@
 package it.mytutor.domain.jackson;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import it.mytutor.domain.Message;
@@ -9,7 +10,7 @@ import it.mytutor.domain.User;
 import java.io.IOException;
 
 public class MessageSerializer extends StdSerializer<Message> {
-    public MessageSerializer(){
+    public MessageSerializer() {
         this(null);
     }
 
@@ -18,33 +19,30 @@ public class MessageSerializer extends StdSerializer<Message> {
     }
 
     @Override
-    public void serialize(Message message, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-
-        jsonGenerator.writeStartObject("message");
-
-        jsonGenerator.writeNumberField("idMessage",message.getIdMessage());
+    public void serialize(Message message, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
+        jsonGenerator.writeStartObject();
+        jsonGenerator.writeNumberField("idMessage", message.getIdMessage());
         jsonGenerator.writeStringField("text", message.getText());
-        jsonGenerator.writeStringField("sendDate",message.getSendDate().toString());
-        jsonGenerator.writeStringField("createDate",message.getCreateDate().toString());
-        jsonGenerator.writeStringField("updateDate",message.getUpdateDate().toString());
-
+        jsonGenerator.writeStringField("sendDate", message.getSendDate().toString());
+        jsonGenerator.writeStringField("createDate", message.getCreateDate().toString());
+        jsonGenerator.writeStringField("updateDate", message.getUpdateDate().toString());
         jsonGenerator.writeFieldName("chat");
-        jsonGenerator.writeStartObject("chat");
+        jsonGenerator.writeStartObject();
         jsonGenerator.writeStringField("idChat", message.getIdChat().getIdChat().toString());
         jsonGenerator.writeStringField("name", message.getIdChat().getName());
         jsonGenerator.writeStringField("createDate", message.getIdChat().getCreateDate().toString());
         jsonGenerator.writeStringField("updateDate", message.getIdChat().getUpdateDate().toString());
         jsonGenerator.writeEndObject();
-
         jsonGenerator.writeFieldName("users");
         jsonGenerator.writeStartArray();
-        for (User user: message.getIdUser()){
-            jsonGenerator.writeStringField("idUser",user.getIdUser().toString());
-
+        for (User user : message.getIdUser()) {
+            jsonGenerator.writeStartObject();
+            jsonGenerator.writeNumberField("idUser", user.getIdUser());
+            jsonGenerator.writeStringField("name", user.getName());
+            jsonGenerator.writeStringField("surname", user.getSurname());
             jsonGenerator.writeEndObject();
         }
         jsonGenerator.writeEndArray();
-
         jsonGenerator.writeEndObject();
         jsonGenerator.close();
     }
