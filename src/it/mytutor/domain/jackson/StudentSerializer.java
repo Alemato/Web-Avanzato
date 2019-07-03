@@ -1,6 +1,7 @@
 package it.mytutor.domain.jackson;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import it.mytutor.domain.Student;
@@ -17,16 +18,12 @@ public class StudentSerializer extends StdSerializer<Student> {
     }
 
     @Override
-    public void serialize(Student student, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        jsonGenerator.writeStartObject("student");
-
+    public void serialize(Student student, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
+        jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idStudent", student.getIdStudent());
-
         jsonGenerator.writeStringField("studyGrade", student.getStudyGrade());
-
         jsonGenerator.writeStringField("createDateStudent", student.getCreateDateStudent().toString());
         jsonGenerator.writeStringField("updateDateStudent", student.getUpdateDateStudent().toString());
-
         jsonGenerator.writeFieldName("user");
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idUser", student.getIdUser());
@@ -39,7 +36,6 @@ public class StudentSerializer extends StdSerializer<Student> {
         jsonGenerator.writeStringField("createDate", student.getCreateDate().toString());
         jsonGenerator.writeStringField("updateDate", student.getUpdateDate().toString());
         jsonGenerator.writeEndObject();
-
         jsonGenerator.writeEndObject();
         jsonGenerator.close();
     }
