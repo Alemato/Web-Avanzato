@@ -35,8 +35,10 @@ public class LessonDeserializer extends StdDeserializer<Lesson> {
 
         Lesson lesson = new Lesson();
         //TODO controllo per vedere se ricevere l'id oppure no, cioè se PUT o POST
-        lesson.setIdLesson(node.get("idLesson").asInt());
 
+        if (node.get("idLesson") != null) {
+            lesson.setIdLesson(node.get("idLesson").asInt());
+        }
         lesson.setName(node.get("name").asText());
         lesson.setPrice(node.get("price").asDouble());
         lesson.setDescription(node.get("description").asText());
