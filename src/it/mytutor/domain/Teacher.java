@@ -15,7 +15,7 @@ public class Teacher extends User{
     private Integer idTeacher;
     private Integer postCode;
     //TODO City non andrebbe con la minuscola?
-    private String City;
+    private String city;
     private String region;
     private String street;
     private String streetNumber;
@@ -47,7 +47,7 @@ public class Teacher extends User{
     public Teacher(String email, String password, String name, String surname, Date birtday, Boolean language, Integer postCode, String city, String region, String street, String streetNumber, String byography, Integer roles) {
         super(email, roles, password, name, surname, birtday, language);
         this.postCode = postCode;
-        City = city;
+        city = city;
         this.region = region;
         this.street = street;
         this.streetNumber = streetNumber;
@@ -76,7 +76,7 @@ public class Teacher extends User{
         super(email,roles, password, name, surname, birtday, language);
         this.idTeacher = idTeacher;
         this.postCode = postCode;
-        City = city;
+        city = city;
         this.region = region;
         this.street = street;
         this.streetNumber = streetNumber;
@@ -112,7 +112,7 @@ public class Teacher extends User{
         super(idUser, email, roles, password, name, surname, birtday, language, image, createDate, updateDate);
         this.idTeacher = idTeacher;
         this.postCode = postCode;
-        City = city;
+        city = city;
         this.region = region;
         this.street = street;
         this.streetNumber = streetNumber;
@@ -133,7 +133,7 @@ public class Teacher extends User{
     }
 
     public String getCity() {
-        return City;
+        return city;
     }
 
     public String getRegion() {
@@ -171,7 +171,7 @@ public class Teacher extends User{
     }
 
     public void setCity(String city) {
-        City = city;
+        city = city;
     }
 
     public void setRegion(String region) {
@@ -230,7 +230,7 @@ public class Teacher extends User{
         return "Teacher{" +
                 "idTeacher=" + idTeacher +
                 ", postCode=" + postCode +
-                ", City='" + City + '\'' +
+                ", city='" + city + '\'' +
                 ", region='" + region + '\'' +
                 ", street='" + street + '\'' +
                 ", streetNumber='" + streetNumber + '\'' +
