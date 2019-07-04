@@ -5,19 +5,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import it.mytutor.domain.Lesson;
 import it.mytutor.domain.Subject;
 
 import java.io.IOException;
 import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class LessonDeserializer extends StdDeserializer<Lesson> {
 
@@ -42,8 +34,8 @@ public class LessonDeserializer extends StdDeserializer<Lesson> {
         lesson.setName(node.get("name").asText());
         lesson.setPrice(node.get("price").asDouble());
         lesson.setDescription(node.get("description").asText());
-        lesson.setPublicationDate(Date.valueOf(node.get("publicationDate").asText()));
-
+        Date pDate = new Date(node.get("publicationDate").asLong());
+        lesson.setPublicationDate(pDate);
         Subject subject = new Subject();
         JsonNode subjectNode = node.get("subject");
         subject.setIdSubject(subjectNode.get("idSubject").asInt());
