@@ -22,10 +22,13 @@ public class BookingSerializer extends StdSerializer<Booking> {
     public void serialize(Booking booking, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idBooking", booking.getIdBooking());
-        jsonGenerator.writeStringField("date", booking.getDate().toString());
+        long dateMillis = booking.getDate().getTime();
+        jsonGenerator.writeNumberField("date", dateMillis);
         jsonGenerator.writeNumberField("lessonState", booking.getLessonState());
-        jsonGenerator.writeStringField("createDate", booking.getCreateDate().toString());
-        jsonGenerator.writeStringField("updateDate", booking.getUpdateDate().toString());
+        long createDate = booking.getCreateDate().getTime();
+        jsonGenerator.writeNumberField("createDate", createDate);
+        long updateDate = booking.getUpdateDate().getTime();
+        jsonGenerator.writeNumberField("updateDate", updateDate);
         jsonGenerator.writeFieldName("student");
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("studentIdStudent", booking.getStudent().getIdStudent());
@@ -42,9 +45,12 @@ public class BookingSerializer extends StdSerializer<Booking> {
         jsonGenerator.writeNumberField("lessonIdLesson", booking.getPlanning().getLesson().getIdLesson());
         jsonGenerator.writeStringField("lessonName", booking.getPlanning().getLesson().getName());
         jsonGenerator.writeNumberField("lessonPrice", booking.getPlanning().getLesson().getPrice());
-        jsonGenerator.writeStringField("lessonPublicationDate", booking.getPlanning().getLesson().getPublicationDate().toString());
-        jsonGenerator.writeStringField("lessonCreateDate", booking.getPlanning().getLesson().getCreateDate().toString());
-        jsonGenerator.writeStringField("lessonUpdateDate", booking.getPlanning().getLesson().getUpdateDate().toString());
+        long publicationDateMillis = booking.getPlanning().getLesson().getPublicationDate().getTime();
+        jsonGenerator.writeNumberField("lessonPublicationDate", publicationDateMillis);
+        long lessonCreateDate = booking.getPlanning().getLesson().getCreateDate().getTime();
+        jsonGenerator.writeNumberField("lessonCreateDate", lessonCreateDate);
+        long lessonUpdateDate = booking.getPlanning().getLesson().getUpdateDate().getTime();
+        jsonGenerator.writeNumberField("lessonUpdateDate", lessonUpdateDate);
         jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();
