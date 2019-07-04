@@ -26,7 +26,8 @@ public class PlanningDeserializer  extends StdDeserializer<Planning> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Planning planning = new Planning();
-        planning.setDate(Date.valueOf(node.get("date").asText()));
+        Date date = new Date(node.get("date").asLong());
+        planning.setDate(date);
         planning.setStartTime(Time.valueOf(node.get("startTime").asText()));
         planning.setEndTime(Time.valueOf(node.get("endTime").asText()));
 
@@ -34,7 +35,8 @@ public class PlanningDeserializer  extends StdDeserializer<Planning> {
         lesson.setName(node.findPath("lesson").findPath("name").asText());
         lesson.setPrice(node.findPath("lesson").findPath("price").asDouble());
         lesson.setDescription(node.findPath("lesson").findPath("description").asText());
-        lesson.setPublicationDate(Date.valueOf(node.findPath("lesson").findPath("publicationDate").asText()));
+        Date pDate = new Date(node.findPath("lesson").findPath("publicationDate").asLong());
+        lesson.setPublicationDate(pDate);
 
         Subject subject = new Subject();
         subject.setMacroSubject(node.findPath("lesson").findPath("subject").findPath("macroSubject").asText());
