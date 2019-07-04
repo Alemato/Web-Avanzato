@@ -7,9 +7,6 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import it.mytutor.domain.Lesson;
 
 import java.io.IOException;
-import java.sql.Time;
-import java.util.Date;
-import java.util.List;
 
 public class LessonSerializer extends StdSerializer<Lesson> {
 
@@ -28,16 +25,21 @@ public class LessonSerializer extends StdSerializer<Lesson> {
         jsonGenerator.writeStringField("name", lesson.getName());
         jsonGenerator.writeNumberField("price", lesson.getPrice());
         jsonGenerator.writeStringField("description", lesson.getDescription());
-        jsonGenerator.writeStringField("publicationDate", lesson.getPublicationDate().toString());
-        jsonGenerator.writeStringField("createDate", lesson.getCreateDate().toString());
-        jsonGenerator.writeStringField("updateDate", lesson.getUpdateDate().toString());
+        long millis = lesson.getPublicationDate().getTime();
+        jsonGenerator.writeNumberField("publicationDate", millis);
+        long createDate = lesson.getCreateDate().getTime();
+        jsonGenerator.writeNumberField("createDate", createDate);
+        long updateDate = lesson.getUpdateDate().getTime();
+        jsonGenerator.writeNumberField("updateDate", updateDate);
         jsonGenerator.writeFieldName("subject");
         jsonGenerator.writeStartObject();
         jsonGenerator.writeStringField("idSubject", lesson.getSubject().getIdSubject().toString());
         jsonGenerator.writeStringField("macroSubject", lesson.getSubject().getMacroSubject());
         jsonGenerator.writeStringField("microSubject", lesson.getSubject().getMicroSubject());
-        jsonGenerator.writeStringField("createTime", lesson.getSubject().getCreateDate().toString());
-        jsonGenerator.writeStringField("updateTime", lesson.getSubject().getUpdateDate().toString());
+        long subjectCreateDate = lesson.getSubject().getCreateDate().getTime();
+        jsonGenerator.writeNumberField("subjectCreateDate", subjectCreateDate);
+        long subjectUpdateDate = lesson.getSubject().getUpdateDate().getTime();
+        jsonGenerator.writeNumberField("subjectUpdateDate", subjectUpdateDate);
         jsonGenerator.writeEndObject();
         jsonGenerator.writeFieldName("teacher");
         jsonGenerator.writeStartObject();
