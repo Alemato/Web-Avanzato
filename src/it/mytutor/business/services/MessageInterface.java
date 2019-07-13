@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface MessageInterface {
     List<Message> findAllMessageByChat(Chat chat);
+    Message getMessageById(int id);
     List<Message> findAllMessageByUser(User user);
     Message crateMessage(Message message);
 }
