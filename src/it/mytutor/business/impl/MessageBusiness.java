@@ -19,6 +19,9 @@ public class MessageBusiness implements MessageInterface {
     }
 
     @Override
+    public Message getMessageById(int id){ return null; }
+
+    @Override
     public List<Message> findAllMessageByUser(User user) {
         return simulateFindAllMessageByChat();
     }
