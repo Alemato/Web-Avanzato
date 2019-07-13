@@ -13,7 +13,7 @@
 
 - URL: auth/{SID}/chats
     GET:    Lista di MessageSerializzer
-    POST:   CreatesSerializzer
+    POST:   CreatesDeserializzer
 
 
 - URL: auth/{SID}/chats?[numero={n} & sotto={m}]
@@ -26,24 +26,24 @@
 
 
 - URL: auth/{SID}/lezioni
-    GET:    Lista di PlenningSerializzer             ????????????????????
-    POST:   PlanningDeserializer
+    GET:    Lista di LessonSerializzer      ????????????????????
+    POST:   LessonDeserializzer
 
 
 - URL: auth/{SID}/lezioni?{FILTRO}
-    GET:    Lista di LessonSerializzer    oppure     PlanningSerializer            ????????????????????
+    GET:    Lista di LessonSerializzer    oppure     PlanningSerializer   ????????????????????
 
 
 - URL: auth/{SID}/lezioni?[numero={n} & sotto={m}]
-    GET:    Lista di LessonSerializzer    oppure     PlanningSerializer               ????????????????????
+    GET:    Lista di LessonSerializzer    oppure     PlanningSerializer   ????????????????????
 
 
 - URL: auth/{SID}/lezioni/{LID}
-    PUT:    PlanningDeserializer     oppure     PlanningDeserializer                     ??????????????????
+    PUT:    Lista di PlanningDeserializer
 
 
 - URL: auth/{SID}/lezioni/{LID}/prenotazioni
-    POST:   BookingDeserializer
+    POST:   Lista di BookingDeserializer
 
 
 - URL: auth/{SID}/lezioni/{LID}/prenotazioni/{PID}
@@ -52,4 +52,4 @@
 
 - URL: auth/{SID}/materie
     GET:    Lista di SubjectSerializzer
-    POST:   SubjectSerializzer
+    POST:   SubjectSerializzer              ?????
