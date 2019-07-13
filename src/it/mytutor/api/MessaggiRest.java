@@ -69,14 +69,11 @@ public class MessaggiRest {
     @Path("{MID}")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_HTML)
-    public String getMessaggi(@PathParam("CID") String cid, @PathParam("MID") Integer mid){
-        return "<h1 style=\"" +
-                "color: red; "+
-                "margin: auto; " +
-                "width: fit-content; " +
-                "margin-top: 20%;\" " +
-                ">Componente Messaggi con @PathParam(\"MID\"): "+ mid +" @QueryParam(\"numero\"):"+ " (a default vale null)</h1>";
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMessaggi(@PathParam("CID") String cid, @PathParam("MID") Integer mid){
+        Message message = new Message();
+        message = messageService.getMessageById(mid);
+        return Response.ok(message).build();
     }
 
 }
