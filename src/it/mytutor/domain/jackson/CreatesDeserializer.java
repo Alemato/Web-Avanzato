@@ -29,7 +29,7 @@ public class CreatesDeserializer extends StdDeserializer<Creates> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Creates creates = new Creates();
-        creates.setName(node.get("name").asText());
+//        creates.setName(node.get("name").asText());
 
         List<User> userList = new ArrayList<User>();
         ArrayNode users = (ArrayNode) node.get("users");
