@@ -26,7 +26,6 @@ public class LessonDeserializer extends StdDeserializer<Lesson> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Lesson lesson = new Lesson();
-        //TODO controllo per vedere se ricevere l'id oppure no, cioè se PUT o POST
 
         if (node.get("idLesson") != null) {
             lesson.setIdLesson(node.get("idLesson").asInt());
@@ -34,8 +33,9 @@ public class LessonDeserializer extends StdDeserializer<Lesson> {
         lesson.setName(node.get("name").asText());
         lesson.setPrice(node.get("price").asDouble());
         lesson.setDescription(node.get("description").asText());
-        Date pDate = new Date(node.get("publicationDate").asLong());
-        lesson.setPublicationDate(pDate);
+        //TODO lo facciamo ServerSide
+//        Date pDate = new Date(node.get("publicationDate").asLong());
+//        lesson.setPublicationDate(pDate);
         Subject subject = new Subject();
         JsonNode subjectNode = node.get("subject");
         subject.setIdSubject(subjectNode.get("idSubject").asInt());
