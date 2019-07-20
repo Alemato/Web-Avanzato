@@ -9,7 +9,6 @@ import it.mytutor.domain.Student;
 
 import java.io.IOException;
 import java.sql.Date;
-import java.sql.Timestamp;
 
 public class StudentDeserializer extends StdDeserializer<Student> {
 
@@ -26,7 +25,6 @@ public class StudentDeserializer extends StdDeserializer<Student> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Student student = new Student();
-        //TODO controllo per vedere se ricevere l'id oppure no, cioè se PUT o POST
         if (node.get("idStudent")!=  null) {
             student.setIdStudent(node.get("idStudent").asInt());
         }
@@ -36,7 +34,8 @@ public class StudentDeserializer extends StdDeserializer<Student> {
         student.setEmail(userNode.get("email").asText());
         student.setName(userNode.get("name").asText());
         student.setSurname(userNode.get("surname").asText());
-        student.setBirtday(Date.valueOf(userNode.get("birthday").asText()));
+        Date bDate = new Date(userNode.get("birthday").asLong());
+        student.setBirtday(bDate);
         student.setLanguage(Boolean.getBoolean(userNode.get("language").asText()));
         student.setImage(userNode.get("image").asText());
         return student;

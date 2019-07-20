@@ -23,8 +23,10 @@ public class SubjectSerializer extends StdSerializer<Subject> {
         jsonGenerator.writeNumberField("idSubject", subject.getIdSubject());
         jsonGenerator.writeStringField("macroSubject", subject.getMacroSubject());
         jsonGenerator.writeStringField("microSubject", subject.getMicroSubject());
-        jsonGenerator.writeStringField("createDate", subject.getCreateDate().toString());
-        jsonGenerator.writeStringField("updateDate",subject.getUpdateDate().toString());
+        long createDateMillis = subject.getCreateDate().getTime();
+        jsonGenerator.writeNumberField("createDate", createDateMillis);
+        long updateDateMillis = subject.getUpdateDate().getTime();
+        jsonGenerator.writeNumberField("updateDate", updateDateMillis);
         jsonGenerator.writeEndObject();
         jsonGenerator.close();
     }

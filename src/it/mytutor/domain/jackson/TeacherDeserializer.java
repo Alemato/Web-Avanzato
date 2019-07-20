@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import it.mytutor.domain.Subject;
 import it.mytutor.domain.Teacher;
 
 import java.io.IOException;
@@ -21,7 +20,6 @@ public class TeacherDeserializer extends StdDeserializer<Teacher> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Teacher teacher = new Teacher();
-        //TODO controllo per vedere se ricevere l'id oppure no, cioè se PUT o POST
         if (node.get("idTeacher") != null) {
             teacher.setIdTeacher(node.get("idTeacher").asInt());
         }
@@ -36,7 +34,8 @@ public class TeacherDeserializer extends StdDeserializer<Teacher> {
         teacher.setEmail(userNode.get("email").asText());
         teacher.setName(userNode.get("name").asText());
         teacher.setSurname(userNode.get("surname").asText());
-        teacher.setBirtday(Date.valueOf(userNode.get("birthday").asText()));
+        Date bDate = new Date(userNode.get("birthday").asLong());
+        teacher.setBirtday(bDate);
         teacher.setLanguage(Boolean.getBoolean(userNode.get("language").asText()));
         teacher.setImage(userNode.get("image").asText());
 

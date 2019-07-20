@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import it.mytutor.domain.Subject;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 
 public class SubjectDeserializer extends StdDeserializer<Subject> {
     public SubjectDeserializer(){
