@@ -1,16 +1,17 @@
 package it.mytutor.api;
 
 import it.mytutor.business.impl.ChatBusiness;
-import it.mytutor.business.impl.CreatesBusiness;
+//import it.mytutor.business.impl.CreatesBusiness;
 import it.mytutor.business.impl.MessageBusiness;
 import it.mytutor.business.services.ChatInterface;
-import it.mytutor.business.services.CreatesInterface;
+//import it.mytutor.business.services.CreatesInterface;
 import it.mytutor.business.services.MessageInterface;
 import it.mytutor.domain.Chat;
 import it.mytutor.domain.Creates;
 import it.mytutor.domain.Message;
 import it.mytutor.domain.User;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -25,12 +26,13 @@ public class ChatsRest {
 
     private ChatInterface chatService = new ChatBusiness();
     private MessageInterface messageService = new MessageBusiness();
-    private CreatesInterface createsService = new CreatesBusiness();
+    //private CreatesInterface createsService = new CreatesBusiness();
 
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getChats(){
+    @PermitAll
+    public String getChats(){
 //         METODO 1
 //
 //        List Chat chats = findAllChatByUser(user(dal SID))
@@ -40,7 +42,7 @@ public class ChatsRest {
 //         }
 
 //        METODO 2
-        //TODO Prendere user da SID
+/*        //TODO Prendere user da SID
         User user = new User();
         List<Chat> chats = chatService.findAllChatByUser(user);
         List<Chat> chats20 = new ArrayList<Chat>();
@@ -55,16 +57,19 @@ public class ChatsRest {
             Message lastMessage = Collections.max(messagesProv, Comparator.comparing(Message::getSendDate));
             messagesFin.add(lastMessage);
         }
-        return  Response.ok(messagesFin).build();
+        return  Response.ok(messagesFin).build();*/
+    return "get";
     }
+
 
     @Path("{CID}")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public Response getChatsByIDByQuery(@PathParam("CID") String cid, @QueryParam("numero") Integer numero, @QueryParam("sotto") Integer sotto){
         // vedo se devo fare la query per vedere se esiste il cid
-        if(numero==null && sotto==null){
+        /*if(numero==null && sotto==null){
             return this.getChatsByID(cid);
         }else {
 
@@ -90,22 +95,23 @@ public class ChatsRest {
                 messagesFin.add(lastMessage);
             }
             return  Response.ok(messagesFin).build();
-        }
+        }*/
+        return  Response.ok().build();
     }
-
-    // query per vedere se esiste il cid
+    /*// query per vedere se esiste il cid
     private Response getChatsByID(String cid){
         //TODO da capire se e cosa fa
         return Response.ok().build();
-    }
+    }*/
 
     @Path("{CID}")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public Response postChats(Creates creates, @PathParam("CID") String cid){
-        chatService.creationChat(creates.getChat());
-        createsService.createCreates(creates);
+        //chatService.creationChat(creates.getChat());
+        //createsService.createCreates(creates);
      return Response.ok().build();
     }
 

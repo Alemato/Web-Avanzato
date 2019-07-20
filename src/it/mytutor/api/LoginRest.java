@@ -1,5 +1,6 @@
 package it.mytutor.api;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -8,6 +9,7 @@ public class LoginRest {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
+    @PermitAll
     public String getAuth(){
         return "<h1 style=\"" +
                 "color: red; "+
@@ -20,6 +22,7 @@ public class LoginRest {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
+    @PermitAll
     public String getAuthToken(){
         return "<h1 style=\"" +
                 "color: red; "+
@@ -32,6 +35,7 @@ public class LoginRest {
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
+    @PermitAll
     public String deleteToken(){
         System.out.println("Accedo al sid");
         return "<h1 style=\"" +

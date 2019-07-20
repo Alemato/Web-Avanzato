@@ -1,6 +1,7 @@
 package it.mytutor.domain.dao.implement;
 
 import it.mytutor.domain.Planning;
+import it.mytutor.domain.Student;
 import it.mytutor.domain.dao.daofactory.DaoFactory;
 import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.interfaces.PlanningDaoInterface;
@@ -9,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class PlanningDao implements PlanningDaoInterface {
     private static final String CREATE_PLANNING_STATEMENT="insert into planning(Date,StartTime,EndTime,IdLesson) values(?,?,?,?,?)";
@@ -43,6 +45,21 @@ public class PlanningDao implements PlanningDaoInterface {
         }finally {
             DaoFactory.closeDbConnection(conn, rs, prs);
         }
+    }
+
+    @Override
+    public Planning getPlanningByID(int id) throws DatabaseException {
+        return null;
+    }
+
+    @Override
+    public Planning getPlanningByStudent(Student student) throws DatabaseException {
+        return null;
+    }
+
+    @Override
+    public List<Planning> getAllPlanningOfStudent(Student student) throws DatabaseException {
+        return null;
     }
 
     @Override

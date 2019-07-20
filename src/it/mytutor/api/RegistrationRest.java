@@ -1,5 +1,6 @@
 package it.mytutor.api;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -8,6 +9,7 @@ public class RegistrationRest {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
+    @PermitAll
     public String getRegistration(){
         return "<h1 style=\"" +
                 "color: red; "+
@@ -20,6 +22,7 @@ public class RegistrationRest {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
+    @PermitAll
     public String registration(){
         return "<h1 style=\"" +
                 "color: red; "+

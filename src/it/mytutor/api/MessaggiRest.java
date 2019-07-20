@@ -5,6 +5,7 @@ import it.mytutor.business.services.MessageInterface;
 import it.mytutor.domain.Chat;
 import it.mytutor.domain.Message;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -19,6 +20,7 @@ public class MessaggiRest {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public Response getMessaggi(@PathParam("CID") Integer cid){
         Chat chat = new Chat();
         chat.setIdChat(cid);
@@ -32,9 +34,10 @@ public class MessaggiRest {
         return Response.ok(messages20).build();
     }
 
-    @GET
+   /* @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public Response getMessaggi(@PathParam("CID") Integer cid, @QueryParam("numero") Integer numero, @QueryParam("sotto") Integer sotto){
         Chat chat = new Chat();
         chat.setIdChat(cid);
@@ -52,12 +55,13 @@ public class MessaggiRest {
             messages20.subList(index,messages.size());
         }
         return Response.ok(messages20).build();
-    }
+    }*/
 
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public Response setMessaggi(Message message, @PathParam("CID") Integer cid){
 //        Chat chat = new Chat();
 //        chat.setIdChat(cid);
@@ -70,6 +74,7 @@ public class MessaggiRest {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public Response getMessaggi(@PathParam("CID") String cid, @PathParam("MID") Integer mid){
         Message message = new Message();
         message = messageService.getMessageById(mid);

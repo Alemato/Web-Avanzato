@@ -1,6 +1,7 @@
 package it.mytutor.api;
 
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -10,6 +11,7 @@ public class PrenotazioniLezioniRest {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
+    @PermitAll
     public String getMessaggi(@QueryParam("filtro") String filtro){
         return "<h1 style=\"" +
                 "color: red; "+

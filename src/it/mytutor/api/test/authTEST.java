@@ -19,7 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
 
-@Path("authentication")
+@Path("authentication-1")
 public class authTEST {
     private UserBusiness userService = new UserBusiness();
 

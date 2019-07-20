@@ -1,5 +1,6 @@
 package it.mytutor.api;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -9,6 +10,7 @@ public class LezioniRest {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
+    @PermitAll
     public String getLezioni(@QueryParam("filtro") String filtro, @QueryParam("numero") String numero, @QueryParam("sotto") String sotto){
         return "<h1 style=\"" +
                 "color: red; "+
@@ -21,6 +23,7 @@ public class LezioniRest {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
+    @PermitAll
     public String creaLezione(){
         return "<h1 style=\"" +
                 "color: red; "+
@@ -49,6 +52,7 @@ public class LezioniRest {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
+    @PermitAll
     public String modificaLezione(@PathParam("LID") Integer lid){
         return "<h1 style=\"" +
                 "color: red; "+
