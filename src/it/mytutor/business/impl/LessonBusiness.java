@@ -38,7 +38,7 @@ public class LessonBusiness implements LessonInterface {
     }
 
     @Override
-    public Lesson findLessonByFilter(String filter) {
+    public List<Lesson> findLessonByFilter(String filter) {
         return null;
     }
 
