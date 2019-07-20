@@ -74,8 +74,8 @@ public class AuthenticationTokenUtility {
                 .claim(refreshLimitClaimName, authenticationTokenDetails.getRefreshLimit())
                 .claim(name, authenticationTokenDetails.getName())
                 .claim(surname, authenticationTokenDetails.getSurname())
-                .claim(birtday, authenticationTokenDetails.getBirtday())
-                .claim(language, authenticationTokenDetails.getBirtday())
+                //.claim(birtday, authenticationTokenDetails.getBirtday())
+                //.claim(language, authenticationTokenDetails.getBirtday())
                 .claim(image, authenticationTokenDetails.getImage())
                 .claim(postCode, authenticationTokenDetails.getPostCode())
                 .claim(city, authenticationTokenDetails.getCity())
@@ -84,7 +84,7 @@ public class AuthenticationTokenUtility {
                 .claim(streetNumber, authenticationTokenDetails.getStreetNumber())
                 .claim(byography, authenticationTokenDetails.getByography())
                 .claim(studyGrade, authenticationTokenDetails.getStudyGrade())
-                .signWith(SignatureAlgorithm.HS256, secret.getBytes("UTF-8"))
+                .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
@@ -102,8 +102,8 @@ public class AuthenticationTokenUtility {
                     .withAuthorities(extractAuthoritiesFromClaims(claims))
                     .withName(extractName(claims))
                     .withSurname(extractSurname(claims))
-                    .withBirtday(extractBirtday(claims))
-                    .withLanguage(extractLanguage(claims))
+                    //.withBirtday(extractBirtday(claims))
+                    //.withLanguage(extractLanguage(claims))
                     .withImage(extractImage(claims))
                     .withPostCode(extractPostCode(claims))
                     .withCity(extractCity(claims))
@@ -207,8 +207,8 @@ public class AuthenticationTokenUtility {
         return (String) claims.get(surname);
     }
 
-    private String extractBirtday(@NotNull Claims claims){
-        return (String) claims.get(birtday);
+    private Date extractBirtday(@NotNull Claims claims) {
+        return (Date) claims.get(birtday);
     }
 
     private String extractLanguage(@NotNull Claims claims){

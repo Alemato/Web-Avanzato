@@ -16,6 +16,7 @@ public class UserBusiness implements UserInterface {
         if (username.equals("mario")){
             Teacher teacher = new Teacher();
             teacher.setEmail(username);
+            teacher.setRoles(2);
             teacher.setPassword("password");
             teacher.setName("Mario");
             teacher.setSurname("Rossi");
@@ -32,6 +33,7 @@ public class UserBusiness implements UserInterface {
         } else {
             Student student = new Student();
             student.setEmail(username);
+            student.setRoles(1);
             student.setPassword("password");
             student.setName("Marco");
             student.setSurname("Bianchi");
@@ -55,6 +57,7 @@ public class UserBusiness implements UserInterface {
             Teacher teacher = new Teacher();
             teacher.setEmail(username);
             teacher.setPassword(password);
+            user.setRoles(2);
             teacher.setName("Mario");
             teacher.setSurname("Rossi");
             teacher.setBirtday(Date.valueOf("2015-03-31"));
@@ -71,6 +74,7 @@ public class UserBusiness implements UserInterface {
         }
         else if (username.equals("marco")){
             Student student = new Student();
+            user.setRoles(1);
             student.setEmail(username);
             student.setPassword(password);
             student.setName("Marco");

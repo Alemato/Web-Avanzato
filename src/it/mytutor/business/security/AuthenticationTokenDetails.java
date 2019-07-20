@@ -1,6 +1,5 @@
 package it.mytutor.business.security;
 
-import java.sql.Date;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.HashSet;
@@ -12,8 +11,8 @@ public class AuthenticationTokenDetails {
     private final Set<MyRoles> authorities;
     private final String name;
     private final String surname;
-    private final String birtday;
-    private final String language;
+    //private final Date birtday;
+    //private final String language;
     private final String image;
     private final Integer postCode;
     private final String city;
@@ -27,14 +26,14 @@ public class AuthenticationTokenDetails {
     private final int refreshCount;
     private final int refreshLimit;
 
-    private AuthenticationTokenDetails(String id, String username, Set<MyRoles> authorities, String name, String surname, String birtday, String language, String image, Integer postCode, String city, String region, String street, String streetNumber, String byography, String studyGrade, ZonedDateTime issuedDate, ZonedDateTime expirationDate, int refreshCount, int refreshLimit) {
+    private AuthenticationTokenDetails(String id, String username, Set<MyRoles> authorities, String name, String surname, String image, Integer postCode, String city, String region, String street, String streetNumber, String byography, String studyGrade, ZonedDateTime issuedDate, ZonedDateTime expirationDate, int refreshCount, int refreshLimit) {
         this.id = id;
         this.username = username;
         this.authorities = authorities;
         this.name = name;
         this.surname = surname;
-        this.birtday = birtday.toString();
-        this.language = language.toString();
+        //this.birtday = birtday;
+        //this.language = language.toString();
         this.image = image;
         this.postCode = postCode;
         this.city = city;
@@ -69,13 +68,13 @@ public class AuthenticationTokenDetails {
         return surname;
     }
 
-    public Date getBirtday() {
-        return Date.valueOf(birtday);
+   /* public Date getBirtday() {
+        return birtday;
     }
 
     public Boolean getLanguage() {
         return Boolean.valueOf(language);
-    }
+    }*/
 
     public String getImage() {
         return image;
@@ -135,8 +134,8 @@ public class AuthenticationTokenDetails {
         private Set<MyRoles> authorities;
         private String name;
         private String surname;
-        private String birtday;
-        private String language;
+        //private Date birtday;
+        //private String language;
         private String image;
         private Integer postCode;
         private String city;
@@ -175,15 +174,15 @@ public class AuthenticationTokenDetails {
             return this;
         }
 
-        public Builder withBirtday(String date){
-            this.birtday=date.toString();
+        /*public Builder withBirtday(Date date){
+            this.birtday=date;
             return this;
         }
 
         public Builder withLanguage(String language){
-            this.language=language.toString();
+            this.language=language;
             return this;
-        }
+        }*/
 
         public Builder withImage(String image){
             this.image = image;
@@ -246,7 +245,7 @@ public class AuthenticationTokenDetails {
         }
 
         public AuthenticationTokenDetails build() {
-            return new AuthenticationTokenDetails(id, username, authorities, name, surname, birtday, language, image, postCode, city, region, street, streetNumber, byography, studyGrade, issuedDate, expirationDate, refreshCount, refreshLimit);
+            return new AuthenticationTokenDetails(id, username, authorities, name, surname, image, postCode, city, region, street, streetNumber, byography, studyGrade, issuedDate, expirationDate, refreshCount, refreshLimit);
         }
     }
 }

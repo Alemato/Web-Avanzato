@@ -1,5 +1,6 @@
 package it.mytutor.api.test;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -12,6 +13,7 @@ public class RESTTestServer {
     @GET
     @Consumes("application/json")
     @Produces("text/html")
+    @PermitAll
     public String testserverstring() {
         return "<h1 style=\"\n" +
                 "    color: red;\n" +

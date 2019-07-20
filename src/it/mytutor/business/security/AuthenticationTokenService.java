@@ -1,12 +1,10 @@
 package it.mytutor.business.security;
 
 import it.mytutor.business.security.securityexception.AuthenticationTokenRefreshmentException;
-import it.mytutor.domain.Ruolo;
 import it.mytutor.domain.Student;
 import it.mytutor.domain.Teacher;
 import it.mytutor.domain.User;
 
-import javax.jws.soap.SOAPBinding;
 import java.io.UnsupportedEncodingException;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
@@ -51,9 +49,15 @@ public class AuthenticationTokenService {
                     .withAuthorities(authorities)
                     .withName(student.getName())
                     .withSurname(student.getSurname())
-                    .withBirtday(student.getBirthday().toString())
-                    .withLanguage(student.getLanguage().toString())
+                    //.withBirtday(student.getBirthday())
+                    //.withLanguage(student.getLanguage().toString())
                     .withImage(student.getImage())
+                    .withPostCode(0)
+                    .withCity("null")
+                    .withRegion("null")
+                    .withStreet("null")
+                    .withStreetNumber("null")
+                    .withByography("null")
                     .withStudyGrade(student.getStudyGrade())
                     .withIssuedDate(issuedDate)
                     .withExpirationDate(expirationDate)
@@ -78,8 +82,8 @@ public class AuthenticationTokenService {
                     .withAuthorities(authorities)
                     .withName(teacher.getName())
                     .withSurname(teacher.getSurname())
-                    .withBirtday(teacher.getBirthday().toString())
-                    .withLanguage(teacher.getLanguage().toString())
+                    //.withBirtday(teacher.getBirthday())
+                    //.withLanguage(teacher.getLanguage().toString())
                     .withImage(teacher.getImage())
                     .withPostCode(teacher.getPostCode())
                     .withCity(teacher.getCity())
@@ -87,6 +91,7 @@ public class AuthenticationTokenService {
                     .withStreet(teacher.getStreet())
                     .withStreetNumber(teacher.getStreetNumber())
                     .withByography(teacher.getByography())
+                    .withStudyGrade("null")
                     .withIssuedDate(issuedDate)
                     .withExpirationDate(expirationDate)
                     .withRefreshCount(0)
@@ -109,9 +114,16 @@ public class AuthenticationTokenService {
                     .withAuthorities(authorities)
                     .withName(user.getName())
                     .withSurname(user.getSurname())
-                    .withBirtday(user.getBirthday().toString())
-                    .withLanguage(user.getLanguage().toString())
+                    //.withBirtday(user.getBirthday())
+                    //.withLanguage(user.getLanguage().toString())
                     .withImage(user.getImage())
+                    .withPostCode(0)
+                    .withCity("null")
+                    .withRegion("null")
+                    .withStreet("null")
+                    .withStreetNumber("null")
+                    .withByography("null")
+                    .withStudyGrade("null")
                     .withIssuedDate(issuedDate)
                     .withExpirationDate(expirationDate)
                     .withRefreshCount(0)
@@ -155,8 +167,8 @@ public class AuthenticationTokenService {
                 .withAuthorities(currentTokenDetails.getAuthorities())
                 .withName(currentTokenDetails.getName())
                 .withSurname(currentTokenDetails.getSurname())
-                .withBirtday(currentTokenDetails.getBirtday().toString())
-                .withLanguage(currentTokenDetails.getLanguage().toString())
+                //.withBirtday(currentTokenDetails.getBirtday())
+                //.withLanguage(currentTokenDetails.getLanguage().toString())
                 .withImage(currentTokenDetails.getImage())
                 .withPostCode(currentTokenDetails.getPostCode())
                 .withCity(currentTokenDetails.getCity())

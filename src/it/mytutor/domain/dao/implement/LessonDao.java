@@ -1,18 +1,43 @@
 package it.mytutor.domain.dao.implement;
 
 import it.mytutor.domain.Lesson;
-import it.mytutor.domain.Subject;
-import it.mytutor.domain.dao.daofactory.DaoFactory;
 import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.interfaces.LessonDaoInterface;
 
-
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class LessonDao implements LessonDaoInterface {
-    private static final String GET_ALL_LESSON_STATEMENT="select * from Lesson";
+    @Override
+    public List<Lesson> getAllLesson() throws DatabaseException {
+        return null;
+    }
+
+    @Override
+    public List<Lesson> getLessonByName(String name) throws DatabaseException {
+        return null;
+    }
+
+    @Override
+    public List<Lesson> getLessonsBySubject(String microSubject) throws DatabaseException {
+        return null;
+    }
+
+    @Override
+    public Lesson getLessonsByID(int id) throws DatabaseException {
+        return null;
+    }
+
+    @Override
+    public void modifyLesson(Lesson lesson) throws DatabaseException {
+
+    }
+
+    @Override
+    public void createLesson(Lesson lesson) throws DatabaseException {
+
+    }
+
+    /*private static final String GET_ALL_LESSON_STATEMENT="select * from Lesson";
     private static final String GET_LESSON_BY_ID_STATEMENT="select * from lesson where id=?";
     private static final String GET_LESSON_BY_SUBJECT_STATEMENT="select * from lesson where IdSubject=?";
     private static final String GET_LESSON_BY_NAME_STATEMENT="select * from Lesson where name=?";
@@ -224,8 +249,8 @@ public class LessonDao implements LessonDaoInterface {
                         throw new DatabaseException(e.getMessage());
                     }finally {
                         DaoFactory.closeDbConnection(conn, rs, prs);
-                    }
-    }
+                    }*/
+    //}
 
 
 }
