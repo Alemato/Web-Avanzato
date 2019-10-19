@@ -1,6 +1,7 @@
 package it.mytutor.api.test;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -382,4 +383,11 @@ public class RESTTestServer {
     public Response test511() {
         return Response.status(Status.NETWORK_AUTHENTICATION_REQUIRED).build();
     }
+
+    @GET
+    @Path("aut")
+    @Consumes("application/json")
+    @Produces("text/plain")
+    @RolesAllowed({"STUDENT"})
+    public String aut() {return  "<h1>OK</h1>";}
 }

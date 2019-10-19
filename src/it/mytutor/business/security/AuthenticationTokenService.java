@@ -39,6 +39,9 @@ public class AuthenticationTokenService {
 
             Set<MyRoles> authorities = new HashSet<MyRoles>();
             authorities.add(MyRoles.valueOf("STUDENT"));
+            System.out.println("----------------------------");
+            System.out.println(student.getLanguage().toString());
+            System.out.println("----------------------------");
             String id = generateTokenIdentifier();
             ZonedDateTime issuedDate = ZonedDateTime.now();
             ZonedDateTime expirationDate = calculateExpirationDate(issuedDate);
@@ -49,8 +52,8 @@ public class AuthenticationTokenService {
                     .withAuthorities(authorities)
                     .withName(student.getName())
                     .withSurname(student.getSurname())
-                    //.withBirtday(student.getBirthday())
-                    //.withLanguage(student.getLanguage().toString())
+                    .withBirtday(student.getBirthday())
+                    .withLanguage(student.getLanguage().toString())
                     .withImage(student.getImage())
                     .withPostCode(0)
                     .withCity("null")
@@ -82,8 +85,8 @@ public class AuthenticationTokenService {
                     .withAuthorities(authorities)
                     .withName(teacher.getName())
                     .withSurname(teacher.getSurname())
-                    //.withBirtday(teacher.getBirthday())
-                    //.withLanguage(teacher.getLanguage().toString())
+                    .withBirtday(teacher.getBirthday())
+                    .withLanguage(teacher.getLanguage().toString())
                     .withImage(teacher.getImage())
                     .withPostCode(teacher.getPostCode())
                     .withCity(teacher.getCity())
@@ -114,8 +117,8 @@ public class AuthenticationTokenService {
                     .withAuthorities(authorities)
                     .withName(user.getName())
                     .withSurname(user.getSurname())
-                    //.withBirtday(user.getBirthday())
-                    //.withLanguage(user.getLanguage().toString())
+                    .withBirtday(user.getBirthday())
+                    .withLanguage(user.getLanguage().toString())
                     .withImage(user.getImage())
                     .withPostCode(0)
                     .withCity("null")
@@ -167,8 +170,8 @@ public class AuthenticationTokenService {
                 .withAuthorities(currentTokenDetails.getAuthorities())
                 .withName(currentTokenDetails.getName())
                 .withSurname(currentTokenDetails.getSurname())
-                //.withBirtday(currentTokenDetails.getBirtday())
-                //.withLanguage(currentTokenDetails.getLanguage().toString())
+                .withBirtday(currentTokenDetails.getBirtday())
+                .withLanguage(currentTokenDetails.getLanguage().toString())
                 .withImage(currentTokenDetails.getImage())
                 .withPostCode(currentTokenDetails.getPostCode())
                 .withCity(currentTokenDetails.getCity())

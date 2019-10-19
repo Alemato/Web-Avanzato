@@ -74,8 +74,8 @@ public class AuthenticationTokenUtility {
                 .claim(refreshLimitClaimName, authenticationTokenDetails.getRefreshLimit())
                 .claim(name, authenticationTokenDetails.getName())
                 .claim(surname, authenticationTokenDetails.getSurname())
-                //.claim(birtday, authenticationTokenDetails.getBirtday())
-                //.claim(language, authenticationTokenDetails.getBirtday())
+                .claim(birtday, authenticationTokenDetails.getBirtday())
+                .claim(language, authenticationTokenDetails.getLanguage().toString())
                 .claim(image, authenticationTokenDetails.getImage())
                 .claim(postCode, authenticationTokenDetails.getPostCode())
                 .claim(city, authenticationTokenDetails.getCity())
@@ -102,8 +102,8 @@ public class AuthenticationTokenUtility {
                     .withAuthorities(extractAuthoritiesFromClaims(claims))
                     .withName(extractName(claims))
                     .withSurname(extractSurname(claims))
-                    //.withBirtday(extractBirtday(claims))
-                    //.withLanguage(extractLanguage(claims))
+                    .withBirtday(extractBirtday(claims))
+                    .withLanguage(extractLanguage(claims))
                     .withImage(extractImage(claims))
                     .withPostCode(extractPostCode(claims))
                     .withCity(extractCity(claims))
@@ -208,7 +208,9 @@ public class AuthenticationTokenUtility {
     }
 
     private Date extractBirtday(@NotNull Claims claims) {
-        return (Date) claims.get(birtday);
+        Date data= new Date((Long) claims.get(birtday));
+        System.out.println(data);
+        return data;
     }
 
     private String extractLanguage(@NotNull Claims claims){
