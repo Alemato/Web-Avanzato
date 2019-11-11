@@ -1,11 +1,14 @@
 package it.mytutor.api.test;
 
+import com.sun.deploy.security.SelectableSecurityManager;
 import it.mytutor.business.exceptions.UserException;
 import it.mytutor.business.impl.UserBusiness;
 import it.mytutor.business.security.AuthenticationTokenDetails;
 import it.mytutor.business.security.AuthenticationTokenService;
 import it.mytutor.business.security.TokenBasedSecurityContext;
 import it.mytutor.business.security.securityexception.AuthenticationException;
+import it.mytutor.domain.Student;
+import it.mytutor.domain.Teacher;
 import it.mytutor.domain.User;
 
 import javax.annotation.security.PermitAll;
@@ -38,13 +41,22 @@ public class authTEST {
     public Response authenticate(UserCredentials credentials) {
 
         try {
-            User utente = (User) userService.autentication(credentials.getUsername(), credentials.getPassword());
+            Object utente = userService.autentication(credentials.getUsername(), credentials.getPassword());
+            System.out.println(utente.toString());
             if (utente == null) {
                 throw new AuthenticationException("bad credentials");
             }
             String token = authenticationTokenService.generateToken(utente);
-            AuthenticationToken authenticationToken = new AuthenticationToken(token);
-            return Response.ok(authenticationToken).build();
+            if (utente  instanceof Student){
+                Student student= (Student) utente;
+                return Response.ok(student).header("X_AUTH", token).build();
+            }else if(utente instanceof Teacher){
+                Teacher teacher= (Teacher) utente;
+                return Response.ok(teacher).header("X_AUTH", token).build();
+            }else if(utente instanceof User){
+                User admin = (User) utente;
+                return Response.ok(admin).header("X_AUTH", token).build();
+            } else throw new ApiWebApplicationException("Errore interno al server tipo utente non valido");
         } catch (UserException e) {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server");

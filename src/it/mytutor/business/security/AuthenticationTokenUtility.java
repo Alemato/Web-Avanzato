@@ -50,16 +50,6 @@ public class AuthenticationTokenUtility {
     private String refreshLimitClaimName = "refreshLimit";
     private String name = "name";
     private String surname = "surname";
-    private String birtday = "birtday";
-    private String language = "language";
-    private String image = "image";
-    private String postCode = "post_code";
-    private String city = "city";
-    private String region = "region";
-    private String street = "street";
-    private String streetNumber = "street_number";
-    private String byography = "byography";
-    private String studyGrade = "study_grade";
 
     public String issueToken(AuthenticationTokenDetails authenticationTokenDetails) throws UnsupportedEncodingException {
         return Jwts.builder()
@@ -74,16 +64,6 @@ public class AuthenticationTokenUtility {
                 .claim(refreshLimitClaimName, authenticationTokenDetails.getRefreshLimit())
                 .claim(name, authenticationTokenDetails.getName())
                 .claim(surname, authenticationTokenDetails.getSurname())
-                .claim(birtday, authenticationTokenDetails.getBirtday())
-                .claim(language, authenticationTokenDetails.getLanguage().toString())
-                .claim(image, authenticationTokenDetails.getImage())
-                .claim(postCode, authenticationTokenDetails.getPostCode())
-                .claim(city, authenticationTokenDetails.getCity())
-                .claim(region, authenticationTokenDetails.getRegion())
-                .claim(street, authenticationTokenDetails.getStreet())
-                .claim(streetNumber, authenticationTokenDetails.getStreetNumber())
-                .claim(byography, authenticationTokenDetails.getByography())
-                .claim(studyGrade, authenticationTokenDetails.getStudyGrade())
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
@@ -96,22 +76,17 @@ public class AuthenticationTokenUtility {
                     .setAllowedClockSkewSeconds(clockSkew)
                     .parseClaimsJws(token)
                     .getBody();
+            System.out.println("##############");
+            Set<MyRoles> roles = extractAuthoritiesFromClaims(claims);
+            System.out.println(roles);
+            System.out.println(roles.contains(MyRoles.STUDENT));
+            System.out.println("##############");
             return new AuthenticationTokenDetails.Builder()
                     .withId(extractTokenIdFromClaims(claims))
                     .withUsername(extractUsernameFromClaims(claims))
                     .withAuthorities(extractAuthoritiesFromClaims(claims))
                     .withName(extractName(claims))
                     .withSurname(extractSurname(claims))
-                    .withBirtday(extractBirtday(claims))
-                    .withLanguage(extractLanguage(claims))
-                    .withImage(extractImage(claims))
-                    .withPostCode(extractPostCode(claims))
-                    .withCity(extractCity(claims))
-                    .withRegion(extractRegion(claims))
-                    .withStreet(extractStreet(claims))
-                    .withStreetNumber(extractStreetNumber(claims))
-                    .withByography(extractByography(claims))
-                    .withStudyGrade(extractStudyGrade(claims))
                     .withIssuedDate(extractIssuedDateFromClaims(claims))
                     .withExpirationDate(extractExpirationDateFromClaims(claims))
                     .withRefreshCount(extractRefreshCountFromClaims(claims))
@@ -205,47 +180,5 @@ public class AuthenticationTokenUtility {
 
     private String extractSurname(@NotNull Claims claims){
         return (String) claims.get(surname);
-    }
-
-    private Date extractBirtday(@NotNull Claims claims) {
-        Date data= new Date((Long) claims.get(birtday));
-        System.out.println(data);
-        return data;
-    }
-
-    private String extractLanguage(@NotNull Claims claims){
-        return (String) claims.get(language);
-    }
-
-    private String extractImage(@NotNull Claims claims){
-        return (String) claims.get(image);
-    }
-
-    private int extractPostCode(@NotNull Claims claims){
-        return (int) claims.get(postCode);
-    }
-
-    private String extractCity(@NotNull Claims claims){
-        return (String) claims.get(city);
-    }
-
-    private String extractRegion(@NotNull Claims claims){
-        return (String) claims.get(region);
-    }
-
-    private String extractStreet(@NotNull Claims claims){
-        return (String) claims.get(street);
-    }
-
-    private String extractStreetNumber(@NotNull Claims claims){
-        return (String) claims.get(streetNumber);
-    }
-
-    private String extractByography(@NotNull Claims claims){
-        return (String) claims.get(byography);
-    }
-
-    private String extractStudyGrade(@NotNull Claims claims){
-        return (String) claims.get(studyGrade);
     }
 }

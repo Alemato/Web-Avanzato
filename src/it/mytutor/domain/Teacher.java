@@ -30,63 +30,6 @@ public class Teacher extends User{
     }
 
     /**
-     * COSTRUTTORE SENZA ID E TIMESTAMP DI USER E TEACHER
-     * @param email
-     * @param password
-     * @param name
-     * @param surname
-     * @param birtday
-     * @param language
-     * @param postCode
-     * @param city
-     * @param region
-     * @param street
-     * @param streetNumber
-     * @param byography
-     */
-    public Teacher(String email, String password, String name, String surname, Date birtday, Boolean language, Integer postCode, String city, String region, String street, String streetNumber, String byography, Integer roles) {
-        super(email, roles, password, name, surname, birtday, language);
-        this.postCode = postCode;
-        city = city;
-        this.region = region;
-        this.street = street;
-        this.streetNumber = streetNumber;
-        this.byography = byography;
-    }
-
-    /**
-     * COSTRUTTORE SENZA ID USER E TIMESTAMP CON TUTTO TEACHER
-     * @param email
-     * @param password
-     * @param name
-     * @param surname
-     * @param birtday
-     * @param language
-     * @param idTeacher
-     * @param postCode
-     * @param city
-     * @param region
-     * @param street
-     * @param streetNumber
-     * @param byography
-     * @param crateDateTeacher
-     * @param updateDateTeacher
-     */
-    public Teacher(String email, String password, String name, String surname, Date birtday, Boolean language, Integer idTeacher, Integer postCode, String city, String region, String street, String streetNumber, String byography, Timestamp crateDateTeacher, Timestamp updateDateTeacher, Integer roles) {
-        super(email,roles, password, name, surname, birtday, language);
-        this.idTeacher = idTeacher;
-        this.postCode = postCode;
-        city = city;
-        this.region = region;
-        this.street = street;
-        this.streetNumber = streetNumber;
-        this.byography = byography;
-        this.crateDateTeacher = crateDateTeacher;
-        this.updateDateTeacher = updateDateTeacher;
-    }
-
-
-    /**
      * COSTRUTTORE COMPLETO
      * @param idUser
      * @param email
@@ -112,7 +55,7 @@ public class Teacher extends User{
         super(idUser, email, roles, password, name, surname, birtday, language, image, createDate, updateDate);
         this.idTeacher = idTeacher;
         this.postCode = postCode;
-        city = city;
+        this.city = city;
         this.region = region;
         this.street = street;
         this.streetNumber = streetNumber;
@@ -171,7 +114,7 @@ public class Teacher extends User{
     }
 
     public void setCity(String city) {
-        city = city;
+        this.city = city;
     }
 
     public void setRegion(String region) {

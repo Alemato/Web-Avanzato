@@ -24,42 +24,6 @@ public class Student extends User {
         super();
     }
 
-    /**
-     * COSTRUTTORE SENZA ID USER E ID STUDENTE E TIMESTAMP
-     * @param email
-     * @param password
-     * @param name
-     * @param surname
-     * @param birtday
-     * @param language
-     * @param studyGrade
-     */
-    public Student(String email, String password, String name, String surname, Date birtday, Boolean language, Integer roles , String studyGrade) {
-        super(email, roles, password, name, surname, birtday, language);
-        this.studyGrade = studyGrade;
-    }
-
-
-    /**
-     * COSTRUTTORE SENZA ID USER E TIMESTAMP USER E TUTTO STUDENTE
-     * @param email
-     * @param password
-     * @param name
-     * @param surname
-     * @param birtday
-     * @param language
-     * @param idStudent
-     * @param studyGrade
-     * @param createDateStudent
-     * @param updateDateStudent
-     */
-    public Student(String email, String password, String name, String surname, Date birtday, Boolean language, Integer idStudent, String studyGrade, Timestamp createDateStudent, Timestamp updateDateStudent, Integer roles) {
-        super(email, roles,  password, name, surname, birtday, language);
-        this.idStudent = idStudent;
-        this.studyGrade = studyGrade;
-        this.createDateStudent = createDateStudent;
-        this.updateDateStudent = updateDateStudent;
-    }
 
     /**
      * COSTRUTTORE CON TUTTI I DATI
@@ -79,7 +43,7 @@ public class Student extends User {
      * @param updateDateStudent
      */
     public Student(Integer idUser, String email, String password, String name, String surname, Date birtday, Boolean language, String image, Timestamp createDate, Timestamp updateDate, Integer idStudent, String studyGrade, Timestamp createDateStudent, Timestamp updateDateStudent, Integer roles) {
-        super(idUser, email, roles, password, name, surname, birtday, language, image, createDate, updateDate);
+        super(idUser, email, roles,  password, name, surname, birtday, language, image, createDate, updateDate);
         this.idStudent = idStudent;
         this.studyGrade = studyGrade;
         this.createDateStudent = createDateStudent;
@@ -148,7 +112,20 @@ public class Student extends User {
 
     @Override
     public String toString() {
-        return "Student{" +
+        return "User{" +
+                "idUser=" + super.getIdUser() +
+                ", email='" + super.getEmail() + '\'' +
+                ", roles=" + super.getRoles() +
+                ", password='" + super.getPassword() + '\'' +
+                ", name='" + super.getName() + '\'' +
+                ", surname='" + super.getSurname() + '\'' +
+                ", birthday=" + super.getBirthday() +
+                ", language=" + super.getLanguage() +
+                ", image='" + super.getImage() + '\'' +
+                ", createDate=" + super.getCreateDate() +
+                ", updateDate=" + super.getUpdateDate() +
+                "} "+
+                "Student{" +
                 "idStudent=" + idStudent +
                 ", studyGrade='" + studyGrade + '\'' +
                 ", createDateStudent=" + createDateStudent +
