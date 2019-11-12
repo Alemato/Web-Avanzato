@@ -1,6 +1,5 @@
 package it.mytutor.api.test;
 
-import com.sun.deploy.security.SelectableSecurityManager;
 import it.mytutor.business.exceptions.UserException;
 import it.mytutor.business.impl.UserBusiness;
 import it.mytutor.business.security.AuthenticationTokenDetails;
@@ -43,20 +42,17 @@ public class authTEST {
         try {
             Object utente = userService.autentication(credentials.getUsername(), credentials.getPassword());
             System.out.println(utente.toString());
-            if (utente == null) {
-                throw new AuthenticationException("bad credentials");
-            }
             String token = authenticationTokenService.generateToken(utente);
             if (utente  instanceof Student){
                 Student student= (Student) utente;
-                return Response.ok(student).header("X_AUTH", token).build();
+                return Response.ok(student).header("X-Auth", token).header("User-Type", "student").build();
             }else if(utente instanceof Teacher){
                 Teacher teacher= (Teacher) utente;
-                return Response.ok(teacher).header("X_AUTH", token).build();
+                return Response.ok(teacher).header("X-Auth", token).header("User-Type", "teacher").build();
             }else if(utente instanceof User){
                 User admin = (User) utente;
-                return Response.ok(admin).header("X_AUTH", token).build();
-            } else throw new ApiWebApplicationException("Errore interno al server tipo utente non valido");
+                return Response.ok(admin).header("X-Auth", token).header("User-Type", "admin").build();
+            } else throw new ApiWebApplicationException("bad credentials");
         } catch (UserException e) {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server");
