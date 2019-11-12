@@ -19,11 +19,11 @@ public class ChatBusiness implements ChatInterface {
 
     @Override
     public Chat creationChat(Chat chat) {
-        return null;
+        return chat;
     }
 
     @Override
     public Chat findChatByID(Integer idChat) {
-        return generateChat(1);
+        return generateChat(idChat);
     }
 }

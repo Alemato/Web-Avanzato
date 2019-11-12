@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class TestBusinness {
 
@@ -84,7 +85,7 @@ public class TestBusinness {
      */
     public static List<Lesson> simulateFindAllLesson() throws ParseException {
         List<Lesson> allLezioni = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 40; i++) {
             allLezioni.add(generaLezione(i));
         }
         return allLezioni;
@@ -116,8 +117,7 @@ public class TestBusinness {
         teacher.setPassword("123456789");
         teacher.setName("Giovanni");
         teacher.setSurname("Storti");
-        SimpleDateFormat sdfT = new SimpleDateFormat("yyyy-MM-dd");
-        teacher.setBirtday((Date) sdfT.parse("1980-07-22"));
+        teacher.setBirtday(Date.valueOf("1980-07-22"));
         teacher.setLanguage(true);
         teacher.setImage("qwertyuiopasdfghjklzxcvbnm");
         teacher.setIdTeacher(i);
@@ -142,9 +142,8 @@ public class TestBusinness {
         String[] nomi = new String[]{"Matematica", "Fisica", "Informatica", "Network"};
         lesson.setName(nomi[(i * 3) % 4]);
         lesson.setPrice(10.00);
-        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
         lesson.setDescription("Bellissima Lezione");
-        lesson.setPublicationDate((Date) sdf1.parse("2019-04-22"));
+        lesson.setPublicationDate(Date.valueOf("2019-04-22"));
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         lesson.setCreateDate(timestamp);
         lesson.setUpdateDate(timestamp);
@@ -159,20 +158,35 @@ public class TestBusinness {
      * Metodi di test che generano i dati di Message simulando simulateFindAllMessageByChat
      * @return Lista di 20 messaggi
      */
-    public static List<Message> simulateFindAllMessageByChat(){
+    public static List<Message> simulateFindAllMessageByUser(User user){
         List<Message> allMessageByChat = new ArrayList<>();
-        for (int i = 0; i < 50; i++){
-            allMessageByChat.add(generateMessaggi(i));
+        for (int i = 0; i < 20; i++){
+            allMessageByChat.add(generateMessaggiByUser(i, user));
         }
         return allMessageByChat;
     }
+
+
+
+    /**
+     * Metodi di test che generano i dati di Message simulando simulateFindAllMessageByChat
+     * @return Lista di 20 messaggi
+     */
+    public static List<Message> simulateFindAllMessageByChat(Chat chat) throws InterruptedException {
+        List<Message> allMessageByChat = new ArrayList<>();
+        for (int i = 0; i < 20; i++){
+            allMessageByChat.add(generateMessaggi(i, chat));
+        }
+        return allMessageByChat;
+    }
+
 
     /**
      * Genera una Message
      * @param i indice usato per generare la Message
      * @return una Message
      */
-    private static Message generateMessaggi(int i){
+    private static Message generateMessaggiByUser(int i, User user){
         Message message = new Message();
         message.setIdMessage(i);
         message.setText("prova Messaggio");
@@ -183,18 +197,53 @@ public class TestBusinness {
         message.setIdChat(generateChat(i));
         List<User> userList = new ArrayList<>();
 
-        userList.add(generateUserMessage(0));
+        userList.add(user);
         userList.add(generateUserMessage(1));
         message.setIdUser(userList);
         return message;
 
     }
 
-    private static User generateUser(int i){
+
+    /**
+     * Genera una Message
+     * @param i indice usato per generare la Message
+     * @return una Message
+     */
+    private static Message generateMessaggi(int i, Chat chat) throws InterruptedException {
+        Message message = new Message();
+        message.setIdMessage(i);
+        message.setText("prova Messaggio");
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        message.setSendDate(timestamp);
+        message.setCreateDate(timestamp);
+        message.setUpdateDate(timestamp);
+        message.setIdChat(chat);
+        List<User> userList = new ArrayList<>();
+
+        userList.add(generateUser(i));
+        userList.add(generateUser(i+1));
+        message.setIdUser(userList);
+//        TimeUnit.MINUTES.sleep(1);
+        return message;
+
+    }
+
+    public static User generateUser(int i){
         User user = new User();
         user.setIdUser(i);
-        user.setName("pippo");
-        user.setSurname("franco");
+        String[] emails = {"pippo@gmail.it", "antonio@gmail.it"};
+        String[] names = {"pippo", "antonio"};
+        String[] surnames = {"rossi", "verdi"};
+        if (i % 2 == 0) {
+            user.setName(names[0]);
+            user.setSurname(surnames[0]);
+            user.setEmail(emails[0]);
+        }else {
+            user.setName(names[1]);
+            user.setSurname(surnames[1]);
+            user.setEmail(emails[1]);
+        }
         return user;
     }
 
@@ -238,4 +287,6 @@ public class TestBusinness {
         subject.setUpdateDate(timestamp);
         return subject;
     }
+
+
 }

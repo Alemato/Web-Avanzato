@@ -5,17 +5,24 @@ import it.mytutor.domain.Chat;
 import it.mytutor.domain.Message;
 import it.mytutor.domain.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static it.mytutor.business.impl.test.TestBusinness.simulateFindAllMessageByChat;
+import static it.mytutor.business.impl.test.TestBusinness.simulateFindAllMessageByUser;
 
 public class MessageBusiness implements MessageInterface {
     // TODO costruttore Messaggio
 
     @Override
     public List<Message> findAllMessageByChat(Chat chat) {
-
-        return  simulateFindAllMessageByChat();
+        List<Message> messages = new ArrayList<>();
+        try {
+            messages.addAll(simulateFindAllMessageByChat(chat));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return  messages;
     }
 
     @Override
@@ -23,7 +30,7 @@ public class MessageBusiness implements MessageInterface {
 
     @Override
     public List<Message> findAllMessageByUser(User user) {
-        return simulateFindAllMessageByChat();
+        return simulateFindAllMessageByUser(user);
     }
 
     @Override

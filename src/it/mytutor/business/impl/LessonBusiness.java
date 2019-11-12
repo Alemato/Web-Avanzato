@@ -29,7 +29,14 @@ public class LessonBusiness implements LessonInterface {
 
     @Override
     public List<Lesson> findAllLessonByTeacher(Teacher teacher) {
-        return null;
+
+        List<Lesson> lessons = null;
+        try {
+            lessons = new ArrayList<>(simulateFindAllLesson());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return lessons;
     }
 
     @Override
@@ -44,7 +51,7 @@ public class LessonBusiness implements LessonInterface {
 
     @Override
     public Lesson createLesson(Lesson lesson) {
-        return null;
+        return lesson;
     }
 
     @Override
