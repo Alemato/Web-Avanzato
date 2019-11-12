@@ -28,6 +28,5 @@ public class ChatSerializer extends StdSerializer<Chat> {
         long updateDate = chat.getUpdateDate().getTime();
         jsonGenerator.writeNumberField("updateDate", updateDate);
         jsonGenerator.writeEndObject();
-        jsonGenerator.close();
     }
 }
