@@ -1,23 +1,23 @@
 - URL: auth/{SID}/chats/{CID}/messaggi
-    GET:    Lista di MessageSerializzer
-    POST:   MessageDeserializer
+    GET:    Lista di MessageSerializzer     X
+    POST:   MessageDeserializer             X
 
 
 - URL: auth/{SID}/chats/{CID}/messaggi/{MID}
-    GET:     MessageSerializzer
+    GET:     MessageSerializzer              X
 
 
 - URL: auth/{SID}/chats/{CID}/messaggi?[numero={n} & sotto={m}]
-    GET:    Lista di MessageSerializzer
+    GET:    Lista di MessageSerializzer           X
 
 
 - URL: auth/{SID}/chats
-    GET:    Lista di MessageSerializzer
-    POST:   CreatesDeserializzer
+    GET:    Lista di MessageSerializzer          X
+    POST:   CreatesDeserializzer                 X
 
 
 - URL: auth/{SID}/chats?[numero={n} & sotto={m}]
-    GET:    Lista di MessageSerializzer
+    GET:    Lista di MessageSerializzer          X
 
 
 - URL: auth/{SID}/prenotazioni-lezioni?{FILTRO}
