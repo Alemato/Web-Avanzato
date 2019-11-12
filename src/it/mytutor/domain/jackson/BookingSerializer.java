@@ -54,6 +54,5 @@ public class BookingSerializer extends StdSerializer<Booking> {
         jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();
-        jsonGenerator.close();
     }
 }
