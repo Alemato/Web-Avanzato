@@ -42,6 +42,5 @@ public class StudentSerializer extends StdSerializer<Student> {
         jsonGenerator.writeNumberField("updateDate", updateDate);
         jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();
-        jsonGenerator.close();
     }
 }
