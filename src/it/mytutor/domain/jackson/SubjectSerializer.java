@@ -28,6 +28,5 @@ public class SubjectSerializer extends StdSerializer<Subject> {
         long updateDateMillis = subject.getUpdateDate().getTime();
         jsonGenerator.writeNumberField("updateDate", updateDateMillis);
         jsonGenerator.writeEndObject();
-        jsonGenerator.close();
     }
 }
