@@ -52,6 +52,5 @@ public class PlanningSerializer extends StdSerializer<Planning> {
         jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();
-        jsonGenerator.close();
     }
 }
