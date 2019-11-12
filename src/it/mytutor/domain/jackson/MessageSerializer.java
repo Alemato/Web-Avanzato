@@ -49,6 +49,5 @@ public class MessageSerializer extends StdSerializer<Message> {
         }
         jsonGenerator.writeEndArray();
         jsonGenerator.writeEndObject();
-        jsonGenerator.close();
     }
 }
