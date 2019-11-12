@@ -31,7 +31,9 @@ public class MessageDeserializer extends StdDeserializer<Message> {
 
         Message message = new Message();
         message.setText(node.get("text").asText());
-        message.setSendDate(Timestamp.valueOf(node.get("sendDate").asText()));
+
+        message.setSendDate(new Timestamp(node.get("sendDate").asLong()));
+//        message.setSendDate(Timestamp.valueOf(node.get("sendDate").asText()));
 
         Chat chat = new Chat();
         JsonNode chatNode = node.get("chat");
