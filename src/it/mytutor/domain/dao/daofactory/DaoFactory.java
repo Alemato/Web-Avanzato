@@ -1,15 +1,16 @@
 package it.mytutor.domain.dao.daofactory;
 
+import com.mysql.jdbc.ConnectionImpl;
 import it.mytutor.domain.dao.exception.DatabaseException;
 
 import java.sql.*;
 
 public class DaoFactory {
 
-    private static String URL = "";
-    private static String USER = "";
-    private static String PASSWORD = "";
-    private static String DRIVER = "";
+    private static String URL = "jdbc:mysql://localhost/mytutor";
+    private static String USER = " ";
+    private static String PASSWORD = " ";
+    private static String DRIVER = "com.mysql.jdbc.Driver";
 
 
     /*connessione con il database*/
@@ -23,15 +24,9 @@ public class DaoFactory {
             conn.setAutoCommit(false);
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             System.out.println(e.getMessage());
-        } catch (InstantiationException e) {
-            System.out.println(e.getMessage());
-        } catch (IllegalAccessException e) {
-            System.out.println(e.getMessage());
-
         }
-
 
         return conn;
     }

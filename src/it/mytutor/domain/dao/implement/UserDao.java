@@ -17,8 +17,8 @@ import java.util.List;
 
 
 public class UserDao implements UserDaoInterface {
-    private static final String CREATE_USER_STATEMENT = "insert into User(Email,Password,Name,Surname,Birtday,Language,Image) values(?,?,?,?,?,?,?)";
-    private static final String UPDATE_USER_STATEMENT = "update User set Email=?,Password=?,Name=?,Surname=?,Birtday=?,Language=?,Image=? where idUser=? ";
+    private static final String CREATE_USER_STATEMENT = "insert into User(Email,Password,Name,Surname,Birthday,Language,Image) values(?,?,?,?,?,?,?)";
+    private static final String UPDATE_USER_STATEMENT = "update User set Email=?,Password=?,Name=?,Surname=?,Birthday=?,Language=?,Image=? where idUser=? ";
     private static final String GET_USER_BY_ID_STATEMENT = "select * from User where idUser=?";
     private static final String GET_USER_BY_NAME_STATEMENT = "select * from User where Name=?";
     private static final String GET_USER_BY_EMAIL_STATEMENT = "select * from User where Email=?";
@@ -31,7 +31,7 @@ public class UserDao implements UserDaoInterface {
             user.setPassword(resultSet.getString("Password"));
             user.setName(resultSet.getString("Name"));
             user.setSurname(resultSet.getString("Surname"));
-            user.setBirtday(resultSet.getDate("Birtday;"));
+            user.setBirthday(resultSet.getDate("Birthday"));
             user.setImage(resultSet.getString("Image"));
             user.setLanguage(resultSet.getBoolean("Language"));
             user.setCreateDate(resultSet.getTimestamp("CreateDate"));
@@ -189,7 +189,7 @@ public class UserDao implements UserDaoInterface {
     ;
     @Override
     public User getUserByEmail(String email) throws DatabaseException {
-        User user = null;
+        User user = new User();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
