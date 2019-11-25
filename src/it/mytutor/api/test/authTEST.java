@@ -9,6 +9,7 @@ import it.mytutor.business.security.securityexception.AuthenticationException;
 import it.mytutor.domain.Student;
 import it.mytutor.domain.Teacher;
 import it.mytutor.domain.User;
+import it.mytutor.domain.dao.exception.DatabaseException;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
@@ -38,20 +39,19 @@ public class authTEST {
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
     public Response authenticate(UserCredentials credentials) {
-
         try {
             Object utente = userService.autentication(credentials.getUsername(), credentials.getPassword());
             System.out.println(utente.toString());
             String token = authenticationTokenService.generateToken(utente);
             if (utente  instanceof Student){
                 Student student= (Student) utente;
-                return Response.ok(student).header("X-Auth", token).header("User-Type", "student").build();
+                return Response.ok(student).header("X-Auth", token).header("X-User-Type", "student").build();
             }else if(utente instanceof Teacher){
                 Teacher teacher= (Teacher) utente;
-                return Response.ok(teacher).header("X-Auth", token).header("User-Type", "teacher").build();
+                return Response.ok(teacher).header("X-Auth", token).header("X-User-Type", "teacher").build();
             }else if(utente instanceof User){
                 User admin = (User) utente;
-                return Response.ok(admin).header("X-Auth", token).header("User-Type", "admin").build();
+                return Response.ok(admin).header("X-Auth", token).header("X-User-Type", "admin").build();
             } else throw new ApiWebApplicationException("bad credentials");
         } catch (UserException e) {
             e.printStackTrace();

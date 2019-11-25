@@ -5,6 +5,8 @@ import it.mytutor.business.services.UserInterface;
 import it.mytutor.domain.Student;
 import it.mytutor.domain.Teacher;
 import it.mytutor.domain.User;
+import it.mytutor.domain.dao.exception.DatabaseException;
+import it.mytutor.domain.dao.implement.UserDao;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -22,7 +24,7 @@ public class UserBusiness implements UserInterface {
             teacher.setPassword("password");
             teacher.setName("Mario");
             teacher.setSurname("Rossi");
-            teacher.setBirtday(Date.valueOf("2015-03-31"));
+            teacher.setBirthday(Date.valueOf("2015-03-31"));
             teacher.setImage("image");
             teacher.setLanguage(true);
             teacher.setPostCode(1234);
@@ -39,7 +41,7 @@ public class UserBusiness implements UserInterface {
             student.setPassword("password");
             student.setName("Marco");
             student.setSurname("Bianchi");
-            student.setBirtday(Date.valueOf("2015-03-31"));
+            student.setBirthday(Date.valueOf("2015-03-31"));
             student.setLanguage(false);
             student.setImage("image");
             student.setStudyGrade("univeristario");
@@ -48,7 +50,7 @@ public class UserBusiness implements UserInterface {
     }
 
     @Override
-    public Object autentication(String username, String password) throws UserException {
+    public Object autentication(String username, String password) throws UserException, DatabaseException {
         Object object;
         User user = new User();
         user.setEmail(username);
@@ -56,6 +58,8 @@ public class UserBusiness implements UserInterface {
         user.setCreateDate(new Timestamp(System.currentTimeMillis()));
         user.setUpdateDate(new Timestamp(System.currentTimeMillis()));
         //TODO QUERY USER: per vedere se esiste ed di che tipo è
+        UserDao userDao = new UserDao();
+        System.out.println(userDao.getUserByEmail(username).toString());
         //TODO QUERY SULLA TABELLA DEL TIPO
         if(username.equals("mario")){
             Teacher teacher = new Teacher();
@@ -65,7 +69,7 @@ public class UserBusiness implements UserInterface {
             teacher.setRoles(2);
             teacher.setName("Mario");
             teacher.setSurname("Rossi");
-            teacher.setBirtday(Date.valueOf("2015-03-31"));
+            teacher.setBirthday(Date.valueOf("2015-03-31"));
             teacher.setLanguage(true);
             teacher.setImage("image");
             teacher.setCreateDate(new Timestamp(System.currentTimeMillis()));
@@ -94,7 +98,7 @@ public class UserBusiness implements UserInterface {
             student.setPassword(password);
             student.setName("Marco");
             student.setSurname("Bianchi");
-            student.setBirtday(Date.valueOf("2015-03-31"));
+            student.setBirthday(Date.valueOf("2015-03-31"));
             student.setLanguage(false);
             student.setImage("image");
             student.setIdStudent(1);
@@ -109,7 +113,7 @@ public class UserBusiness implements UserInterface {
             user.setRoles(1);
             user.setName("admin");
             user.setSurname("admin");
-            user.setBirtday(Date.valueOf("2015-03-31"));
+            user.setBirthday(Date.valueOf("2015-03-31"));
             user.setLanguage(false);
             user.setImage("image");
             user.setCreateDate(new Timestamp(System.currentTimeMillis()));
