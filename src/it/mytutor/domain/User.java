@@ -121,7 +121,7 @@ public class User {
         this.surname = surname;
     }
 
-    public void setBirtday(Date birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 

@@ -35,7 +35,7 @@ public class StudentDeserializer extends StdDeserializer<Student> {
         student.setName(userNode.get("name").asText());
         student.setSurname(userNode.get("surname").asText());
         Date bDate = new Date(userNode.get("birthday").asLong());
-        student.setBirtday(bDate);
+        student.setBirthday(bDate);
         student.setLanguage(Boolean.getBoolean(userNode.get("language").asText()));
         student.setImage(userNode.get("image").asText());
         return student;

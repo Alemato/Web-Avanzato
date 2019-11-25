@@ -117,7 +117,7 @@ public class TestBusinness {
         teacher.setPassword("123456789");
         teacher.setName("Giovanni");
         teacher.setSurname("Storti");
-        teacher.setBirtday(Date.valueOf("1980-07-22"));
+        teacher.setBirthday(Date.valueOf("1980-07-22"));
         teacher.setLanguage(true);
         teacher.setImage("qwertyuiopasdfghjklzxcvbnm");
         teacher.setIdTeacher(i);
