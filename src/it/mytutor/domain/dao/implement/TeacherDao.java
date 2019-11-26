@@ -16,6 +16,7 @@ public class TeacherDao implements TeacherDaoInterface {
     private static final String CREATE_TEACHER_STATEMENT="insert into Teacher(PostCode,City,Region,Street,StreetNumber,Byography,IdUser) values (?,?,?,?,?,?,?)";
     private static final String UPDATE_TEACHER_STATEMENT="update Teacher set PostCode=?, City=?, Region=?, Street=?, StreetNumber=?, Byography=? where IdTeacher=?";
     private static final String GET_TEACHER_BY_ID_STATEMENT="select * from Teacher where IdTeacher=?";
+    private static final String GET_TEACHER_BY_USER_ID="select * from Teacher where IdUser=?";
     private static final String GET_ALL_TEACHER_STATEMENT="select * from Teacher";
 
 
@@ -29,9 +30,9 @@ public class TeacherDao implements TeacherDaoInterface {
             teacher.setStreet(resultSet.getString("Street"));
             teacher.setStreetNumber(resultSet.getString("StreetNumber"));
             teacher.setByography(resultSet.getString("Byography"));
+            teacher.setCrateDateTeacher(resultSet.getTimestamp("CreateDate"));
+            teacher.setUpdateDateTeacher(resultSet.getTimestamp("UpdateDate"));
             teacher.setIdTeacher(resultSet.getInt("IdUser"));
-            teacher.setCreateDate(resultSet.getTimestamp("createDateTeacher"));
-            teacher.setUpdateDate(resultSet.getTimestamp("updateDateTeacher"));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -145,6 +146,35 @@ public class TeacherDao implements TeacherDaoInterface {
 
         }
         return teachers;
+    }
+
+    @Override
+    public Teacher getTeacherByUserID(int userId) throws DatabaseException {
+        Teacher teacher = new Teacher();
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(GET_TEACHER_BY_USER_ID);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            prs.setInt(1,userId);
+            rs=prs.executeQuery();
+            if(rs.next()){
+                configureTeacher(teacher,rs);
+            }else{
+                throw new DatabaseException("rs is empty");
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+        return teacher;
     }
 
     @Override

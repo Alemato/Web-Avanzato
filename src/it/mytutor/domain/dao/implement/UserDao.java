@@ -28,6 +28,7 @@ public class UserDao implements UserDaoInterface {
         try {
             user.setIdUser(resultSet.getInt("idUser"));
             user.setEmail(resultSet.getString("Email"));
+            user.setRoles(resultSet.getInt("Roles"));
             user.setPassword(resultSet.getString("Password"));
             user.setName(resultSet.getString("Name"));
             user.setSurname(resultSet.getString("Surname"));
