@@ -193,7 +193,7 @@ public class Teacher extends User{
                 ", byography='" + byography + '\'' +
                 ", crateDateTeacher=" + crateDateTeacher +
                 ", updateDateTeacher=" + updateDateTeacher +
-                " User{" +
+                ", User{" +
                 "idUser=" + this.getIdUser() +
                 ", email='" + this.getEmail() + '\'' +
                 ", roles=" + this.getRoles() +
