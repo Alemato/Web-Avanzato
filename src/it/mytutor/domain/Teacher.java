@@ -105,6 +105,19 @@ public class Teacher extends User{
 
     //SETTER
 
+    public void setUser(User user){
+        this.setIdUser(user.getIdUser());
+        this.setEmail(user.getEmail());
+        this.setRoles(user.getRoles());
+        this.setPassword(user.getPassword());
+        this.setName(user.getName());
+        this.setSurname(user.getSurname());
+        this.setBirthday(user.getBirthday());
+        this.setLanguage(user.getLanguage());
+        this.setImage(user.getImage());
+        this.setCreateDate(user.getCreateDate());
+        this.setUpdateDate(user.getUpdateDate());
+    }
     public void setIdTeacher(Integer idTeacher) {
         this.idTeacher = idTeacher;
     }
