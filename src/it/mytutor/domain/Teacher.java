@@ -193,6 +193,19 @@ public class Teacher extends User{
                 ", byography='" + byography + '\'' +
                 ", crateDateTeacher=" + crateDateTeacher +
                 ", updateDateTeacher=" + updateDateTeacher +
+                " User{" +
+                "idUser=" + this.getIdUser() +
+                ", email='" + this.getEmail() + '\'' +
+                ", roles=" + this.getRoles() +
+                ", password='" + this.getPassword() + '\'' +
+                ", name='" + this.getName() + '\'' +
+                ", surname='" + this.getSurname() + '\'' +
+                ", birthday=" + this.getBirthday() +
+                ", language=" + this.getLanguage() +
+                ", image='" + this.getImage() + '\'' +
+                ", createDate=" + this.getCreateDate() +
+                ", updateDate=" + this.getUpdateDate() +
+                '}'+
                 '}';
     }
 }

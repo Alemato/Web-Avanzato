@@ -55,14 +55,15 @@ public class UserBusiness implements UserInterface {
     @Override
     public Object autentication(String username, String password) throws UserException, DatabaseException {
         Object object = new Object();
-        //TODO QUERY USER: per vedere se esiste ed di che tipo è
+        // QUERY USER: per vedere se esiste ed di che tipo è
         UserDao userDao = new UserDao();
         User user = userDao.getUserByEmail(username);
         System.out.println(user.toString());
         System.out.println("hash da inserire :"+SecurityHash.SetHash(password));
         System.out.println("hash e giusto? "+ SecurityHash.equals(password,user) + " " + user.getPassword());
-        //TODO QUERY SULLA TABELLA DEL TIPO
+        // CONTROLLO LA PASSWORD
         if(SecurityHash.equals(password,user)){
+            // QUERY SULLA TABELLA DEL TIPO
             if(user.getRoles() == 1){
                 System.out.println("Studente");
             } else if (user.getRoles() == 2){
@@ -71,7 +72,6 @@ public class UserBusiness implements UserInterface {
                 Teacher teacher = teacherDao.getTeacherByUserID(user.getIdUser());
                 teacher.setUser(user);
                 object = teacher;
-                System.out.println(teacher.toString());
                 return object;
             } else if (user.getRoles() == 3){
                 System.out.println("Admin");
