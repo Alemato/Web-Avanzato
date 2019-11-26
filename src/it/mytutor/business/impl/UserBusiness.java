@@ -1,12 +1,15 @@
 package it.mytutor.business.impl;
 
 import it.mytutor.business.exceptions.UserException;
+import it.mytutor.business.security.SecurityHash;
 import it.mytutor.business.services.UserInterface;
 import it.mytutor.domain.Student;
 import it.mytutor.domain.Teacher;
 import it.mytutor.domain.User;
 import it.mytutor.domain.dao.exception.DatabaseException;
+import it.mytutor.domain.dao.implement.TeacherDao;
 import it.mytutor.domain.dao.implement.UserDao;
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -51,75 +54,30 @@ public class UserBusiness implements UserInterface {
 
     @Override
     public Object autentication(String username, String password) throws UserException, DatabaseException {
-        Object object;
-        User user = new User();
-        user.setEmail(username);
-        user.setPassword(password);
-        user.setCreateDate(new Timestamp(System.currentTimeMillis()));
-        user.setUpdateDate(new Timestamp(System.currentTimeMillis()));
+        Object object = new Object();
         //TODO QUERY USER: per vedere se esiste ed di che tipo è
         UserDao userDao = new UserDao();
-        System.out.println(userDao.getUserByEmail(username).toString());
+        User user = userDao.getUserByEmail(username);
+        System.out.println(user.toString());
+        System.out.println("hash da inserire :"+SecurityHash.SetHash(password));
+        System.out.println("hash e giusto? "+ SecurityHash.equals(password,user) + " " + user.getPassword());
         //TODO QUERY SULLA TABELLA DEL TIPO
-        if(username.equals("mario")){
-            Teacher teacher = new Teacher();
-            teacher.setIdUser(1);
-            teacher.setEmail(username);
-            teacher.setPassword(password);
-            teacher.setRoles(2);
-            teacher.setName("Mario");
-            teacher.setSurname("Rossi");
-            teacher.setBirthday(Date.valueOf("2015-03-31"));
-            teacher.setLanguage(true);
-            teacher.setImage("image");
-            teacher.setCreateDate(new Timestamp(System.currentTimeMillis()));
-            teacher.setUpdateDate(new Timestamp(System.currentTimeMillis()));
+        if(SecurityHash.equals(password,user)){
+            if(user.getRoles() == 1){
+                System.out.println("Studente");
+            } else if (user.getRoles() == 2){
+                System.out.println("Teacher");
+                TeacherDao teacherDao = new TeacherDao();
+                Teacher teacher = teacherDao.getTeacherByUserID(user.getIdUser());
+                teacher.setUser(user);
+                object = teacher;
+                System.out.println(teacher.toString());
+                return object;
+            } else if (user.getRoles() == 3){
+                System.out.println("Admin");
+            }
+        } else throw new UserException("AUTENTICAZIONE NON VALIDA");
 
-            teacher.setIdTeacher(1);
-            teacher.setPostCode(1234);
-            teacher.setCity("Roma");
-            teacher.setRegion("Lazio");
-            teacher.setStreet("Via roma");
-            teacher.setStreetNumber("1");
-            teacher.setByography("SONO MARIO");
-            teacher.setCrateDateTeacher(new Timestamp(System.currentTimeMillis()));
-            teacher.setUpdateDateTeacher(new Timestamp(System.currentTimeMillis()));
-
-            object = teacher;
-            return object;
-        }
-        else if (username.equals("marco")){
-            Student student = new Student();
-            student.setIdUser(1);
-            student.setEmail(username);
-            student.setRoles(1);
-            student.setCreateDate(new Timestamp(System.currentTimeMillis()));
-            student.setUpdateDate(new Timestamp(System.currentTimeMillis()));
-            student.setPassword(password);
-            student.setName("Marco");
-            student.setSurname("Bianchi");
-            student.setBirthday(Date.valueOf("2015-03-31"));
-            student.setLanguage(false);
-            student.setImage("image");
-            student.setIdStudent(1);
-            student.setStudyGrade("univeristario");
-            student.setCreateDateStudent(new Timestamp(System.currentTimeMillis()));
-            student.setUpdateDateStudent(new Timestamp(System.currentTimeMillis()));
-            object = student;
-            System.out.println(object.toString());
-            return object;
-        } else if(username.equals("admin")){
-            user.setIdUser(1);
-            user.setRoles(1);
-            user.setName("admin");
-            user.setSurname("admin");
-            user.setBirthday(Date.valueOf("2015-03-31"));
-            user.setLanguage(false);
-            user.setImage("image");
-            user.setCreateDate(new Timestamp(System.currentTimeMillis()));
-            user.setUpdateDate(new Timestamp(System.currentTimeMillis()));
-            object=user;
-            return object;
-        } else throw new UserException("AUTENTICAZIONE NON VALIDA USER NON E DI NESSUN TIPO");
+        throw new UserException("USER NON E DI NESSUN TIPO");
     }
 }

@@ -55,7 +55,9 @@ public class authTEST {
             } else throw new ApiWebApplicationException("bad credentials");
         } catch (UserException e) {
             e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server");
+            if (e.getMessage().equals("AUTENTICAZIONE NON VALIDA")){
+            throw new ApiWebApplicationException("credenziali non valide", 401);
+            } else throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
         } catch (AuthenticationException authenticationException) {
             authenticationException.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server");
