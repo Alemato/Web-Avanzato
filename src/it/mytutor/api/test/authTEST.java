@@ -63,7 +63,7 @@ public class authTEST {
             throw new ApiWebApplicationException("Errore interno al server");
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server");
+            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
         }
     }
 
