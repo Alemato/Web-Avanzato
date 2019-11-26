@@ -14,7 +14,6 @@ public interface TeacherDaoInterface {
      Teacher getTeacherByID(int id) throws DatabaseException;
   /*
      Teacher getTeacherByName(String name) throws DatabaseException;*/
-     Teacher getTeacherByUserID(int userId) throws DatabaseException;
 
      List<Teacher> getAllTeacher()throws DatabaseException;
 }
