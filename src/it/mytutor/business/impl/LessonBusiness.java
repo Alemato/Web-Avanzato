@@ -45,10 +45,15 @@ public class LessonBusiness implements LessonInterface {
     }
 
     @Override
-    public List<Lesson> findLessonByFilter(String filter) {
+    public List<Lesson> findLessonByFilter(String macroMateria, String nome, String zona, String microMateria,
+                                           String giornoSettimana, String prezzo, String oraInizio, String oraFine) {
+//        TODO logica del filtro con tutti i campi
         return null;
     }
-
+    @Override
+    public Lesson findLessonByID(Integer idLesson){
+        return null;
+    }
     @Override
     public Lesson createLesson(Lesson lesson) {
         return lesson;

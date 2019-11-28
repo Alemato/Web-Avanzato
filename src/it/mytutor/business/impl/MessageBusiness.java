@@ -28,6 +28,12 @@ public class MessageBusiness implements MessageInterface {
     @Override
     public Message getMessageById(int id){ return null; }
 
+//    @Override
+//    public boolean getIfNewMessages(int id){ return true; }
+
+    @Override
+    public List<Message> getNewMessagesByIdLast(int id){ return null; }
+
     @Override
     public List<Message> findAllMessageByUser(User user) {
         return simulateFindAllMessageByUser(user);

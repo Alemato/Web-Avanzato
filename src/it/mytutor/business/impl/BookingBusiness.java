@@ -21,7 +21,17 @@ public class BookingBusiness implements BookingInterface {
     }
 
     @Override
+    public Booking findBookingById(Integer idBooking) {
+        return null;
+    }
+
+    @Override
     public List<Booking> findAllBookingByDate(Date date) {
+        return null;
+    }
+
+    @Override
+    public List<Booking> findAllBookingByLessonAndDate(Date date, Lesson lesson) {
         return null;
     }
 
@@ -46,7 +56,7 @@ public class BookingBusiness implements BookingInterface {
     }
 
     @Override
-    public Booking updateBooking(Booking booking) {
+    public Booking updateBooking(Booking booking, String status) {
         return null;
     }
 }
