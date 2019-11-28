@@ -10,10 +10,12 @@ import java.util.List;
 
 public interface BookingInterface {
     List<Booking> findAllBooking();
+    Booking findBookingById(Integer idBooking);
+    List<Booking> findAllBookingByLessonAndDate(Date date, Lesson lesson);
     List<Booking> findAllBookingByDate(Date date);
     List<Booking> findAllBookingByStudnet(Student student);
     List<Booking> findAllBookingByTeacher(Teacher teacher);
     List<Booking> findAllBookingByLesson(Lesson lesson);
     Booking crateBooking(Booking booking);
-    Booking updateBooking(Booking booking);
+    Booking updateBooking(Booking booking, String status);
 }
