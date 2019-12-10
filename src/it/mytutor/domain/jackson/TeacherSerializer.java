@@ -31,6 +31,7 @@ public class TeacherSerializer extends StdSerializer<Teacher> {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idUser", teacher.getIdUser());
         jsonGenerator.writeStringField("email", teacher.getEmail());
+        jsonGenerator.writeNumberField("roles", teacher.getRoles());
         jsonGenerator.writeStringField("name", teacher.getName());
         jsonGenerator.writeStringField("surname", teacher.getSurname());
         long bMillis = teacher.getBirthday().getTime();
