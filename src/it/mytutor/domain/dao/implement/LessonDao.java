@@ -47,17 +47,17 @@ public class LessonDao implements LessonDaoInterface {
         teacher.setCrateDateTeacher(resultSet.getTimestamp("t.CreateDate"));
         teacher.setUpdateDateTeacher(resultSet.getTimestamp("t.UpdateDate"));
 
-        user.setIdUser(resultSet.getInt("u.IdUser"));
-        user.setEmail(resultSet.getString("u.Email"));
-        user.setRoles(resultSet.getInt("u.Roles"));
-        user.setPassword(resultSet.getString("u.Password"));
-        user.setName(resultSet.getString("u.Name"));
-        user.setSurname(resultSet.getString("u.Surname"));
-        user.setBirthday(resultSet.getDate("u.Birthday"));
-        user.setLanguage(resultSet.getBoolean("u.Language"));
-        user.setImage(resultSet.getString("u.Image"));
-        user.setCreateDate(resultSet.getTimestamp("u.CreateDate"));
-        user.setUpdateDate(resultSet.getTimestamp("u.UpdateDate"));
+        teacher.setIdUser(resultSet.getInt("u.IdUser"));
+        teacher.setEmail(resultSet.getString("u.Email"));
+        teacher.setRoles(resultSet.getInt("u.Roles"));
+        teacher.setPassword(resultSet.getString("u.Password"));
+        teacher.setName(resultSet.getString("u.Name"));
+        teacher.setSurname(resultSet.getString("u.Surname"));
+        teacher.setBirthday(resultSet.getDate("u.Birthday"));
+        teacher.setLanguage(resultSet.getBoolean("u.Language"));
+        teacher.setImage(resultSet.getString("u.Image"));
+        teacher.setCreateDate(resultSet.getTimestamp("u.CreateDate"));
+        teacher.setUpdateDate(resultSet.getTimestamp("u.UpdateDate"));
         teacher.setUser(user);
         lesson.setTeacher(teacher);
 
