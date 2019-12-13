@@ -36,9 +36,9 @@ public class SubjectDao implements SubjectDaoInterface {
     private void configureSubjectList(List<Subject> users, ResultSet resultSet) throws DatabaseException {
         try {
             while (resultSet.next()) {
-                Subject subject = new Subject();
-                configureSubject(subject, resultSet);
-                users.add(subject);
+                // Subject subject = new Subject();
+                // configureSubject(subject, resultSet);
+                // users.add(subject);
             }
         } catch (SQLException e) {
             e.printStackTrace();

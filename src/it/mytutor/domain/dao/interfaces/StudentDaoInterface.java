@@ -12,9 +12,9 @@ public interface StudentDaoInterface {
 
      void modifyStudent(Student student)throws DatabaseException;
 
-
-
      Student getStudentByID(int id)throws DatabaseException;
+
+     Student getStudentByIdUser (int id)throws DatabaseException;
 
      List<Student> getAllStudent()throws DatabaseException;
 

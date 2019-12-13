@@ -142,6 +142,7 @@ public class RESTTestServer {
     @Path("304")
     @Consumes("application/json")
     @Produces("text/plain")
+    @PermitAll
     public Response test304() {
         return Response.status(Status.NOT_MODIFIED).build();
     }
@@ -189,6 +190,7 @@ public class RESTTestServer {
     @Path("403")
     @Consumes("application/json")
     @Produces("text/plain")
+    @PermitAll
     public Response test403() {
         return Response.status(Status.FORBIDDEN).build();
     }

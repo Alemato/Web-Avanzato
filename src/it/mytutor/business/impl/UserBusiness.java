@@ -7,6 +7,7 @@ import it.mytutor.domain.Student;
 import it.mytutor.domain.Teacher;
 import it.mytutor.domain.User;
 import it.mytutor.domain.dao.exception.DatabaseException;
+import it.mytutor.domain.dao.implement.StudentDao;
 import it.mytutor.domain.dao.implement.TeacherDao;
 import it.mytutor.domain.dao.implement.UserDao;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
@@ -66,6 +67,11 @@ public class UserBusiness implements UserInterface {
             // QUERY SULLA TABELLA DEL TIPO
             if(user.getRoles() == 1){
                 System.out.println("Studente");
+                StudentDao studentDao = new StudentDao();
+                Student student = studentDao.getStudentByIdUser(user.getIdUser());
+                student.setUser(user);
+                object = student;
+                return object;
             } else if (user.getRoles() == 2){
                 System.out.println("Teacher");
                 TeacherDao teacherDao = new TeacherDao();
@@ -75,6 +81,8 @@ public class UserBusiness implements UserInterface {
                 return object;
             } else if (user.getRoles() == 3){
                 System.out.println("Admin");
+                object = user;
+                return object;
             }
         } else throw new UserException("AUTENTICAZIONE NON VALIDA");
 

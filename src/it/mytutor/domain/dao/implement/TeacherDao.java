@@ -33,7 +33,6 @@ public class TeacherDao implements TeacherDaoInterface {
             teacher.setCrateDateTeacher(resultSet.getTimestamp("CreateDate"));
             teacher.setUpdateDateTeacher(resultSet.getTimestamp("UpdateDate"));
             teacher.setIdTeacher(resultSet.getInt("IdUser"));
-
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DatabaseException("Errore nel creare oggetto Teacher");

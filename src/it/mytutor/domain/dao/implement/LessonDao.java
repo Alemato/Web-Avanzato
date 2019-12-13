@@ -28,9 +28,9 @@ public class LessonDao implements LessonDaoInterface {
         lesson.setPublicationDate(resultSet.getDate(""));
         lesson.setCreateDate(resultSet.getTimestamp(""));
         lesson.setUpdateDate(resultSet.getTimestamp(""));
-        Subject subject = new Subject();
-        subject.setIdSubject(resultSet.getInt(""));
-        lesson.setSubject(subject);
+        // Subject subject = new Subject();
+        // subject.setIdSubject(resultSet.getInt(""));
+        // lesson.setSubject(subject);
         Teacher teacher = new Teacher();
         teacher.setIdTeacher(resultSet.getInt(""));
         lesson.setTeacher(teacher);
@@ -43,9 +43,9 @@ public class LessonDao implements LessonDaoInterface {
     private void configureLessonList(List<Lesson> lessons, ResultSet resultSet) throws DatabaseException {
         try {
             while (resultSet.next()) {
-                Lesson lesson = new Lesson();
-                configureLesson(lesson, resultSet);
-                lessons.add(lesson);
+                // Lesson lesson = new Lesson();
+                // configureLesson(lesson, resultSet);
+                // lessons.add(lesson);
             }
         } catch (SQLException e) {
             e.printStackTrace();

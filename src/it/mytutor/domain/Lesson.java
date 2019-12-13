@@ -27,24 +27,12 @@ public class Lesson {
     private Teacher teacher;
 
     //COSTRUTTORI
-
     public Lesson(){
-        super();
-    }
-
-    public Lesson(String name, Double price, String description, Date publicationDate, Teacher teacher) {
-        super();
-        this.name = name;
-        this.price = price;
-        this.description = description;
-        this.publicationDate = publicationDate;
-        this.teacher=teacher;
     }
 
     public Lesson(Integer idLesson, String name, Double price,
                   String description, Date publicationDate,
                   Timestamp createDate, Timestamp updateDate, Subject subject, Teacher teacher) {
-        super();
         this.idLesson = idLesson;
         this.name = name;
         this.price = price;
@@ -69,6 +57,7 @@ public class Lesson {
     public Double getPrice() {
         return price;
     }
+
     public String getDescription() {
         return description;
     }
@@ -76,6 +65,7 @@ public class Lesson {
     public Date getPublicationDate() {
         return publicationDate;
     }
+
     public Timestamp getCreateDate() {
         return createDate;
     }
@@ -166,8 +156,8 @@ public class Lesson {
                 ", publicationDate=" + publicationDate +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
-                ", subject=" + subject.toString() +
-                ", teacher=" + teacher.toString() +
+                ", " + subject.toString() +
+                ", " + teacher.toString() +
                 '}';
     }
 }

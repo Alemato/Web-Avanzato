@@ -88,6 +88,20 @@ public class Student extends User {
         this.updateDateStudent = updateDateStudent;
     }
 
+    public void setUser(User user){
+        this.setIdUser(user.getIdUser());
+        this.setEmail(user.getEmail());
+        this.setRoles(user.getRoles());
+        this.setPassword(user.getPassword());
+        this.setName(user.getName());
+        this.setSurname(user.getSurname());
+        this.setBirthday(user.getBirthday());
+        this.setLanguage(user.getLanguage());
+        this.setImage(user.getImage());
+        this.setCreateDate(user.getCreateDate());
+        this.setUpdateDate(user.getUpdateDate());
+    }
+
     //EQUALS
 
     @Override
@@ -112,7 +126,12 @@ public class Student extends User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Student{" +
+                "idStudent=" + idStudent +
+                ", studyGrade='" + studyGrade + '\'' +
+                ", createDateStudent=" + createDateStudent +
+                ", updateDateStudent=" + updateDateStudent +
+                ", User{" +
                 "idUser=" + super.getIdUser() +
                 ", email='" + super.getEmail() + '\'' +
                 ", roles=" + super.getRoles() +
@@ -125,11 +144,6 @@ public class Student extends User {
                 ", createDate=" + super.getCreateDate() +
                 ", updateDate=" + super.getUpdateDate() +
                 "} "+
-                "Student{" +
-                "idStudent=" + idStudent +
-                ", studyGrade='" + studyGrade + '\'' +
-                ", createDateStudent=" + createDateStudent +
-                ", updateDateStudent=" + updateDateStudent +
                 '}';
     }
 }

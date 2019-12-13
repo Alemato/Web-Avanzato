@@ -52,9 +52,9 @@ public class LezioniRest {
                                       @QueryParam("ora-inizio") String oraInizio,
                                       @QueryParam("ora-fine") String oraFine) throws DatabaseException {
 
-        List<Lesson> lessons = new ArrayList<>(lessonService.findLessonByFilter(macroMateria, nome, zona,
-                microMateria, giornoSettimana, prezzo, oraInizio, oraFine));
-        return Response.ok(lessons).build();
+        /*List<Lesson> lessons = new ArrayList<>(lessonService.findLessonByFilter(macroMateria, nome, zona,
+                microMateria, giornoSettimana, prezzo, oraInizio, oraFine));*/
+        return Response.ok().build();
     }
 //    @GET
 //    @Path("teach")

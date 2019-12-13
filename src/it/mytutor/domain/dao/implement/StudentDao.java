@@ -16,16 +16,17 @@ public class StudentDao implements StudentDaoInterface {
     private static final String CREATE_STUDENT_STATEMENT="insert into Student(studyGrade,IdUser) value (?,?)";
     private static final String UPDATE_STUDENT_STATEMENT="update Student set studyGrade=? where idStudent=?";
     private static final String GET_STUDENT_BY_ID_STATEMENT="select * from Student where idStudent=?";
+    private static final String GET_STUDENT_BY_ID_USER = "select * from Student where IdUser=?";
     private static final String GET_ALL_STUDENT_STATEMENT="select * from Student";
 
    private void configureStudent(Student student, ResultSet resultSet) throws DatabaseException {
         try {
 
             student.setIdStudent(resultSet.getInt("IdStudent"));
-            student.setStudyGrade(resultSet.getString("studyGrade"));
+            student.setStudyGrade(resultSet.getString("StudyGrade"));
+            student.setCreateDateStudent(resultSet.getTimestamp("CreateDate"));
+            student.setUpdateDateStudent(resultSet.getTimestamp("UpdateDate"));
             student.setIdUser(resultSet.getInt("IdUser"));
-            student.setCreateDate(resultSet.getTimestamp("createDateStudent"));
-            student.setUpdateDate(resultSet.getTimestamp("updateDateStudent"));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -141,6 +142,37 @@ public class StudentDao implements StudentDaoInterface {
         PreparedStatement prs = null;
         try {
             prs = conn.prepareStatement(GET_STUDENT_BY_ID_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            prs.setInt(1,id);
+            rs=prs.executeQuery();
+            if(rs.next()){
+                configureStudent(student,rs);
+            }else{
+                throw new DatabaseException("rs is empty");
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
+
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+
+        }
+        return student;
+    }
+
+    @Override
+    public Student getStudentByIdUser(int id) throws DatabaseException {
+        Student student=new Student();
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(GET_STUDENT_BY_ID_USER);
             if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }

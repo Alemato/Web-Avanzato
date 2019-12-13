@@ -17,19 +17,11 @@ public class Subject {
     private Timestamp createDate;
     private Timestamp updateDate;
 
-    //COSTRUTTORI
-    public Subject() {
-        super();
-    }
+    public Subject(){
 
-    public Subject(String macroSubject, String microSubject) {
-        super();
-        this.macroSubject = macroSubject;
-        this.microSubject = microSubject;
     }
 
     public Subject(Integer idSubject, String macroSubject, String microSubject, Timestamp createDate, Timestamp updateDate) {
-        super();
         this.idSubject = idSubject;
         this.macroSubject = macroSubject;
         this.microSubject = microSubject;
