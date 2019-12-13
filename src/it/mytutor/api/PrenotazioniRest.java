@@ -1,13 +1,22 @@
 package it.mytutor.api;
 
+import io.jsonwebtoken.lang.Strings;
 import it.mytutor.business.impl.BookingBusiness;
+import it.mytutor.business.impl.LessonBusiness;
 import it.mytutor.business.services.BookingInterface;
+import it.mytutor.business.services.LessonInterface;
 import it.mytutor.domain.Booking;
+import it.mytutor.domain.Student;
+import it.mytutor.domain.Teacher;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @Path("auth/lezioni/{LID}/prenotazioni")
 public class PrenotazioniRest {
@@ -19,22 +28,9 @@ public class PrenotazioniRest {
         this.lid = lid;
     }
 
-    @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_HTML)
-    @PermitAll
-    public String getPrenotazioni(@QueryParam("filtro") String filtro){
-        return "<h1 style=\"" +
-                "color: red; "+
-                "margin: auto; " +
-                "width: fit-content; " +
-                "margin-top: 20%;\" " +
-                ">Componente Prenotazioni con @QueryParam(\"filtro\"):" + filtro + " (a default vale null)</h1>";
-    }
-
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @PermitAll
+    @Produces(MediaType.TEXT_PLAIN)
     public Response creaPrenotazione(Booking booking){
         bookingService.crateBooking(booking);
         return Response.ok().build();
@@ -43,8 +39,9 @@ public class PrenotazioniRest {
     @Path("{PID}")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_HTML)
-    public Response rispostaTheacher(@PathParam("PID") String pid){
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response rispostaTheacher(@PathParam("PID") Integer pid, @QueryParam("status") Integer lessonState){
+        bookingService.updateBooking(bookingService.findBookingById(pid), lessonState);
         return Response.ok().build();
     }
 }
