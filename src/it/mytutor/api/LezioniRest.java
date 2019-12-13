@@ -7,7 +7,6 @@ import it.mytutor.business.services.LessonInterface;
 import it.mytutor.business.services.UserInterface;
 import it.mytutor.domain.Lesson;
 import it.mytutor.domain.Planning;
-import it.mytutor.domain.Student;
 import it.mytutor.domain.Teacher;
 import it.mytutor.domain.dao.exception.DatabaseException;
 
@@ -31,29 +30,10 @@ public class LezioniRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"TEACHER"})
-    public Response getLezioniTeachAll(SecurityContext sc) throws UserException {
+    public Response getLezioniTeachAll(SecurityContext sc) throws UserException, DatabaseException {
         String teacherEmail = sc.getUserPrincipal().getName();
         Teacher teacher = (Teacher) userService.findUserByUsername(teacherEmail);
         List<Lesson> lessons = new ArrayList<>(lessonService.findAllLessonByTeacher(teacher));
-        return Response.ok(lessons).build();
-    }
-
-    @GET
-    @Path("stud")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"STUDENT"})
-    public Response getLezioniStudAll(@QueryParam("macro-materia") String macroMateria,
-                                      @QueryParam("nome") String nome,
-                                      @QueryParam("zona") String zona,
-                                      @QueryParam("micro-materia") String microMateria,
-                                      @QueryParam("giorno-settimana") String giornoSettimana,
-                                      @QueryParam("prezzo") String prezzo,
-                                      @QueryParam("ora-inizio") String oraInizio,
-                                      @QueryParam("ora-fine") String oraFine) throws DatabaseException {
-
-        List<Lesson> lessons = new ArrayList<>(lessonService.findLessonByFilter(macroMateria, nome, zona,
-                microMateria, giornoSettimana, prezzo, oraInizio, oraFine));
         return Response.ok(lessons).build();
     }
 //    @GET
@@ -160,8 +140,7 @@ public class LezioniRest {
     @PermitAll
     public Response creaLezione(Planning planning) {
         System.out.println(planning);
-//        Planning planning1 = lessonService.createLesson(planning);
-//        System.out.println(planning1);
+
         return Response.ok().build();
 
     }
