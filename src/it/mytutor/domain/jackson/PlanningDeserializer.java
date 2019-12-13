@@ -35,8 +35,8 @@ public class PlanningDeserializer  extends StdDeserializer<Planning> {
         lesson.setName(node.findPath("lesson").findPath("name").asText());
         lesson.setPrice(node.findPath("lesson").findPath("price").asDouble());
         lesson.setDescription(node.findPath("lesson").findPath("description").asText());
-        Date pDate = new Date(node.findPath("lesson").findPath("publicationDate").asLong());
-        lesson.setPublicationDate(pDate);
+//        Date pDate = new Date(node.findPath("lesson").findPath("publicationDate").asLong());
+//        lesson.setPublicationDate(pDate);
 
         Subject subject = new Subject();
         subject.setMacroSubject(node.findPath("lesson").findPath("subject").findPath("macroSubject").asText());

@@ -10,7 +10,9 @@ import java.io.IOException;
 
 public class PlanningSerializer extends StdSerializer<Planning> {
 
-    public PlanningSerializer() { this(null); }
+    public PlanningSerializer() {
+        this(null);
+    }
 
     public PlanningSerializer(Class<Planning> t) {
         super(t);
@@ -42,13 +44,19 @@ public class PlanningSerializer extends StdSerializer<Planning> {
         jsonGenerator.writeNumberField("lessonUpdateDate", lessonUpdateDate);
         jsonGenerator.writeFieldName("subject");
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeStringField("idSubject", planning.getLesson().getSubject().getIdSubject().toString());
+        jsonGenerator.writeNumberField("idSubject", planning.getLesson().getSubject().getIdSubject());
         jsonGenerator.writeStringField("macroSubject", planning.getLesson().getSubject().getMacroSubject());
         jsonGenerator.writeStringField("microSubject", planning.getLesson().getSubject().getMicroSubject());
         long subjectCreateDate = planning.getLesson().getSubject().getCreateDate().getTime();
         jsonGenerator.writeNumberField("subjectCreateDate", subjectCreateDate);
         long subjectUpdateDate = planning.getLesson().getSubject().getUpdateDate().getTime();
         jsonGenerator.writeNumberField("subjectUpdateDate", subjectUpdateDate);
+        jsonGenerator.writeEndObject();
+        jsonGenerator.writeFieldName("teacher");
+        jsonGenerator.writeStartObject();
+        jsonGenerator.writeNumberField("idTeacher", planning.getLesson().getTeacher().getIdTeacher());
+        jsonGenerator.writeStringField("nameTeacher", planning.getLesson().getTeacher().getName());
+        jsonGenerator.writeStringField("surnameTeacher", planning.getLesson().getTeacher().getSurname());
         jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();

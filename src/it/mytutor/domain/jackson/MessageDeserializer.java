@@ -38,7 +38,7 @@ public class MessageDeserializer extends StdDeserializer<Message> {
         Chat chat = new Chat();
         JsonNode chatNode = node.get("chat");
         chat.setIdChat(chatNode.get("idChat").asInt());
-        chat.setName(chatNode.get("name").asText());
+        chat.setName(chatNode.get("chatName").asText());
         message.setIdChat(chat);
 
         List<User> userList = new ArrayList<User>();
