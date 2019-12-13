@@ -31,11 +31,9 @@ public class LessonBusiness implements LessonInterface {
     }
 
     @Override
-    public List<Lesson> findAllLessonByTeacher(Teacher teacher) {
-
-        List<Lesson> lessons = new ArrayList<>();
-
-        return lessons;
+    public List<Lesson> findAllLessonByTeacher(Teacher teacher) throws DatabaseException {
+        LessonDao lessonDao = new LessonDao();
+        return lessonDao.getLessonsByTeacher(teacher);
     }
 
     @Override
@@ -43,49 +41,6 @@ public class LessonBusiness implements LessonInterface {
         return null;
     }
 
-//    @Override
-//    public List<Lesson> findLessonByFilter(String macroMateria, String nome, String zona, String microMateria,
-//                                           String giornoSettimana, String prezzo, String oraInizio, String oraFine) throws DatabaseException {
-//        LessonDao lessonDao = new LessonDao();
-//        List<Lesson> lessons = new ArrayList<>();
-//        int macroMateriaRelevant  = 0;
-//        if (macroMateria != null && !macroMateria.isEmpty()){
-//            macroMateriaRelevant = 1;
-//        }
-//        int nomeRelevant  = 0;
-//        if (nome != null && !nome.isEmpty()){
-//            nomeRelevant = 1;
-//        }
-//        int zonaRelevant  = 0;
-//        if (zona != null && !zona.isEmpty()){
-//            zonaRelevant = 1;
-//        }
-//        int microMateriaRelevant  = 0;
-//        if (microMateria != null && !microMateria.isEmpty()){
-//            microMateriaRelevant = 1;
-//        }
-//        int giornoSettimanaRelevant  = 0;
-//        if (giornoSettimana != null && !giornoSettimana.isEmpty()){
-//            giornoSettimanaRelevant = 1;
-//        }
-//        int prezzoRelevant  = 0;
-//        if (prezzo != null && !prezzo.isEmpty()){
-//            prezzoRelevant = 1;
-//        }
-//        int oraInizioRelevant  = 0;
-//        if (oraInizio != null && !oraInizio.isEmpty()){
-//            oraInizioRelevant = 1;
-//        }
-//        int oraFineaRelevant  = 0;
-//        if (oraFine != null && !oraFine.isEmpty()){
-//            oraFineaRelevant = 1;
-//        }
-//
-//        lessons = lessonDao.getLessonByFilter(macroMateriaRelevant, macroMateria, nomeRelevant, nome,
-//                zonaRelevant, zona, microMateriaRelevant, microMateria, giornoSettimanaRelevant, giornoSettimana,
-//                prezzoRelevant, prezzo, oraInizioRelevant, oraInizio, oraFineaRelevant, oraFine);
-//        return lessons;
-//    }
     @Override
     public Lesson findLessonByID(Integer idLesson){
         return null;
