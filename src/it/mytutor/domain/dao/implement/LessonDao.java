@@ -1,12 +1,58 @@
 package it.mytutor.domain.dao.implement;
 
 import it.mytutor.domain.Lesson;
+import it.mytutor.domain.Subject;
+import it.mytutor.domain.Teacher;
+import it.mytutor.domain.dao.daofactory.DaoFactory;
 import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.interfaces.LessonDaoInterface;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LessonDao implements LessonDaoInterface {
+
+    private static final String GET_LESSON_BY_TEACHER_STATEMENT = "select * from Lesson where IdTeacher = ?";
+
+    private void configureLesson(Lesson lesson, ResultSet resultSet)throws DatabaseException {
+        try {
+
+        lesson.setIdLesson(resultSet.getInt(""));
+        lesson.setName(resultSet.getString(""));
+        lesson.setPrice(resultSet.getDouble(""));
+        lesson.setDescription(resultSet.getString(""));
+        lesson.setPublicationDate(resultSet.getDate(""));
+        lesson.setCreateDate(resultSet.getTimestamp(""));
+        lesson.setUpdateDate(resultSet.getTimestamp(""));
+        Subject subject = new Subject();
+        subject.setIdSubject(resultSet.getInt(""));
+        lesson.setSubject(subject);
+        Teacher teacher = new Teacher();
+        teacher.setIdTeacher(resultSet.getInt(""));
+        lesson.setTeacher(teacher);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException("Errore nel creare oggetto Lesson");
+        }
+    }
+    private void configureLessonList(List<Lesson> lessons, ResultSet resultSet) throws DatabaseException {
+        try {
+            while (resultSet.next()) {
+                Lesson lesson = new Lesson();
+                configureLesson(lesson, resultSet);
+                lessons.add(lesson);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException("Errore nel creare Lista oggetti Lesson");
+        }
+    }
+
     @Override
     public List<Lesson> getAllLesson() throws DatabaseException {
         return null;
@@ -20,6 +66,39 @@ public class LessonDao implements LessonDaoInterface {
     @Override
     public List<Lesson> getLessonsBySubject(String microSubject) throws DatabaseException {
         return null;
+    }
+
+    @Override
+    public List<Lesson> getLessonsByTeacher(Teacher teacher) throws DatabaseException{
+        List<Lesson> lessons = new ArrayList<>();
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(GET_LESSON_BY_TEACHER_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            prs.setInt(1,teacher.getIdTeacher());
+            rs=prs.executeQuery();
+
+            if (rs.next()){
+                configureLessonList(lessons,rs);
+            }else{
+                throw new DatabaseException("rs is empty");
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+        return lessons;
     }
 
     @Override
