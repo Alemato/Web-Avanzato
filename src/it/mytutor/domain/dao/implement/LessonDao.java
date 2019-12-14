@@ -3,6 +3,7 @@ package it.mytutor.domain.dao.implement;
 import it.mytutor.domain.Lesson;
 import it.mytutor.domain.Subject;
 import it.mytutor.domain.Teacher;
+import it.mytutor.domain.User;
 import it.mytutor.domain.dao.daofactory.DaoFactory;
 import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.interfaces.LessonDaoInterface;
@@ -18,21 +19,46 @@ public class LessonDao implements LessonDaoInterface {
 
     private static final String GET_LESSON_BY_TEACHER_STATEMENT = "select * from Lesson where IdTeacher = ?";
 
-    private void configureLesson(Lesson lesson, ResultSet resultSet)throws DatabaseException {
+    private void configureLesson(Lesson lesson, Subject subject, Teacher teacher, User user,  ResultSet resultSet)throws DatabaseException {
         try {
 
-        lesson.setIdLesson(resultSet.getInt(""));
-        lesson.setName(resultSet.getString(""));
-        lesson.setPrice(resultSet.getDouble(""));
-        lesson.setDescription(resultSet.getString(""));
-        lesson.setPublicationDate(resultSet.getDate(""));
-        lesson.setCreateDate(resultSet.getTimestamp(""));
-        lesson.setUpdateDate(resultSet.getTimestamp(""));
-        // Subject subject = new Subject();
-        // subject.setIdSubject(resultSet.getInt(""));
-        // lesson.setSubject(subject);
-        Teacher teacher = new Teacher();
-        teacher.setIdTeacher(resultSet.getInt(""));
+        lesson.setIdLesson(resultSet.getInt("l.IdLesson"));
+        lesson.setName(resultSet.getString("l.Name"));
+        lesson.setPrice(resultSet.getDouble("l.Price"));
+        lesson.setDescription(resultSet.getString("l.Description"));
+        lesson.setPublicationDate(resultSet.getDate("l.PublicationDate"));
+        lesson.setCreateDate(resultSet.getTimestamp("l.CreateDate"));
+        lesson.setUpdateDate(resultSet.getTimestamp("l.UpdateDate"));
+
+        subject.setIdSubject(resultSet.getInt("s.IdSubject"));
+        subject.setMacroSubject(resultSet.getString("s.MacroSubject"));
+        subject.setMicroSubject(resultSet.getString("s.MicroSubject"));
+        subject.setCreateDate(resultSet.getTimestamp("s.CreateDate"));
+        subject.setUpdateDate(resultSet.getTimestamp("s.UpdateDate"));
+        lesson.setSubject(subject);
+
+        teacher.setIdTeacher(resultSet.getInt("t.IdTeacher"));
+        teacher.setPostCode(resultSet.getInt("t.Postcode"));
+        teacher.setCity(resultSet.getString("t.City"));
+        teacher.setRegion(resultSet.getString("t.Region"));
+        teacher.setStreet(resultSet.getString("t.Street"));
+        teacher.setStreetNumber(resultSet.getString("t.StreetNumber"));
+        teacher.setByography(resultSet.getString("t.Byography"));
+        teacher.setCrateDateTeacher(resultSet.getTimestamp("t.CreateDate"));
+        teacher.setUpdateDateTeacher(resultSet.getTimestamp("t.UpdateDate"));
+
+        teacher.setIdUser(resultSet.getInt("u.IdUser"));
+        teacher.setEmail(resultSet.getString("u.Email"));
+        teacher.setRoles(resultSet.getInt("u.Roles"));
+        teacher.setPassword(resultSet.getString("u.Password"));
+        teacher.setName(resultSet.getString("u.Name"));
+        teacher.setSurname(resultSet.getString("u.Surname"));
+        teacher.setBirthday(resultSet.getDate("u.Birthday"));
+        teacher.setLanguage(resultSet.getBoolean("u.Language"));
+        teacher.setImage(resultSet.getString("u.Image"));
+        teacher.setCreateDate(resultSet.getTimestamp("u.CreateDate"));
+        teacher.setUpdateDate(resultSet.getTimestamp("u.UpdateDate"));
+        teacher.setUser(user);
         lesson.setTeacher(teacher);
 
         } catch (SQLException e) {
@@ -40,12 +66,12 @@ public class LessonDao implements LessonDaoInterface {
             throw new DatabaseException("Errore nel creare oggetto Lesson");
         }
     }
-    private void configureLessonList(List<Lesson> lessons, ResultSet resultSet) throws DatabaseException {
+    private void configureLessonList(List<Lesson> lessons, Subject subject, Teacher teacher, User user, ResultSet resultSet) throws DatabaseException {
         try {
             while (resultSet.next()) {
-                // Lesson lesson = new Lesson();
-                // configureLesson(lesson, resultSet);
-                // lessons.add(lesson);
+                Lesson lesson = new Lesson();
+                configureLesson(lesson, subject, teacher, user, resultSet);
+                lessons.add(lesson);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -71,6 +97,9 @@ public class LessonDao implements LessonDaoInterface {
     @Override
     public List<Lesson> getLessonsByTeacher(Teacher teacher) throws DatabaseException{
         List<Lesson> lessons = new ArrayList<>();
+        Subject subject = new Subject();
+        Teacher teacher1 = new Teacher();
+        User user = new User();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -86,7 +115,7 @@ public class LessonDao implements LessonDaoInterface {
             rs=prs.executeQuery();
 
             if (rs.next()){
-                configureLessonList(lessons,rs);
+                configureLessonList(lessons, subject, teacher1, user,rs);
             }else{
                 throw new DatabaseException("rs is empty");
             }

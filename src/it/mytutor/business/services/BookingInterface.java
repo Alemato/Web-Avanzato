@@ -7,6 +7,7 @@ import it.mytutor.domain.Teacher;
 import it.mytutor.domain.dao.exception.DatabaseException;
 
 import java.sql.Date;
+import java.text.ParseException;
 import java.util.List;
 
 public interface BookingInterface {
@@ -23,7 +24,7 @@ public interface BookingInterface {
     Booking updateBooking(Booking booking, Integer lessonState);
     List<Booking> findHistoricalBookingByStudent(Student student, String nomeLezione, String macroMateria,
                                                  String microMateria, String idTeacher, String date,
-                                                 String rifiutata, String annullata, String eseguita) throws DatabaseException;
+                                                 String rifiutata, String annullata, String eseguita) throws DatabaseException, ParseException;
     List<Booking> findHistoricalBookingByTeacher(Teacher teacher, String nomeLezione, String macroMateria,
                                                  String microMateria, String idTeacher, String date,
                                                  String rifiutata, String annullata, String eseguita) throws DatabaseException;
