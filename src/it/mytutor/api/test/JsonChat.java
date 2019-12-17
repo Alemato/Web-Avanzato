@@ -32,7 +32,7 @@ public class JsonChat {
     private ChatInterface service = new ChatBusiness();
     private MessageInterface messageService = new MessageBusiness();
 
-    @Path("list")
+   /* @Path("list")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
@@ -89,6 +89,6 @@ public class JsonChat {
         List<Chat> chats = service.findAllChatByUser(user);
 
         return Response.ok(chats).build();
-    }
+    }*/
 
 }

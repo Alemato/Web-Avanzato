@@ -25,12 +25,13 @@ public class MessageDeserializer extends StdDeserializer<Message> {
         super(vc);
     }
 
+    //TODO implementare il deseralizatore per messaggi
     @Override
     public Message deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Message message = new Message();
-        message.setText(node.get("text").asText());
+/*        message.setText(node.get("text").asText());
 
         message.setSendDate(new Timestamp(node.get("sendDate").asLong()));
 //        message.setSendDate(Timestamp.valueOf(node.get("sendDate").asText()));
@@ -39,7 +40,7 @@ public class MessageDeserializer extends StdDeserializer<Message> {
         JsonNode chatNode = node.get("chat");
         chat.setIdChat(chatNode.get("idChat").asInt());
         chat.setName(chatNode.get("chatName").asText());
-        message.setIdChat(chat);
+        message.setChat(chat);
 
         List<User> userList = new ArrayList<User>();
         ArrayNode users = (ArrayNode) node.get("users");
@@ -50,7 +51,7 @@ public class MessageDeserializer extends StdDeserializer<Message> {
             user.setIdUser(userNode.findPath("idUser").asInt());
             userList.add(user);
         }
-        message.setIdUser(userList);
+        message.setUser(userList);*/
 
         return message;
     }

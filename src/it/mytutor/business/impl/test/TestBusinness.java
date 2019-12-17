@@ -194,12 +194,12 @@ public class TestBusinness {
         message.setSendDate(timestamp);
         message.setCreateDate(timestamp);
         message.setUpdateDate(timestamp);
-        message.setIdChat(generateChat(i));
+        // message.setIdChat(generateChat(i));
         List<User> userList = new ArrayList<>();
 
         userList.add(user);
         userList.add(generateUserMessage(1));
-        message.setIdUser(userList);
+        // message.setIdUser(userList);
         return message;
 
     }
@@ -218,12 +218,12 @@ public class TestBusinness {
         message.setSendDate(timestamp);
         message.setCreateDate(timestamp);
         message.setUpdateDate(timestamp);
-        message.setIdChat(chat);
+        //message.setIdChat(chat);
         List<User> userList = new ArrayList<>();
 
         userList.add(generateUser(i));
         userList.add(generateUser(i+1));
-        message.setIdUser(userList);
+        //message.setIdUser(userList);
 //        TimeUnit.MINUTES.sleep(1);
         return message;
 
