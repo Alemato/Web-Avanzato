@@ -10,5 +10,7 @@ public interface MessageDaoInterface {
      void createMessage(Message message)throws DatabaseException;
      Message getMessagebyID(int id)throws DatabaseException;
      List<Message> getAllMessagesOfChat(int chatID)throws DatabaseException;
+     List<Message> getAllMessagesOfChatLimitFive(int chatID) throws DatabaseException;
+     Message getAMessageOfChat(int chatID) throws DatabaseException;
 
 }
