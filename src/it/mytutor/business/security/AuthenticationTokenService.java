@@ -15,7 +15,7 @@ public class AuthenticationTokenService {
     /**
      * How long the token is valid for (in seconds).
      */
-    private Long validFor = 36000L;
+    private Long validFor = 31536000L;
 
     /**
      * How many times the token can be refreshed.
