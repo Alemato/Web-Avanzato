@@ -1,23 +1,22 @@
 package it.mytutor.api;
 
+import it.mytutor.api.test.ApiWebApplicationException;
 import it.mytutor.business.impl.ChatBusiness;
 import it.mytutor.business.impl.CreatesBusiness;
 import it.mytutor.business.impl.MessageBusiness;
 import it.mytutor.business.services.ChatInterface;
 import it.mytutor.business.services.CreatesInterface;
 import it.mytutor.business.services.MessageInterface;
-import it.mytutor.domain.Chat;
 import it.mytutor.domain.Creates;
 import it.mytutor.domain.Message;
-import it.mytutor.domain.User;
+import it.mytutor.domain.dao.exception.DatabaseException;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
+import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 
@@ -28,80 +27,55 @@ public class ChatsRest {
     private MessageInterface messageService = new MessageBusiness();
     private CreatesInterface createsService = new CreatesBusiness();
 
-//    @GET
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @PermitAll
-//    public Response getChatsByIDByQuery(@QueryParam("numero") Integer numero, @QueryParam("sotto") Integer sotto) {
-//
-//        User user = new User();
-//        List<Chat> chats = new ArrayList<>(chatService.findAllChatByUser(user));
-//        System.out.println("chats");
-//        System.out.println(chats);
-//        List<Chat> chats20 = new ArrayList<Chat>();
-//        List<Message> messagesFin = new ArrayList<Message>();
-//        Integer index = 0;
-//
-//        if (numero == null && sotto == null) {
-//            if (chats.size() > 20) {
-//                chats20 = chats.subList(0, 20);
-//            } else {
-//                chats20.addAll(chats);
-//            }
-//        } else {
-//            for (Chat chat : chats) {
-//                if (chat.getIdChat().equals(sotto)) {
-//                    index = chats.indexOf(chat);
-//                }
-//            }
-//            if (chats.size() > index + 1 + numero) {
-//                chats20 = chats.subList(index + 1, index + 1 + numero);
-//            } else {
-//                chats20.subList(index + 1, chats.size());
-//            }
-//        }
-//        System.out.println("chats20");
-//        System.out.println(chats20);
-//        for (Chat chat : chats20) {
-//            List<Message> messagesProv = new ArrayList<Message>(messageService.findAllMessageByChat(chat));
-//            System.out.println("messagesProv");
-//            System.out.println(messagesProv);
-//            Message lastMessage = Collections.max(messagesProv, Comparator.comparing(Message::getSendDate));
-//            messagesFin.add(lastMessage);
-//        }
-//        System.out.println("messagesFin");
-//        System.out.println(messagesFin);
-//
-//        return Response.ok(messagesFin).build();
-//
-//    }
-
     /**
-     * Query rest chiamata per ricevere la lista di tutte le chat che
-     * saranno salvate nello storage
-     * @return lista di primi messaggi di ogni chat rappresentante la lista delle chat
+     * rest per ricevere la lista di tutte le chat che saranno salvate nello storage
+     * Con un solo l'ULTIMO MESSAGGIO ricevuto o inviato.
+     * @param requestContext
+     * @return
      */
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
-    public Response getChatsByIDByQuery(@QueryParam("idUltimaChat") Integer idUltimaChat) {
-        // TODO Prendere user in qualche modo
-        User user = new User();
-        List<Chat> chats = new ArrayList<>(chatService.findAllChatByUser(user));
-        List<Message> messagesFin = new ArrayList<Message>();
-
-        for (Chat chat : chats) {
-            List<Message> messagesProv = new ArrayList<Message>(messageService.findAllMessageByChat(chat));
-            Message lastMessage = Collections.max(messagesProv, Comparator.comparing(Message::getSendDate));
-            messagesFin.add(lastMessage);
+    @RolesAllowed({"STUDENT", "TEACHER"})
+    public Response getAllChat(ContainerRequestContext requestContext){
+        String username = requestContext.getSecurityContext().getUserPrincipal().getName();
+        List<Message> messageList;
+        try {
+            messageList = chatService.findAllChatByUser(username);
+            return Response.ok(messageList).build();
+        }catch (DatabaseException e){
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
         }
-        return Response.ok(messagesFin).build();
     }
 
-    private Response getChatsByID(String cid) {
-        //TODO da capire se e cosa fa
-        return Response.ok().build();
+    /**
+     * Query rest chiamata per ricevere la lista di tutte le chat che
+     * saranno salvate nello storage
+     * gli passiamo 0 per tutte le chat sue
+     * gli passiamo id del ultima per vedere le sole ultime chat
+     * @return lista di primi messaggi di ogni chat rappresentante la lista delle chat
+     */
+    @Path("byid")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"STUDENT", "TEACHER"})
+    public Response getChatsByIDByQuery(ContainerRequestContext requestContext, @QueryParam("idUltimaChat") Integer idUltimaChat) {
+        String username = requestContext.getSecurityContext().getUserPrincipal().getName();
+        List<Message> messageList;
+        try {
+            if (idUltimaChat == 0){
+                messageList = chatService.findAllChatByUserByQuery(username);
+                return Response.ok(messageList).build();
+            } else {
+               System.out.println("altro");
+               return Response.ok().build();
+            }
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
+        }
     }
 
     /**

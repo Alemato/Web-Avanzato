@@ -105,8 +105,8 @@ public class MessaggiRest {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         chat.setUpdateDate(timestamp);
         chat.setCreateDate(timestamp);
-        chat.setName(message.getIdChat().getName());
-        message.setIdChat(chat);
+        chat.setName(message.getChat().getName());
+        message.setChat(chat);
         message.setIdMessage(2);
         message.setUpdateDate(timestamp);
         message.setCreateDate(timestamp);
