@@ -21,7 +21,7 @@ public class Message {
     private Timestamp createDate;
     private Timestamp updateDate;
     private Chat chat;
-    private List<User> user = new ArrayList<User>();
+    private User user;
 
     //COSTRUTTORI
 
@@ -35,7 +35,7 @@ public class Message {
         this.sendDate = sendDate;
     }
 
-    public Message(Integer idMessage, String text, Timestamp sendDate, Timestamp createDate, Timestamp updateDate, Chat chat, List<User> user) {
+    public Message(Integer idMessage, String text, Timestamp sendDate, Timestamp createDate, Timestamp updateDate, Chat chat, User user) {
         this.idMessage = idMessage;
         this.text = text;
         this.sendDate = sendDate;
@@ -67,11 +67,11 @@ public class Message {
         return updateDate;
     }
 
-    public Chat getIdChat() {
+    public Chat getChat() {
         return chat;
     }
 
-    public List<User> getIdUser() {
+    public User getUser() {
         return user;
     }
 
@@ -98,11 +98,11 @@ public class Message {
         this.updateDate = updateDate;
     }
 
-    public void setIdChat(Chat chat) {
+    public void setChat(Chat chat) {
         this.chat = chat;
     }
 
-    public void setIdUser(List<User> user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
@@ -117,15 +117,15 @@ public class Message {
                 getSendDate().equals(message.getSendDate()) &&
                 getCreateDate().equals(message.getCreateDate()) &&
                 getUpdateDate().equals(message.getUpdateDate()) &&
-                getIdChat().equals(message.getIdChat()) &&
-                getIdUser().equals(message.getIdUser());
+                getChat().equals(message.getChat()) &&
+                getUser().equals(message.getUser());
     }
 
 
     //HASHCODE
     @Override
     public int hashCode() {
-        return Objects.hash(getIdMessage(), getText(), getSendDate(), getCreateDate(), getUpdateDate(), getIdChat(), getIdUser());
+        return Objects.hash(getIdMessage(), getText(), getSendDate(), getCreateDate(), getUpdateDate(), getChat(), getUser());
     }
 
     private String userListerToString(List<User> userList){
@@ -147,7 +147,7 @@ public class Message {
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
                 ", idChat=" + chat.toString() +
-                ", idUser=" + userListerToString(user) +
+                ", idUser=" + user.toString() +
                 '}';
     }
 }
