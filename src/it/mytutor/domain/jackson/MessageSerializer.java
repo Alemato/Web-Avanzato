@@ -31,22 +31,24 @@ public class MessageSerializer extends StdSerializer<Message> {
         jsonGenerator.writeNumberField("updateDate", updateDate);
         jsonGenerator.writeFieldName("chat");
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeStringField("idChat", message.getIdChat().getIdChat().toString());
-        jsonGenerator.writeStringField("chatName", message.getIdChat().getName());
-        long chatCreateDate = message.getIdChat().getCreateDate().getTime();
+        jsonGenerator.writeStringField("idChat", message.getChat().getIdChat().toString());
+        jsonGenerator.writeStringField("chatName", message.getChat().getName());
+        long chatCreateDate = message.getChat().getCreateDate().getTime();
         jsonGenerator.writeNumberField("chatCreateDate", chatCreateDate);
-        long chatUpdateDate = message.getIdChat().getUpdateDate().getTime();
+        long chatUpdateDate = message.getChat().getUpdateDate().getTime();
         jsonGenerator.writeNumberField("chatUpdateDate", chatUpdateDate);
         jsonGenerator.writeEndObject();
-        jsonGenerator.writeFieldName("users");
+        jsonGenerator.writeFieldName("user");
         jsonGenerator.writeStartArray();
-        for (User user : message.getIdUser()) {
-            jsonGenerator.writeStartObject();
-            jsonGenerator.writeNumberField("idUser", user.getIdUser());
-            jsonGenerator.writeStringField("name", user.getName());
-            jsonGenerator.writeStringField("surname", user.getSurname());
-            jsonGenerator.writeEndObject();
-        }
+        jsonGenerator.writeStartObject();
+        jsonGenerator.writeNumberField("idUser", message.getUser().getIdUser());
+        jsonGenerator.writeStringField("email", message.getUser().getEmail());
+        jsonGenerator.writeNumberField("roles", message.getUser().getRoles());
+        jsonGenerator.writeStringField("name", message.getUser().getName());
+        jsonGenerator.writeStringField("surname", message.getUser().getSurname());
+        jsonGenerator.writeStringField("image", message.getUser().getImage());
+        jsonGenerator.writeEndObject();
+
         jsonGenerator.writeEndArray();
         jsonGenerator.writeEndObject();
     }
