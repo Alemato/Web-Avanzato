@@ -7,6 +7,12 @@ import it.mytutor.domain.dao.exception.DatabaseException;
 import java.util.List;
 
 public interface PlanningDaoInterface {
+    List<Planning> getPlanningByFilter(int macroMateriaRelevant, String macroMateria, int nomeRelevant, String nome,
+                                       int zonaRelevant, String zona, int microMateriaRelevant, String microMateria,
+                                       int giornoSettimanaRelevant, String giornoSettimana, int prezzoRelevant,
+                                       String prezzo, int oraInizioRelevant, String oraInizio,
+                                       int oraFineaRelevant, String oraFine) throws DatabaseException;
+
     void updatePlanning(Planning planning) throws DatabaseException;
     void createPlanning(Planning planning) throws DatabaseException;
     Planning getPlanningByID(int id) throws DatabaseException;
