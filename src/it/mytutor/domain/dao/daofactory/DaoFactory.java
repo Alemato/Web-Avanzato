@@ -36,10 +36,14 @@ public class DaoFactory {
         try {
             if (rs != null)
                 rs.close();
+                rs = null;
             if (prs != null)
                 prs.close();
+                prs = null;
             if (conn != null)
+                conn.commit();
                 conn.close();
+                conn = null;
         } catch (SQLException e) {
             System.out.println();
         }
