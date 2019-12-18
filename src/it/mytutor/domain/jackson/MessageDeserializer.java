@@ -31,10 +31,9 @@ public class MessageDeserializer extends StdDeserializer<Message> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Message message = new Message();
-/*        message.setText(node.get("text").asText());
+        message.setText(node.get("text").asText());
 
         message.setSendDate(new Timestamp(node.get("sendDate").asLong()));
-//        message.setSendDate(Timestamp.valueOf(node.get("sendDate").asText()));
 
         Chat chat = new Chat();
         JsonNode chatNode = node.get("chat");
@@ -42,16 +41,15 @@ public class MessageDeserializer extends StdDeserializer<Message> {
         chat.setName(chatNode.get("chatName").asText());
         message.setChat(chat);
 
-        List<User> userList = new ArrayList<User>();
-        ArrayNode users = (ArrayNode) node.get("users");
-        Iterator<JsonNode> usersIterator = users.elements();
-        while (usersIterator.hasNext()) {
-            JsonNode userNode = usersIterator.next();
-            User user = new User();
-            user.setIdUser(userNode.findPath("idUser").asInt());
-            userList.add(user);
-        }
-        message.setUser(userList);*/
+        User user = new User();
+        JsonNode userNode = node.get("user");
+        user.setIdUser(userNode.findPath("idUser").asInt());
+        user.setEmail(userNode.findPath("email").asText());
+        user.setRoles(userNode.findPath("roles").asInt());
+        user.setName(userNode.findPath("name").asText());
+        user.setSurname(userNode.findPath("surname").asText());
+        user.setImage(userNode.findPath("image").asText());
+        message.setUser(user);
 
         return message;
     }
