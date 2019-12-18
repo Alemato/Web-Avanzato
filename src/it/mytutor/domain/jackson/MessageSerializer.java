@@ -31,7 +31,7 @@ public class MessageSerializer extends StdSerializer<Message> {
         jsonGenerator.writeNumberField("updateDate", updateDate);
         jsonGenerator.writeFieldName("chat");
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeStringField("idChat", message.getChat().getIdChat().toString());
+        jsonGenerator.writeNumberField("idChat", message.getChat().getIdChat());
         jsonGenerator.writeStringField("chatName", message.getChat().getName());
         long chatCreateDate = message.getChat().getCreateDate().getTime();
         jsonGenerator.writeNumberField("chatCreateDate", chatCreateDate);
@@ -39,7 +39,6 @@ public class MessageSerializer extends StdSerializer<Message> {
         jsonGenerator.writeNumberField("chatUpdateDate", chatUpdateDate);
         jsonGenerator.writeEndObject();
         jsonGenerator.writeFieldName("user");
-        jsonGenerator.writeStartArray();
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idUser", message.getUser().getIdUser());
         jsonGenerator.writeStringField("email", message.getUser().getEmail());
@@ -49,7 +48,6 @@ public class MessageSerializer extends StdSerializer<Message> {
         jsonGenerator.writeStringField("image", message.getUser().getImage());
         jsonGenerator.writeEndObject();
 
-        jsonGenerator.writeEndArray();
         jsonGenerator.writeEndObject();
     }
 }
