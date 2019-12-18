@@ -15,9 +15,9 @@ import java.util.List;
 public class TeacherDao implements TeacherDaoInterface {
     private static final String CREATE_TEACHER_STATEMENT="insert into Teacher(PostCode,City,Region,Street,StreetNumber,Byography,IdUser) values (?,?,?,?,?,?,?)";
     private static final String UPDATE_TEACHER_STATEMENT="update Teacher set PostCode=?, City=?, Region=?, Street=?, StreetNumber=?, Byography=? where IdTeacher=?";
-    private static final String GET_TEACHER_BY_ID_STATEMENT="select * from Teacher where IdTeacher=?";
-    private static final String GET_TEACHER_BY_USER_ID="select * from Teacher where IdUser=?";
-    private static final String GET_ALL_TEACHER_STATEMENT="select * from Teacher";
+    private static final String GET_TEACHER_BY_ID_STATEMENT="select * from Teacher t, User u where t.IdUser = u.IdUser AND t.IdTeacher=?";
+    private static final String GET_TEACHER_BY_USER_ID="select * from Teacher t, User u where t.IdUser = u.IdUser AND u.IdUser=?";
+    private static final String GET_ALL_TEACHER_STATEMENT="select * from Teacher t, User u where t.IdUser = u.IdUser";
 
 
 
@@ -30,9 +30,19 @@ public class TeacherDao implements TeacherDaoInterface {
             teacher.setStreet(resultSet.getString("Street"));
             teacher.setStreetNumber(resultSet.getString("StreetNumber"));
             teacher.setByography(resultSet.getString("Byography"));
-            teacher.setCrateDateTeacher(resultSet.getTimestamp("CreateDate"));
-            teacher.setUpdateDateTeacher(resultSet.getTimestamp("UpdateDate"));
-            teacher.setIdTeacher(resultSet.getInt("IdUser"));
+            teacher.setCrateDateTeacher(resultSet.getTimestamp("t.CreateDate"));
+            teacher.setUpdateDateTeacher(resultSet.getTimestamp("t.UpdateDate"));
+            teacher.setIdUser(resultSet.getInt("t.IdUser"));
+            teacher.setEmail(resultSet.getString("Email"));
+            teacher.setRoles(resultSet.getInt("Roles"));
+            teacher.setPassword(resultSet.getString("Password"));
+            teacher.setName(resultSet.getString("Name"));
+            teacher.setSurname(resultSet.getString("Surname"));
+            teacher.setBirthday(resultSet.getDate("Birthday"));
+            teacher.setLanguage(resultSet.getBoolean("Language"));
+            teacher.setImage(resultSet.getString("Image"));
+            teacher.setCreateDate(resultSet.getTimestamp("u.CreateDate"));
+            teacher.setUpdateDate(resultSet.getTimestamp("u.UpdateDate"));
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DatabaseException("Errore nel creare oggetto Teacher");
@@ -72,7 +82,7 @@ public class TeacherDao implements TeacherDaoInterface {
             prs.setString(5,teacher.getStreetNumber());
             prs.setString(6,teacher.getByography());
             prs.setInt(7,teacher.getIdUser());
-            prs.executeQuery();
+            prs.executeUpdate();
 
         }catch(SQLException e){
             throw new DatabaseException(e.getMessage());

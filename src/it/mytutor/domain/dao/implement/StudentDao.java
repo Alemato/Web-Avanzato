@@ -15,18 +15,27 @@ import java.util.List;
 public class StudentDao implements StudentDaoInterface {
     private static final String CREATE_STUDENT_STATEMENT="insert into Student(studyGrade,IdUser) value (?,?)";
     private static final String UPDATE_STUDENT_STATEMENT="update Student set studyGrade=? where idStudent=?";
-    private static final String GET_STUDENT_BY_ID_STATEMENT="select * from Student where idStudent=?";
-    private static final String GET_STUDENT_BY_ID_USER = "select * from Student where IdUser=?";
-    private static final String GET_ALL_STUDENT_STATEMENT="select * from Student";
+    private static final String GET_STUDENT_BY_ID_STATEMENT="select * from Student s, User u where s.IdUser = u.IdUser AND idStudent=?";
+    private static final String GET_STUDENT_BY_ID_USER = "select * from Student s , User u where s.IdUser = u.IdUser And u.IdUser=?";
+    private static final String GET_ALL_STUDENT_STATEMENT="select * from Student s, User u where s.IdUser = u.IdUser";
 
    private void configureStudent(Student student, ResultSet resultSet) throws DatabaseException {
         try {
-
             student.setIdStudent(resultSet.getInt("IdStudent"));
             student.setStudyGrade(resultSet.getString("StudyGrade"));
-            student.setCreateDateStudent(resultSet.getTimestamp("CreateDate"));
-            student.setUpdateDateStudent(resultSet.getTimestamp("UpdateDate"));
-            student.setIdUser(resultSet.getInt("IdUser"));
+            student.setCreateDateStudent(resultSet.getTimestamp("s.CreateDate"));
+            student.setUpdateDateStudent(resultSet.getTimestamp("s.UpdateDate"));
+            student.setIdUser(resultSet.getInt("s.IdUser"));
+            student.setEmail(resultSet.getString("Email"));
+            student.setRoles(resultSet.getInt("Roles"));
+            student.setPassword(resultSet.getString("Password"));
+            student.setName(resultSet.getString("Name"));
+            student.setSurname(resultSet.getString("Surname"));
+            student.setBirthday(resultSet.getDate("birthday"));
+            student.setLanguage(resultSet.getBoolean("Language"));
+            student.setImage(resultSet.getString("image"));
+            student.setCreateDate(resultSet.getTimestamp("u.CreateDate"));
+            student.setUpdateDate(resultSet.getTimestamp("u.UpdateDate"));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -64,7 +73,7 @@ public class StudentDao implements StudentDaoInterface {
             prs.setString(1,student.getStudyGrade());
             prs.setInt(2,student.getIdUser());
 
-            prs.executeQuery();
+            prs.executeUpdate();
 
         }catch(SQLException e){
             throw new DatabaseException(e.getMessage());

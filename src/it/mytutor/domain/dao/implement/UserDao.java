@@ -17,7 +17,7 @@ import java.util.List;
 
 
 public class UserDao implements UserDaoInterface {
-    private static final String CREATE_USER_STATEMENT = "insert into User(Email,Password,Name,Surname,Birthday,Language,Image) values(?,?,?,?,?,?,?)";
+    private static final String CREATE_USER_STATEMENT = "insert into User(Email,Roles,Password,Name,Surname,Birthday,Language,Image) values(?,?,?,?,?,?,?,?)";
     private static final String UPDATE_USER_STATEMENT = "update User set Email=?,Password=?,Name=?,Surname=?,Birthday=?,Language=?,Image=? where idUser=? ";
     private static final String GET_USER_BY_ID_STATEMENT = "select * from User where idUser=?";
     private static final String GET_USER_BY_NAME_STATEMENT = "select * from User where Name=?";
@@ -71,21 +71,20 @@ public class UserDao implements UserDaoInterface {
                 throw new DatabaseException("Statement is null");
             }
             prs.setString(1, usr.getEmail());
-            prs.setString(2, usr.getPassword());
-            prs.setString(3, usr.getName());
-            prs.setString(4, usr.getSurname());
-            prs.setDate(5, usr.getBirthday());
-            prs.setBoolean(6, usr.getLanguage());
-            prs.setString(7,usr.getImage());
-
-            prs.executeQuery();
-
+            prs.setInt(2, usr.getRoles());
+            prs.setString(3, usr.getPassword());
+            prs.setString(4, usr.getName());
+            prs.setString(5, usr.getSurname());
+            prs.setDate(6, usr.getBirthday());
+            prs.setBoolean(7, usr.getLanguage());
+            prs.setString(8,usr.getImage());
+            prs.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DatabaseException(e.getMessage());
         } finally {
-            DaoFactory.closeDbConnection(conn, rs, prs);
+            DaoFactory.closeDbConnection( conn, rs, prs);
         }
     }
 
