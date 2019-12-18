@@ -28,20 +28,21 @@ public class PlanningDeserializer  extends StdDeserializer<Planning> {
         Planning planning = new Planning();
         Date date = new Date(node.get("date").asLong());
         planning.setDate(date);
-        planning.setStartTime(Time.valueOf(node.get("startTime").asText()));
-        planning.setEndTime(Time.valueOf(node.get("endTime").asText()));
+        planning.setStartTime(java.sql.Time.valueOf(node.get("startTime").asText()));
+        planning.setEndTime(java.sql.Time.valueOf(node.get("endTime").asText()));
 
         Lesson lesson = new Lesson();
-        lesson.setName(node.findPath("lesson").findPath("name").asText());
-        lesson.setPrice(node.findPath("lesson").findPath("price").asDouble());
-        lesson.setDescription(node.findPath("lesson").findPath("description").asText());
+
+        lesson.setIdLesson(node.findPath("idLesson").asInt());
+//        lesson.setPrice(node.findPath("lesson").findPath("price").asDouble());
+//        lesson.setDescription(node.findPath("lesson").findPath("description").asText());
 //        Date pDate = new Date(node.findPath("lesson").findPath("publicationDate").asLong());
 //        lesson.setPublicationDate(pDate);
-
-        Subject subject = new Subject();
-        subject.setMacroSubject(node.findPath("lesson").findPath("subject").findPath("macroSubject").asText());
-        subject.setMicroSubject(node.findPath("lesson").findPath("subject").findPath("microSubject").asText());
-        lesson.setSubject(subject);
+//
+//        Subject subject = new Subject();
+//        subject.setMacroSubject(node.findPath("lesson").findPath("subject").findPath("macroSubject").asText());
+//        subject.setMicroSubject(node.findPath("lesson").findPath("subject").findPath("microSubject").asText());
+//        lesson.setSubject(subject);
 
         planning.setLesson(lesson);
 
