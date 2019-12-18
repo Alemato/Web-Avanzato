@@ -32,12 +32,15 @@ public class StudentDeserializer extends StdDeserializer<Student> {
         JsonNode userNode = node.get("user");
         student.setIdUser(userNode.get("idUser").asInt());
         student.setEmail(userNode.get("email").asText());
+        student.setPassword(userNode.get("password").asText());
         student.setName(userNode.get("name").asText());
         student.setSurname(userNode.get("surname").asText());
         Date bDate = new Date(userNode.get("birthday").asLong());
         student.setBirthday(bDate);
         student.setLanguage(Boolean.getBoolean(userNode.get("language").asText()));
-        student.setImage(userNode.get("image").asText());
+        if(userNode.get("image").asText().equals("null")){
+            student.setImage(null);
+        } else student.setImage(userNode.get("image").asText());
         return student;
     }
 }
