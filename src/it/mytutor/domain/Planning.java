@@ -1,12 +1,18 @@
 package it.mytutor.domain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.mytutor.domain.jackson.PlanningDeserializer;
+import it.mytutor.domain.jackson.PlanningSerializer;
 
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Objects;
 
+@JsonSerialize(using = PlanningSerializer.class)
+@JsonDeserialize(using = PlanningDeserializer.class)
 public class Planning {
     private Integer idPlanning;
     private Date date;
