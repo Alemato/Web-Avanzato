@@ -119,7 +119,7 @@ public class SubjectDao implements SubjectDaoInterface {
             }
             prs.setString(1,subject.getMacroSubject());
             prs.setString(2,subject.getMicroSubject());
-            prs.executeQuery();
+            prs.executeUpdate();
 
         }catch (SQLException e){
             e.printStackTrace();

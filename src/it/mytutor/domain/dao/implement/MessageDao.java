@@ -84,7 +84,7 @@ public class MessageDao implements MessageDaoInterface {
             prs.setTimestamp(2,message.getSendDate());
             prs.setObject(3,message.getChat());
             prs.setObject(4,message.getUser());
-            prs.executeQuery();
+            prs.executeUpdate();
 
         }catch(SQLException e){
             throw new DatabaseException(e.getMessage());
