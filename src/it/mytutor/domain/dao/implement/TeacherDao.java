@@ -115,8 +115,7 @@ public class TeacherDao implements TeacherDaoInterface {
             prs.setString(5,teacher.getStreetNumber());
             prs.setString(6,teacher.getByography());
             prs.setInt(7,teacher.getIdTeacher());
-
-            prs.executeQuery();
+            prs.executeUpdate();
 
         }catch(SQLException e){
             throw new DatabaseException(e.getMessage());
