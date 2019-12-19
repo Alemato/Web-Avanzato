@@ -133,8 +133,8 @@ public class Booking {
                 ", lessonState=" + lessonState +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
-                ", student=" + student.toString() +
-                ", planning=" + planning.toString() +
+                "," + this.student.toString() +
+                ",=" + this.planning.toString() +
                 '}';
     }
 }

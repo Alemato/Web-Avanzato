@@ -20,7 +20,7 @@ public interface BookingInterface {
     List<Booking> findAllBookingByStudnet(Student student) throws DatabaseException;
     List<Booking> findAllBookingByTeacher(Teacher teacher) throws DatabaseException;
     List<Booking> findAllBookingByLesson(Lesson lesson);
-    Booking crateBooking(Booking booking);
+    void crateBooking(Booking booking);
     Booking updateBooking(Booking booking, Integer lessonState);
     List<Booking> findHistoricalBookingByStudent(Student student, String nomeLezione, String macroMateria,
                                                  String microMateria, String idTeacher, String date,
