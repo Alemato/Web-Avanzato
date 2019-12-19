@@ -15,7 +15,12 @@ import java.util.List;
 public class PlanningDao implements PlanningDaoInterface {
     private static final String CREATE_PLANNING_STATEMENT = "insert into Planning (Date, StartTime, EndTime, IdLesson) values (?,?,?,?)";
     private static final String UPDATE_PLANNING_STATEMENT = "update into `Planning` set (Date=?,StartTime=?,EndTime=?,IdLesson=?) where id=?";
-    private static final String GET_PLANNING_BY_FILTER_STATEMENT = "";
+    private static final String GET_PLANNING_BY_FILTER_STATEMENT = "SELECT * from Planning p, Lesson l, Subject s, Teacher t \n" +
+            "where p.IdLesson=l.IdLesson and l.IdSubject=s.IdSubject and l.IdTeacher= t.IdTeacher\n" +
+            "and (0 = ? or s.MacroSubject =?)\n" +
+            "and (0 = ? or l.Name = ?) and (0 = ? or t.City = ?) and (0 = ? or s.MicroSubject = ?) \n" +
+            "and (0 = ? or DAYOFWEEK(p.Date) =? ) and (0 = ? or l.Price =? ) and (0 = ? or p.StartTime >= ? ) \n" +
+            "and (0 = ? or p.EndTime <=? )";
     private static final String GET_PLANNING_BY_STUDENT_STATEMENT = "";
     private static final String GET_PLANNING_BY_ID_STATEMENT = "";
     private static final String GET_ALL_PLANNING_OF_A_STATEMENT = "";
