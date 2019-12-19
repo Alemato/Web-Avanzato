@@ -95,10 +95,8 @@ public class PlanningDao implements PlanningDaoInterface {
             prs.setString(2, planning.getStartTime().toString());
             prs.setString(3, planning.getEndTime().toString());
             prs.setInt(4, planning.getLesson().getIdLesson());
-            System.out.println(prs.toString());
 
-//            prs.execute();
-            System.out.println(prs.executeUpdate());
+            prs.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DatabaseException(e.getMessage());
