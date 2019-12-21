@@ -24,7 +24,7 @@ public class TeacherDeserializer extends StdDeserializer<Teacher> {
             teacher.setIdTeacher(node.get("idTeacher").asInt());
         }
         teacher.setPostCode(node.get("postCode").asInt());
-        teacher.setCity(node.get("City").asText());
+        teacher.setCity(node.get("city").asText());
         teacher.setRegion(node.get("region").asText());
         teacher.setStreet(node.get("street").asText());
         teacher.setStreetNumber(node.get("streetNumber").asText());
@@ -38,7 +38,7 @@ public class TeacherDeserializer extends StdDeserializer<Teacher> {
         Date bDate = new Date(userNode.get("birthday").asLong());
         teacher.setBirthday(bDate);
         teacher.setLanguage(Boolean.getBoolean(userNode.get("language").asText()));
-        if(userNode.get("image").asText().equals("null")){
+        if(userNode.get("image").asText().equals("null") || userNode.get("image").asText().equals("")){
             teacher.setImage(null);
         } else teacher.setImage(userNode.get("image").asText());
 
