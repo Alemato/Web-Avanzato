@@ -19,46 +19,24 @@ import java.util.concurrent.TimeoutException;
 public class UserBusiness implements UserInterface {
 
     @Override
-    public Object findUserByUsername(String username) throws UserException {
-        // TODO QUERY USER seguita da QUERY TIPO ACCOUNT ritorna utente
-        if (username.equals("mario")){
-            Teacher teacher = new Teacher();
-            teacher.setEmail(username);
-            teacher.setRoles(2);
-            teacher.setPassword("password");
-            teacher.setName("Mario");
-            teacher.setSurname("Rossi");
-            teacher.setBirthday(Date.valueOf("2015-03-31"));
-            teacher.setImage("image");
-            teacher.setLanguage(true);
-            teacher.setPostCode(1234);
-            teacher.setCity("Roma");
-            teacher.setRegion("Lazio");
-            teacher.setStreet("Via roma");
-            teacher.setStreetNumber("1");
-            teacher.setByography("SONO MARIO");
-            return teacher;
-        } else {
-            Student student = new Student();
-            student.setEmail(username);
-            student.setRoles(1);
-            student.setPassword("password");
-            student.setName("Marco");
-            student.setSurname("Bianchi");
-            student.setBirthday(Date.valueOf("2015-03-31"));
-            student.setLanguage(false);
-            student.setImage("image");
-            student.setStudyGrade("univeristario");
-            return student;
-        }
+    public Object findUserByUsername(String username) throws UserException, DatabaseException {
+        UserDao userDao = new UserDao();
+        User user = userDao.getUserByEmail(username);
+        if(user.getRoles() == 1){
+            StudentDao studentDao = new StudentDao();
+            return studentDao.getStudentByIdUser(user.getIdUser());
+        } else if (user.getRoles() == 2){
+            System.out.println("Teacher");
+            TeacherDao teacherDao = new TeacherDao();
+            return teacherDao.getTeacherByUserID(user.getIdUser());
+        } else throw new UserException("USER NON TROVATO");
     }
 
     @Override
     public Object autentication(String username, String password) throws UserException, DatabaseException {
-        Object object = new Object();
+        Object object;
         // QUERY USER: per vedere se esiste ed di che tipo è
-        UserDao userDao = new UserDao();
-        User user = userDao.getUserByEmail(username);
+        User user = (User) this.findUserByUsername(username);
         System.out.println(user.toString());
         System.out.println("hash da inserire :"+SecurityHash.SetHash(password));
         System.out.println("hash e giusto? "+ SecurityHash.equals(password,user) + " " + user.getPassword());
@@ -68,16 +46,12 @@ public class UserBusiness implements UserInterface {
             if(user.getRoles() == 1){
                 System.out.println("Studente");
                 StudentDao studentDao = new StudentDao();
-                Student student = studentDao.getStudentByIdUser(user.getIdUser());
-                student.setUser(user);
-                object = student;
+                object = studentDao.getStudentByIdUser(user.getIdUser());
                 return object;
             } else if (user.getRoles() == 2){
                 System.out.println("Teacher");
                 TeacherDao teacherDao = new TeacherDao();
-                Teacher teacher = teacherDao.getTeacherByUserID(user.getIdUser());
-                teacher.setUser(user);
-                object = teacher;
+                object = teacherDao.getTeacherByUserID(user.getIdUser());
                 return object;
             } else if (user.getRoles() == 3){
                 System.out.println("Admin");
