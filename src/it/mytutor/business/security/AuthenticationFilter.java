@@ -3,6 +3,7 @@ package it.mytutor.business.security;
 import it.mytutor.business.exceptions.UserException;
 import it.mytutor.business.impl.UserBusiness;
 import it.mytutor.domain.User;
+import it.mytutor.domain.dao.exception.DatabaseException;
 
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
@@ -43,7 +44,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             boolean isSecure = requestContext.getSecurityContext().isSecure();
             SecurityContext securityContext = new TokenBasedSecurityContext(authenticatedUserDetails, authenticationTokenDetails, isSecure);
             requestContext.setSecurityContext(securityContext);
-        } catch (UserException e) {
+        } catch (UserException | DatabaseException e) {
             e.printStackTrace();
         }
     }
