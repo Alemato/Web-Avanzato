@@ -14,7 +14,7 @@ import java.util.List;
 
 
 public class BookingDao  implements BookingDaoInterface {
-    private static final String CREATE_BOOKING_STATEMENT="insert into Booking(Date,LessonState,Idstudent,IdPlanning) values(?,?,?,?,?)";
+    private static final String CREATE_BOOKING_STATEMENT="insert into Booking (Date, LessonState ,Idstudent, IdPlanning) values(?,?,?,?)";
     private static final String UPDATE_BOOKING_STATEMENT="update Booking set Date=?,LessonState=?,IdStudent=?,IdPlanning=? where IdBooking=?";
     private static final String GET_ALL_BOOOKING_OF_A_STUDENT_STATEMENT="select * from Booking where IdStudent = ? and (LessonState = 0 or LessonState = 1)";
     private static final String GET_ALL_BOOOKING_OF_A_TEACHER_STATEMENT="select * from Booking b " +
@@ -35,7 +35,7 @@ public class BookingDao  implements BookingDaoInterface {
     private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_TEACHER_STATEMENT = "select * from Booking b join Planning p on b.IdPlanning = p.IdPlanning join Lesson l on p.IdLesson = l.IdLesson join Subject s on l.IdSubject = s.IdSubject where (l.IdTeacher = ?) and (0 = ? or l.Name = ?) and (0 = ? or s.MacroSubject = ?) and (0 = ? or s.MicroSubject = ?) and (0 = ? or IdStudent = ?) and (0 = ? or p.Date = ?) and (0 = ? or b.LessonState = 2) and (0 = ? or b.LessonState = 3) and (0 = ? or b.LessonState = 4)";
 
 
-    private void configureBooking(Booking booking, Student student, Planning planning, Lesson lesson, Subject subject, Teacher teacher, User user, ResultSet resultSet) throws DatabaseException {
+    private void configureBooking(Booking booking, Student student, Planning planning, Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
         try {
             booking.setIdBooking(resultSet.getInt("b.idBooking"));
             booking.setDate(resultSet.getDate("b.Date"));
@@ -75,17 +75,6 @@ public class BookingDao  implements BookingDaoInterface {
             teacher.setCrateDateTeacher(resultSet.getTimestamp("t.CreateDate"));
             teacher.setUpdateDateTeacher(resultSet.getTimestamp("t.UpdateDate"));
 
-            teacher.setIdUser(resultSet.getInt("ut.IdUser"));
-            teacher.setEmail(resultSet.getString("ut.Email"));
-            teacher.setRoles(resultSet.getInt("u.Roles"));
-            teacher.setPassword(resultSet.getString("ut.Password"));
-            teacher.setName(resultSet.getString("ut.Name"));
-            teacher.setSurname(resultSet.getString("ut.Surname"));
-            teacher.setBirthday(resultSet.getDate("ut.Birthday"));
-            teacher.setLanguage(resultSet.getBoolean("ut.Language"));
-            teacher.setImage(resultSet.getString("ut.Image"));
-            teacher.setCreateDate(resultSet.getTimestamp("ut.CreateDate"));
-            teacher.setUpdateDate(resultSet.getTimestamp("ut.UpdateDate"));
             lesson.setTeacher(teacher);
             planning.setLesson(lesson);
             booking.setPlanning(planning);
@@ -94,17 +83,6 @@ public class BookingDao  implements BookingDaoInterface {
             student.setCreateDateStudent(resultSet.getTimestamp("s.CreateDate"));
             student.setUpdateDateStudent(resultSet.getTimestamp("s.UpdateDate"));
 
-            student.setIdUser(resultSet.getInt("us.IdUser"));
-            student.setEmail(resultSet.getString("us.Email"));
-            student.setRoles(resultSet.getInt("us.Roles"));
-            student.setPassword(resultSet.getString("us.Password"));
-            student.setName(resultSet.getString("us.Name"));
-            student.setSurname(resultSet.getString("us.Surname"));
-            student.setBirthday(resultSet.getDate("us.Birthday"));
-            student.setLanguage(resultSet.getBoolean("us.Language"));
-            student.setImage(resultSet.getString("us.Image"));
-            student.setCreateDate(resultSet.getTimestamp("us.CreateDate"));
-            student.setUpdateDate(resultSet.getTimestamp("us.UpdateDate"));
             booking.setStudent(student);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -112,11 +90,11 @@ public class BookingDao  implements BookingDaoInterface {
         }
 
     }
-    private void configureBookingList(List<Booking> bookings, Student student, Planning planning, Lesson lesson, Subject subject, Teacher teacher, User user, ResultSet resultSet) throws DatabaseException {
+    private void configureBookingList(List<Booking> bookings, Student student, Planning planning, Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
         try {
             while (resultSet.next()) {
                 Booking booking = new Booking();
-                configureBooking(booking, student, planning, lesson, subject, teacher, user, resultSet);
+                configureBooking(booking, student, planning, lesson, subject, teacher, resultSet);
                 bookings.add(booking);
             }
         } catch (SQLException e) {
@@ -144,9 +122,9 @@ public class BookingDao  implements BookingDaoInterface {
             }
         prs.setDate(1,booking.getDate());
         prs.setInt(2,booking.getLessonState());
-        prs.setInt(3,booking.getStudent().getIdStudent());
+            prs.setInt(3,booking.getStudent().getIdStudent());
         prs.setInt(4,booking.getPlanning().getIdPlanning());
-        prs.executeQuery();
+        prs.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -196,7 +174,6 @@ public class BookingDao  implements BookingDaoInterface {
         Lesson lesson = new Lesson();
         Subject subject = new Subject();
         Teacher teacher = new Teacher();
-        User user = new User();
         Connection connection = DaoFactory.getConnection();
         if (connection == null) {
             throw new DatabaseException("Connection is null");
@@ -226,7 +203,7 @@ public class BookingDao  implements BookingDaoInterface {
             prs.setString(16, oraFine);
 
             rs = prs.executeQuery();
-            configureBookingList(bookings, student, planning, lesson, subject, teacher, user,  rs);
+            configureBookingList(bookings, student, planning, lesson, subject, teacher, rs);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DatabaseException(e.getMessage());
@@ -246,7 +223,6 @@ public class BookingDao  implements BookingDaoInterface {
         Lesson lesson = new Lesson();
         Subject subject = new Subject();
         Teacher teacher = new Teacher();
-        User user = new User();
         ResultSet rs = null;
         PreparedStatement prs = null;
         try {
@@ -260,7 +236,7 @@ public class BookingDao  implements BookingDaoInterface {
 
 
             if (rs.next()){
-                configureBooking(booking, student, planning, lesson, subject, teacher, user, rs);
+                configureBooking(booking, student, planning, lesson, subject, teacher, rs);
             }else{throw new DatabaseException("rs is empty");}
 
         } catch (SQLException e) {
@@ -274,13 +250,12 @@ public class BookingDao  implements BookingDaoInterface {
 
     @Override
     public List<Booking> getAllBookingOfAStudent(Student student) throws DatabaseException {
-        List<Booking> bookings= new ArrayList<Booking>();
+        List<Booking> bookings= new ArrayList<>();
         Student student1 = new Student();
         Planning planning = new Planning();
         Lesson lesson = new Lesson();
         Subject subject = new Subject();
         Teacher teacher = new Teacher();
-        User user = new User();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -296,7 +271,7 @@ public class BookingDao  implements BookingDaoInterface {
             rs=prs.executeQuery();
 
             if (rs.next()){
-                configureBookingList(bookings, student1, planning, lesson, subject, teacher, user, rs);
+                configureBookingList(bookings, student1, planning, lesson, subject, teacher, rs);
             }else{
                 throw new DatabaseException("rs is empty");
             }
@@ -313,13 +288,12 @@ public class BookingDao  implements BookingDaoInterface {
 
     @Override
     public List<Booking> getAllBookingOfATeacher(Teacher teacher) throws DatabaseException {
-        List<Booking> bookings= new ArrayList<Booking>();
+        List<Booking> bookings= new ArrayList<>();
         Student student = new Student();
         Planning planning = new Planning();
         Lesson lesson = new Lesson();
         Subject subject = new Subject();
         Teacher teacher1 = new Teacher();
-        User user = new User();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -335,7 +309,7 @@ public class BookingDao  implements BookingDaoInterface {
             rs=prs.executeQuery();
 
             if (rs.next()){
-                configureBookingList(bookings, student, planning, lesson, subject, teacher1, user, rs);
+                configureBookingList(bookings, student, planning, lesson, subject, teacher1, rs);
             }else{
                 throw new DatabaseException("rs is empty");
             }
@@ -352,13 +326,12 @@ public class BookingDao  implements BookingDaoInterface {
 
     @Override
     public List<Booking> getHistoricalBokingsOfAStudent(Student student, int nomeLezioneRevelant, String nomeLezione, int macroMateriaRevelant, String macroMateria, int microMateriaRevelant, String microMateria, int idTeacherRevelant, int idTeacher, int dateRevelant, Date date, int rifiutataRevelant, String rifiutata, int annullataRevelant, String annullata, int eseguitaRevelant, String eseguita) throws DatabaseException {
-        List<Booking> bookings= new ArrayList<Booking>();
+        List<Booking> bookings= new ArrayList<>();
         Student student1 = new Student();
         Planning planning = new Planning();
         Lesson lesson = new Lesson();
         Subject subject = new Subject();
         Teacher teacher = new Teacher();
-        User user = new User();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -387,7 +360,7 @@ public class BookingDao  implements BookingDaoInterface {
             rs=prs.executeQuery();
 
             if (rs.next()){
-                configureBookingList(bookings, student1, planning, lesson, subject, teacher, user, rs);
+                configureBookingList(bookings, student1, planning, lesson, subject, teacher, rs);
             }else{
                 throw new DatabaseException("rs is empty");
             }
@@ -404,13 +377,12 @@ public class BookingDao  implements BookingDaoInterface {
 
     @Override
     public List<Booking> getHistoricalBokingsOfATeacher(Teacher teacher, int nomeLezioneRevelant, String nomeLezione, int macroMateriaRevelant, String macroMateria, int microMateriaRevelant, String microMateria, int idTeacherRevelant, int idStudent, int dateRevelant, Date date, int rifiutataRevelant, String rifiutata, int annullataRevelant, String annullata, int eseguitaRevelant, String eseguita) throws DatabaseException {
-        List<Booking> bookings= new ArrayList<Booking>();
+        List<Booking> bookings= new ArrayList<>();
         Student student = new Student();
         Planning planning = new Planning();
         Lesson lesson = new Lesson();
         Subject subject = new Subject();
         Teacher teacher1 = new Teacher();
-        User user = new User();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -439,7 +411,7 @@ public class BookingDao  implements BookingDaoInterface {
             rs=prs.executeQuery();
 
             if (rs.next()){
-                configureBookingList(bookings, student, planning, lesson, subject, teacher1, user, rs);
+                configureBookingList(bookings, student, planning, lesson, subject, teacher1, rs);
             }else{
                 throw new DatabaseException("rs is empty");
             }
