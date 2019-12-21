@@ -14,10 +14,8 @@ import java.util.List;
 
 
 public class ChatDao implements ChatDaoInterface {
+    private static final String CREATE_A_CHAT = "insert into Chat(Name,CreateDate, UpdateDate) value (?, DEFAULT , DEFAULT)";
     private static final String GET_ALL_CHAT_BY_ID_USER = "select distinct t.idchat, t.name, t.createdate, t.updatedate from Chat t, Message s Where s.IdChat=t.IdChat and s.IdUser = ? ORDER BY CreateDate DESC LIMIT 10";
-//    private static final String
-//    private static final String
-//    private static final String
 
     private void configureChat(Chat chat, ResultSet resultSet) throws DatabaseException {
         try{
@@ -42,6 +40,28 @@ public class ChatDao implements ChatDaoInterface {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DatabaseException("Errore nel creare Lista oggetti Chat");
+        }
+    }
+
+    @Override
+    public void crateAChat(Chat chat) throws DatabaseException {
+        Connection connection = DaoFactory.getConnection();
+        if(connection == null){
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = connection.prepareStatement(CREATE_A_CHAT);
+            if (prs == null){
+                throw new DatabaseException("Statement is null");
+            }
+            prs.setString(1, chat.getName());
+            prs.executeUpdate();
+        } catch(SQLException e) {
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(connection, rs, prs);
         }
     }
 
