@@ -10,6 +10,7 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -17,6 +18,9 @@ import java.util.List;
 
 @Path("materie")
 public class MaterieRest {
+    @Context
+    private SecurityContext securityContext;
+
 
     private SubjectInterface subjectService = new SubjectBusiness();
 
@@ -42,9 +46,8 @@ public class MaterieRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"STUDENT", "TEACHER"})
-    public Response getMaterieStoriche(ContainerRequestContext context) {
+    public Response getMaterieStoriche() {
         List<Subject> subjects;
-        SecurityContext securityContext = context.getSecurityContext();
         String email = securityContext.getUserPrincipal().getName();
         try {
             subjects = subjectService.findAllStorico(email);
