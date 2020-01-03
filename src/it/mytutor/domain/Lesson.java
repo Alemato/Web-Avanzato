@@ -156,8 +156,8 @@ public class Lesson {
                 ", publicationDate=" + publicationDate +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
-                ", " + subject.toString() +
-                ", " + teacher.toString() +
+                ", " + this.subject.toString() +
+                ", " + this.teacher.toString() +
                 '}';
     }
 }

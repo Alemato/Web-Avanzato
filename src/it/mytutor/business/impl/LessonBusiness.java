@@ -1,5 +1,7 @@
 package it.mytutor.business.impl;
 
+import it.mytutor.business.exceptions.LessonBusinessException;
+import it.mytutor.business.exceptions.SubjectBusinessException;
 import it.mytutor.business.services.LessonInterface;
 import it.mytutor.domain.Lesson;
 import it.mytutor.domain.Planning;
@@ -7,40 +9,63 @@ import it.mytutor.domain.Subject;
 import it.mytutor.domain.Teacher;
 import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.implement.LessonDao;
+import it.mytutor.domain.dao.implement.SubjectDao;
+import it.mytutor.domain.dao.interfaces.LessonDaoInterface;
+import it.mytutor.domain.dao.interfaces.SubjectDaoInterface;
 
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 
-import static it.mytutor.business.impl.test.TestBusinness.simulateFindAllLesson;
-
 public class LessonBusiness implements LessonInterface {
-    //TODO Costruttore Lesson
 
-    @Override
-    public List<Lesson> findAllLesson() {
+    /*@Override
+    public List<Lesson> findAllLesson() throws LessonBusinessException {
 
-        List<Lesson> lessons = null;
+        List<Lesson> lessons = new ArrayList<Lesson>();
         try {
             lessons = new ArrayList<>(simulateFindAllLesson());
         } catch (ParseException e) {
             e.printStackTrace();
+            throw new LessonBusinessException("Errore nel prendere la lista di lezioni");
         }
         return lessons;
 
+    }*/
+
+    @Override
+    public List<Lesson> findAllLessonByTeacher(Teacher teacher) throws LessonBusinessException {
+        LessonDao lessonDao = new LessonDao();
+        try {
+            return lessonDao.getLessonsByTeacher(teacher);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new LessonBusinessException("Errore nel prendere la lista di lezioni");
+        }
     }
 
     @Override
-    public List<Lesson> findAllLessonByTeacher(Teacher teacher) throws DatabaseException {
-        LessonDao lessonDao = new LessonDao();
-        return lessonDao.getLessonsByTeacher(teacher);
+    public void updateLessson(Lesson lesson) throws SubjectBusinessException, LessonBusinessException {
+        LessonDaoInterface lessonDao = new LessonDao();
+        SubjectDaoInterface subjectDao = new SubjectDao();
+
+        try {
+            subjectDao.modifySubjectByID(lesson.getSubject());
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new SubjectBusinessException("Errore nella modifica della materia nella modifica lezione");
+        }
+
+        try {
+            lessonDao.modifyLesson(lesson);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new LessonBusinessException("Errore nella modifica della lezione");
+        }
     }
 
     @Override
     public List<Lesson> findAllLessonBySubject(Subject subject) {
         return null;
     }
-
     @Override
     public Lesson findLessonByID(Integer idLesson){
         return null;
@@ -48,11 +73,6 @@ public class LessonBusiness implements LessonInterface {
     @Override
     public Planning createLesson(Planning planning) {
         return planning;
-    }
-
-    @Override
-    public Planning updateLessson(Planning planning) {
-        return null;
     }
 }
 
