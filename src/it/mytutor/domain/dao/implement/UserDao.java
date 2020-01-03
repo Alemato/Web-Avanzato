@@ -2,11 +2,9 @@ package it.mytutor.domain.dao.implement;
 
 
 import it.mytutor.domain.User;
-import it.mytutor.domain.dao.interfaces.TeacherDaoInterface;
 import it.mytutor.domain.dao.daofactory.DaoFactory;
 import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.interfaces.UserDaoInterface;
-
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,7 +24,7 @@ public class UserDao implements UserDaoInterface {
 
     private void configureUser(User user, ResultSet resultSet) throws DatabaseException {
         try {
-            user.setIdUser(resultSet.getInt("idUser"));
+            user.setIdUser(resultSet.getInt("IdUser"));
             user.setEmail(resultSet.getString("Email"));
             user.setRoles(resultSet.getInt("Roles"));
             user.setPassword(resultSet.getString("Password"));
@@ -121,7 +119,7 @@ public class UserDao implements UserDaoInterface {
 
     @Override
     public User getUserById(int id) throws DatabaseException {
-        User user = null;
+        User user = new User();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -155,7 +153,7 @@ public class UserDao implements UserDaoInterface {
 
     @Override
     public User getUserByName(String name) throws DatabaseException {
-        User user = null;
+        User user = new User();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -186,7 +184,7 @@ public class UserDao implements UserDaoInterface {
 
         return user;
     }
-    ;
+
     @Override
     public User getUserByEmail(String email) throws DatabaseException {
         User user = new User();
@@ -220,7 +218,7 @@ public class UserDao implements UserDaoInterface {
 
         return user;
     }
-    ;
+
     @Override
     public List<User> getAllUser() throws DatabaseException {
         List<User> users = new ArrayList<User>();

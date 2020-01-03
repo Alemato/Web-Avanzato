@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StudentDao implements StudentDaoInterface {
-    private static final String CREATE_STUDENT_STATEMENT="insert into Student(studyGrade,IdUser) value (?,?)";
-    private static final String UPDATE_STUDENT_STATEMENT="update Student set studyGrade=? where idStudent=?";
-    private static final String GET_STUDENT_BY_ID_STATEMENT="select * from Student s, User u where s.IdUser = u.IdUser AND idStudent=?";
+    private static final String CREATE_STUDENT_STATEMENT = "insert into Student(studyGrade,IdUser) value (?,?)";
+    private static final String UPDATE_STUDENT_STATEMENT = "update Student set studyGrade=? where idStudent=?";
+    private static final String GET_STUDENT_BY_ID_STATEMENT = "select * from Student s, User u where s.IdUser = u.IdUser AND idStudent=?";
     private static final String GET_STUDENT_BY_ID_USER = "select * from Student s , User u where s.IdUser = u.IdUser And u.IdUser=?";
-    private static final String GET_ALL_STUDENT_STATEMENT="select * from Student s, User u where s.IdUser = u.IdUser";
+    private static final String GET_ALL_STUDENT_STATEMENT = "select * from Student s, User u where s.IdUser = u.IdUser";
 
-   private void configureStudent(Student student, ResultSet resultSet) throws DatabaseException {
+    private void configureStudent(Student student, ResultSet resultSet) throws DatabaseException {
         try {
             student.setIdStudent(resultSet.getInt("IdStudent"));
             student.setStudyGrade(resultSet.getString("StudyGrade"));
@@ -31,9 +31,9 @@ public class StudentDao implements StudentDaoInterface {
             student.setPassword(resultSet.getString("Password"));
             student.setName(resultSet.getString("Name"));
             student.setSurname(resultSet.getString("Surname"));
-            student.setBirthday(resultSet.getDate("birthday"));
+            student.setBirthday(resultSet.getDate("Birthday"));
             student.setLanguage(resultSet.getBoolean("Language"));
-            student.setImage(resultSet.getString("image"));
+            student.setImage(resultSet.getString("Image"));
             student.setCreateDate(resultSet.getTimestamp("u.CreateDate"));
             student.setUpdateDate(resultSet.getTimestamp("u.UpdateDate"));
 
@@ -46,7 +46,7 @@ public class StudentDao implements StudentDaoInterface {
     private void configureStudentList(List<Student> students, ResultSet resultSet) throws DatabaseException {
         try {
             while (resultSet.next()) {
-                Student student= new Student();
+                Student student = new Student();
                 configureStudent(student, resultSet);
                 students.add(student);
             }
@@ -59,59 +59,58 @@ public class StudentDao implements StudentDaoInterface {
 
     @Override
     public void createStudent(Student student) throws DatabaseException {
-        Connection conn= DaoFactory.getConnection();
-        if (conn==null){
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
             throw new DatabaseException("Connection is null");
         }
-        ResultSet rs=null;
-        PreparedStatement prs=null;
+        ResultSet rs = null;
+        PreparedStatement prs = null;
         try {
-            prs=conn.prepareStatement(CREATE_STUDENT_STATEMENT);
-            if(prs==null){
+            prs = conn.prepareStatement(CREATE_STUDENT_STATEMENT);
+            if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
-            prs.setString(1,student.getStudyGrade());
-            prs.setInt(2,student.getIdUser());
+            prs.setString(1, student.getStudyGrade());
+            prs.setInt(2, student.getIdUser());
 
             prs.executeUpdate();
 
-        }catch(SQLException e){
+        } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
-        }finally {
-            DaoFactory.closeDbConnection(conn,rs,prs);
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
         }
 
     }
 
     @Override
     public void modifyStudent(Student student) throws DatabaseException {
-        Connection conn= DaoFactory.getConnection();
-        if (conn==null){
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
             throw new DatabaseException("Connection is null");
         }
-        ResultSet rs=null;
-        PreparedStatement prs=null;
+        ResultSet rs = null;
+        PreparedStatement prs = null;
         try {
-            prs=conn.prepareStatement(UPDATE_STUDENT_STATEMENT);
-            if(prs==null) {
+            prs = conn.prepareStatement(UPDATE_STUDENT_STATEMENT);
+            if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
-            prs.setString(1,student.getStudyGrade());
+            prs.setString(1, student.getStudyGrade());
             prs.executeUpdate();
 
-        }catch(SQLException e){
+        } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
-        }finally {
-            DaoFactory.closeDbConnection(conn,rs,prs);
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
         }
 
     }
 
 
-
     @Override
     public List<Student> getAllStudent() throws DatabaseException {
-        List<Student> students=new ArrayList<Student>();
+        List<Student> students = new ArrayList<Student>();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -124,12 +123,8 @@ public class StudentDao implements StudentDaoInterface {
                 throw new DatabaseException("Statement is null");
             }
 
-            rs=prs.executeQuery();
-            if(rs.next()){
-                configureStudentList(students,rs);
-            }else{
-                throw new DatabaseException("rs is empty");
-            }
+            rs = prs.executeQuery();
+            configureStudentList(students, rs);
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
 
@@ -142,7 +137,7 @@ public class StudentDao implements StudentDaoInterface {
 
     @Override
     public Student getStudentByID(int id) throws DatabaseException {
-        Student student=new Student();
+        Student student = new Student();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -154,11 +149,11 @@ public class StudentDao implements StudentDaoInterface {
             if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
-            prs.setInt(1,id);
-            rs=prs.executeQuery();
-            if(rs.next()){
-                configureStudent(student,rs);
-            }else{
+            prs.setInt(1, id);
+            rs = prs.executeQuery();
+            if (rs.next()) {
+                configureStudent(student, rs);
+            } else {
                 throw new DatabaseException("rs is empty");
             }
         } catch (SQLException e) {
@@ -173,7 +168,7 @@ public class StudentDao implements StudentDaoInterface {
 
     @Override
     public Student getStudentByIdUser(int id) throws DatabaseException {
-        Student student=new Student();
+        Student student = new Student();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -185,11 +180,11 @@ public class StudentDao implements StudentDaoInterface {
             if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
-            prs.setInt(1,id);
-            rs=prs.executeQuery();
-            if(rs.next()){
-                configureStudent(student,rs);
-            }else{
+            prs.setInt(1, id);
+            rs = prs.executeQuery();
+            if (rs.next()) {
+                configureStudent(student, rs);
+            } else {
                 throw new DatabaseException("rs is empty");
             }
         } catch (SQLException e) {

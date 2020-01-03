@@ -67,6 +67,7 @@ public class BookingDao implements BookingDaoInterface {
             "join Subject s on l.IdSubject = s.IdSubject " +
             "join Student st on b.IdStudent = st.IdStudent " +
             "where (b.IdStudent = ?) and (b.LessonState = 3 or b.LessonState = 4)";
+
     private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_TEACHER_STATEMENT = "select * from Booking b " +
             "join Planning p on b.IdPlanning = p.IdPlanning " +
             "join Lesson l on p.IdLesson = l.IdLesson " +
@@ -76,8 +77,7 @@ public class BookingDao implements BookingDaoInterface {
             "where (b.IdStudent = ?) and (b.LessonState = 3 or b.LessonState = 4)";
 
 
-    private void
-    configureBooking(Booking booking, Student student, Planning planning, Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
+    private void configureBooking(Booking booking, Student student, Planning planning, Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
         try {
             booking.setIdBooking(resultSet.getInt("b.IdBooking"));
             booking.setDate(resultSet.getDate("b.Date"));
