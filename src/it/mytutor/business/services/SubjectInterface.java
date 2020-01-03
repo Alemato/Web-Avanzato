@@ -1,11 +1,15 @@
 package it.mytutor.business.services;
 
+import it.mytutor.business.exceptions.SubjectBusinessException;
 import it.mytutor.domain.Subject;
 
 import java.util.List;
 
 public interface SubjectInterface {
-    List<Subject> findAll();
+    List<Subject> findAll() throws SubjectBusinessException;
+
+    List<Subject> findAllStorico(String email) throws SubjectBusinessException;
+
     List<Subject> findAllByMacroSubject(String macroSubject);
     List<Subject> findAllByMicroSubject(String microSubject);
     Subject findSubjectById(Integer id);

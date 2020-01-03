@@ -13,32 +13,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SubjectDao implements SubjectDaoInterface {
-    private static final String GET_SUBJECT_BY_ID_STATEMENT="select * from Subject where IdSubject=?";
-    private static final String GET_SUBJECT_BY_NAME_STATEMENT="select * from Subject where macroSubject=?";
-    private static final String UPDATE_SUBJECT_STATEMENT="update Subject set macroSubject=?, microSubject=? where idSubject=?";
-    private static final String CREATE_SUBJECT_STATEMENT="insert into Subject(macroSubject,microSubject) values(?,?)";
-    private static final String GET_ALL_SUBJECT_STATEMENT="select * from Subject";
+    private static final String GET_SUBJECT_BY_ID_STATEMENT = "select * from Subject where IdSubject=?";
+    private static final String GET_SUBJECTS_BY_NAME_STATEMENT = "select * from Subject where macroSubject=?";
+    private static final String UPDATE_SUBJECT_STATEMENT = "update Subject set macroSubject=?, microSubject=? where idSubject=?";
+    private static final String GET_STORICO_SUBJECT_STATEMENT = "select * from Subject s " +
+            "join Lesson l on l.IdSubject = s.IdSubject " +
+            "join Planning p on l.IdLesson = p.IdLesson " +
+            "join Booking b on p.IdPlanning = b.IdPlanning " +
+            "";
+    private static final String CREATE_SUBJECT_STATEMENT = "insert into Subject(macroSubject,microSubject) values(?,?)";
+    private static final String GET_ALL_SUBJECT_STATEMENT = "select * from Subject";
 
 
     private void configureSubject(Subject subject, ResultSet resultSet) throws DatabaseException {
         try {
             subject.setIdSubject(resultSet.getInt("IdSubject"));
-            subject.setMacroSubject(resultSet.getString("macroSubject"));
-            subject.setMicroSubject(resultSet.getString("microSubject"));
-            subject.setCreateDate(resultSet.getTimestamp("createDate"));
-            subject.setCreateDate(resultSet.getTimestamp("updateDate"));
+            subject.setMacroSubject(resultSet.getString("MacroSubject"));
+            subject.setMicroSubject(resultSet.getString("MicroSubject"));
+            subject.setCreateDate(resultSet.getTimestamp("CreateDate"));
+            subject.setCreateDate(resultSet.getTimestamp("UpdateDate"));
 
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DatabaseException("Errore nel creare oggetto Subject");
         }
     }
-    private void configureSubjectList(List<Subject> users, ResultSet resultSet) throws DatabaseException {
+
+    private void configureSubjectList(List<Subject> subjects, ResultSet resultSet) throws DatabaseException {
         try {
             while (resultSet.next()) {
-                // Subject subject = new Subject();
-                // configureSubject(subject, resultSet);
-                // users.add(subject);
+                Subject subject = new Subject();
+                configureSubject(subject, resultSet);
+                subjects.add(subject);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -48,135 +54,157 @@ public class SubjectDao implements SubjectDaoInterface {
 
     @Override
     public Subject getSubjectById(int id) throws DatabaseException {
-        Subject subject=null;
-        Connection conn= DaoFactory.getConnection();
-        if (conn==null){
+        Subject subject = new Subject();
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
             throw new DatabaseException("Connection is null");
         }
-        ResultSet rs=null;
-        PreparedStatement prs=null;
+        ResultSet rs = null;
+        PreparedStatement prs = null;
         try {
-           prs=conn.prepareStatement(GET_SUBJECT_BY_ID_STATEMENT);
-            if(prs==null){
+            prs = conn.prepareStatement(GET_SUBJECT_BY_ID_STATEMENT);
+            if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
-            prs.setInt(1,id );
+            prs.setInt(1, id);
             rs = prs.executeQuery();
-            if(rs.next()) {
-                configureSubject(subject,rs);
+            if (rs.next()) {
+                configureSubject(subject, rs);
             } else {
                 throw new DatabaseException("rs is empty");
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
-        }finally {
-            DaoFactory.closeDbConnection(conn,rs,prs);
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
         }
         return subject;
     }
 
     @Override
-    public Subject getSubjectByName(String subjectName) throws DatabaseException{
-        Subject subject=null;
-        Connection conn= DaoFactory.getConnection();
-        if (conn==null){
+    public List<Subject> getSubjectsByName(String subjectName) throws DatabaseException {
+        List<Subject> subjects = new ArrayList<>();
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
             throw new DatabaseException("Connection is null");
         }
-        ResultSet rs=null;
-        PreparedStatement prs=null;
+        ResultSet rs = null;
+        PreparedStatement prs = null;
         try {
-            prs=conn.prepareStatement(GET_SUBJECT_BY_NAME_STATEMENT);
-            if(prs==null){
+            prs = conn.prepareStatement(GET_SUBJECTS_BY_NAME_STATEMENT);
+            if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
-            prs.setString(1,subjectName );
+            prs.setString(1, subjectName);
             rs = prs.executeQuery();
-            if(rs.next()) {
-                configureSubject(subject,rs);
-            } else {
-                throw new DatabaseException("rs is empty");
-            }
-        }catch(SQLException e){
+            configureSubjectList(subjects, rs);
+        } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
-        }finally {
-            DaoFactory.closeDbConnection(conn,rs,prs);
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
         }
-        return subject;
+        return subjects;
     }
 
     @Override
     public void createSubject(Subject subject) throws DatabaseException {
-        Connection conn= DaoFactory.getConnection();
-        if (conn==null){
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
             throw new DatabaseException("Connection is null");
         }
-        ResultSet rs=null;
-        PreparedStatement prs=null;
+        ResultSet rs = null;
+        PreparedStatement prs = null;
         try {
-            prs=conn.prepareStatement(CREATE_SUBJECT_STATEMENT);
-            if(prs==null){
+            prs = conn.prepareStatement(CREATE_SUBJECT_STATEMENT);
+            if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
-            prs.setString(1,subject.getMacroSubject());
-            prs.setString(2,subject.getMicroSubject());
+            prs.setString(1, subject.getMacroSubject());
+            prs.setString(2, subject.getMicroSubject());
             prs.executeUpdate();
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             throw new DatabaseException(e.getMessage());
-        }finally {
+        } finally {
             DaoFactory.closeDbConnection(conn, rs, prs);
         }
     }
 
     @Override
-    public void modifySubjectByID(Subject subject, int id) throws DatabaseException{
-        Connection conn= DaoFactory.getConnection();
-        if (conn==null){
+    public void modifySubjectByID(Subject subject) throws DatabaseException {
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
             throw new DatabaseException("Connection is null");
         }
-        ResultSet rs=null;
-        PreparedStatement prs=null;
+        ResultSet rs = null;
+        PreparedStatement prs = null;
         try {
             prs = conn.prepareStatement(UPDATE_SUBJECT_STATEMENT);
             if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
-            prs.setString(1,subject.getMacroSubject());
-            prs.setString(2,subject.getMicroSubject());
-            prs.setInt(3,id);
+            prs.setString(1, subject.getMacroSubject());
+            prs.setString(2, subject.getMicroSubject());
+            prs.setInt(3, subject.getIdSubject());
             prs.executeUpdate();
-        }catch(SQLException e){
+        } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
-        }finally {
-            DaoFactory.closeDbConnection(conn,rs,prs);
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
         }
     }
 
     @Override
     public List<Subject> getAllSubject() throws DatabaseException {
-        List<Subject> Subejcts= new ArrayList<Subject>();
+        List<Subject> subjects = new ArrayList<Subject>();
 
-        Connection conn= DaoFactory.getConnection();
-        if (conn==null){
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
             throw new DatabaseException("Connection is null");
         }
-        ResultSet rs=null;
-        PreparedStatement prs=null;
+        ResultSet rs = null;
+        PreparedStatement prs = null;
         try {
             prs = conn.prepareStatement(GET_ALL_SUBJECT_STATEMENT);
             if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
-            rs=prs.executeQuery();
-            configureSubjectList(Subejcts,rs);
+            rs = prs.executeQuery();
+            configureSubjectList(subjects, rs);
 
-        }catch(SQLException e){
+        } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
-        }finally {
-            DaoFactory.closeDbConnection(conn,rs,prs);
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+        return subjects;
+    }
+
+    @Override
+    public List<Subject> getStoricoSubject(String email) throws DatabaseException {
+        List<Subject> Subejcts = new ArrayList<Subject>();
+
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(GET_STORICO_SUBJECT_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            rs = prs.executeQuery();
+            configureSubjectList(Subejcts, rs);
+
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
         }
         return Subejcts;
     }
 
-  }
+}

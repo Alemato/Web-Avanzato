@@ -10,14 +10,15 @@ public interface SubjectDaoInterface {
 
     Subject getSubjectById(int id)throws DatabaseException;
 
-    Subject getSubjectByName(String subjectName) throws DatabaseException;
+    List<Subject> getSubjectsByName(String subjectName) throws DatabaseException;
 
     void createSubject(Subject subject)throws DatabaseException;
 
-    void modifySubjectByID(Subject subject,int id)throws DatabaseException;
+    void modifySubjectByID(Subject subject)throws DatabaseException;
 
 
 
     List<Subject> getAllSubject () throws DatabaseException;
 
+    List<Subject> getStoricoSubject(String email) throws DatabaseException;
 }
