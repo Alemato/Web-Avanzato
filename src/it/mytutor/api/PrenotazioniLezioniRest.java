@@ -12,19 +12,25 @@ import it.mytutor.business.services.UserInterface;
 import it.mytutor.domain.Booking;
 import it.mytutor.domain.Student;
 import it.mytutor.domain.Teacher;
+import it.mytutor.domain.User;
 import it.mytutor.domain.dao.exception.DatabaseException;
+import it.mytutor.domain.dao.implement.StudentDao;
+import it.mytutor.domain.dao.implement.TeacherDao;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
-import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Path("prenotazioni-lezioni")
 public class PrenotazioniLezioniRest {
+    @Context
+    private SecurityContext securityContext;
 
     private BookingInterface bookingService = new BookingBusiness();
     private UserInterface userService = new UserBusiness();
@@ -33,7 +39,6 @@ public class PrenotazioniLezioniRest {
     /**
      * Rest della HomePage del Professore
      *
-     * @param context ContainerRequestContext da cui prendere l'email dell'utente
      * @return lista di Bookings
      */
     @Path("home-teach")
@@ -41,9 +46,8 @@ public class PrenotazioniLezioniRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"TEACHER"})
-    public Response getPrenotazioniTeach(ContainerRequestContext context) {
+    public Response getPrenotazioniTeach() {
         List<Booking> bookings;
-        SecurityContext securityContext = context.getSecurityContext();
         String teacherEmail = securityContext.getUserPrincipal().getName();
         Teacher teacher;
         try {
@@ -64,7 +68,6 @@ public class PrenotazioniLezioniRest {
     /**
      * Rest della HomePage dello Studente
      *
-     * @param context ContainerRequestContext da cui riprendere l'email dell'utente
      * @return lista di Bookings
      */
     @Path("home-stud")
@@ -72,10 +75,8 @@ public class PrenotazioniLezioniRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"STUDENT"})
-    public Response getPrenotazioniStud(ContainerRequestContext context) {
+    public Response getPrenotazioniStud() {
         List<Booking> bookings;
-        System.out.println("lo studente è:");
-        SecurityContext securityContext = context.getSecurityContext();
         String studentEmail = securityContext.getUserPrincipal().getName();
         System.out.println(studentEmail);
         Student student;
@@ -136,143 +137,147 @@ public class PrenotazioniLezioniRest {
     }
 
     /**
-     * @param context ContainerRequestContext da cui riprendere l'email dell'utente
      * @return lista di Bookings
      */
-    @Path("storico-stud")
+    @Path("storico")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"STUDENT"})
-    public Response getStoricoStud(ContainerRequestContext context) {
-        List<Booking> bookings;
-        SecurityContext securityContext = context.getSecurityContext();
-        String studentEmail = securityContext.getUserPrincipal().getName();
-        Student student;
+    @RolesAllowed({"STUDENT", "TEACHER"})
+    public Response getStoricoStud() {
+        List<Booking> bookings = new ArrayList<>();
+        User user;
+        String email = securityContext.getUserPrincipal().getName();
         try {
-            student = (Student) userService.findUserByUsername(studentEmail);
-        } catch (UserException | DatabaseException e) {
+            user = (User) userService.findUserByUsername(email);
+        } catch (UserException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        } catch (DatabaseException e) {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
-        try {
-            bookings = bookingService.findAllBookingByStudnet(student);
-        } catch (DatabaseException | PlanningBusinessException | BookingBusinessException | UserException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        if (user.getRoles() == 1) {
+            StudentDao studentDao = new StudentDao();
+            Student student;
+            try {
+                student = studentDao.getStudentByIdUser(user.getIdUser());
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+            try {
+                bookings = bookingService.findAllBookingByStudnet(student);
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            } catch (PlanningBusinessException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            } catch (BookingBusinessException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            } catch (UserException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+        } else if (user.getRoles() == 2) {
+            TeacherDao teacherDao = new TeacherDao();
+            Teacher teacher;
+            try {
+                teacher = teacherDao.getTeacherByUserID(user.getIdUser());
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+            try {
+                bookings = bookingService.findAllBookingByTeacher(teacher);
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            } catch (PlanningBusinessException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            } catch (BookingBusinessException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            } catch (UserException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
         }
-
         return Response.ok(bookings).build();
     }
 
     /**
-     * @param context ContainerRequestContext  da cui riprendere l'email dell'utente
-     * @return lista di Bookings
-     */
-    @Path("storico/teach")
-    @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"TEACHER"})
-    public Response getStoricoTeach(ContainerRequestContext context) {
-        List<Booking> bookings;
-        SecurityContext securityContext = context.getSecurityContext();
-        String teacherEmail = securityContext.getUserPrincipal().getName();
-        Teacher teacher;
-        try {
-            teacher = (Teacher) userService.findUserByUsername(teacherEmail);
-        } catch (UserException | DatabaseException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-        }
-        try {
-            bookings = bookingService.findAllBookingByTeacher(teacher);
-        } catch (DatabaseException | PlanningBusinessException | BookingBusinessException | UserException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-        }
-        return Response.ok(bookings).build();
-    }
-
-
-    /**
-     * @param context      da cui riprendere l'email dell'utente
      * @param macroMateria macro materia
      * @param nomeLezione  nome della lezione
      * @param microMateria micro materia
      * @param data         data di planning
-     * @param idProfessore id del professore che tiene la lezione
+     * @param idUser       id dello studente prenotato alla lezione
      * @param stato        stato deolla prenotazione (0,1,2,3,4)
      * @return lista di Bookings
      */
-    @Path("storico/stud-filter")
+    @Path("storico-filter")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"STUDENT"})
-    public Response getStoricoStudFilter(ContainerRequestContext context, @QueryParam("macro-materia") String macroMateria,
-                                         @QueryParam("nome-lezione") String nomeLezione,
-                                         @QueryParam("micro-materia") String microMateria,
-                                         @QueryParam("data") String data,
-                                         @QueryParam("id-professore") String idProfessore,
-                                         @QueryParam("stato") String stato) {
-        List<Booking> bookings;
-        SecurityContext securityContext = context.getSecurityContext();
-        String studentEmail = securityContext.getUserPrincipal().getName();
-        Student student = null;
-        try {
-            student = (Student) userService.findUserByUsername(studentEmail);
-        } catch (UserException | DatabaseException e) {
-            e.printStackTrace();
-        }
-        try {
-            bookings = bookingService.findAllBookingByStudnetAndFilter(student, macroMateria, nomeLezione, microMateria, data, idProfessore, stato);
-        } catch (ParseException | UserException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-        }
-
-        return Response.ok(bookings).build();
-    }
-
-    /**
-     * @param context      da cui riprendere l'email dell'utente
-     * @param macroMateria macro materia
-     * @param nomeLezione  nome della lezione
-     * @param microMateria micro materia
-     * @param data         data di planning
-     * @param idStudente   id dello studente prenotato alla lezione
-     * @param stato        stato deolla prenotazione (0,1,2,3,4)
-     * @return lista di Bookings
-     */
-    @Path("storico/teach-filter")
-    @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"STUDENT"})
-    public Response getStoricoTeachFilter(ContainerRequestContext context, @QueryParam("macro-materia") String macroMateria,
+    public Response getStoricoTeachFilter(@QueryParam("macro-materia") String macroMateria,
                                           @QueryParam("nome-lezione") String nomeLezione,
                                           @QueryParam("micro-materia") String microMateria,
                                           @QueryParam("data") String data,
-                                          @QueryParam("id-student") String idStudente,
+                                          @QueryParam("id-utente") String idUser,
                                           @QueryParam("stato") String stato) {
-        List<Booking> bookings;
-        SecurityContext securityContext = context.getSecurityContext();
-        String teacherEmail = securityContext.getUserPrincipal().getName();
-        Teacher teacher;
+        List<Booking> bookings = new ArrayList<>();
+        User user;
+        String email = securityContext.getUserPrincipal().getName();
         try {
-            teacher = (Teacher) userService.findUserByUsername(teacherEmail);
-        } catch (UserException | DatabaseException e) {
+            user = (User) userService.findUserByUsername(email);
+        } catch (UserException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        } catch (DatabaseException e) {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
-        try {
-            bookings = bookingService.findAllBookingByTeacherAndFilter(teacher, macroMateria, nomeLezione, microMateria, data, idStudente, stato);
-        } catch (ParseException | UserException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        if (user.getRoles() == 1) {
+            StudentDao studentDao = new StudentDao();
+            Student student;
+            try {
+                student = studentDao.getStudentByIdUser(user.getIdUser());
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+            try {
+                bookings = bookingService.findAllBookingByStudnetAndFilter(student, macroMateria, nomeLezione, microMateria, data, idUser, stato);
+            } catch (UserException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            } catch (ParseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+        } else if (user.getRoles() == 2) {
+            TeacherDao teacherDao = new TeacherDao();
+            Teacher teacher;
+            try {
+                teacher = teacherDao.getTeacherByUserID(user.getIdUser());
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+            try {
+                bookings = bookingService.findAllBookingByTeacherAndFilter(teacher, macroMateria, nomeLezione, microMateria, data, idUser, stato);
+            } catch (UserException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            } catch (ParseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
         }
-
         return Response.ok(bookings).build();
     }
 
