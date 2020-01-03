@@ -15,13 +15,17 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 
 @Path("chats")
 public class ChatsRest {
+    @Context
+    private SecurityContext securityContext;
 
     private ChatInterface chatService = new ChatBusiness();
     private MessageInterface messageService = new MessageBusiness();
@@ -30,15 +34,14 @@ public class ChatsRest {
     /**
      * rest per ricevere la lista di tutte le chat che saranno salvate nello storage
      * Con un solo l'ULTIMO MESSAGGIO ricevuto o inviato.
-     * @param requestContext
      * @return
      */
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"STUDENT", "TEACHER"})
-    public Response getAllChat(ContainerRequestContext requestContext){
-        String username = requestContext.getSecurityContext().getUserPrincipal().getName();
+    public Response getAllChat(){
+        String username = securityContext.getUserPrincipal().getName();
         List<Message> messageList;
         try {
             messageList = chatService.findAllChatByUser(username);
@@ -61,8 +64,8 @@ public class ChatsRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"STUDENT", "TEACHER"})
-    public Response getChatsByIDByQuery(ContainerRequestContext requestContext, @QueryParam("idUltimaChat") Integer idUltimaChat) {
-        String username = requestContext.getSecurityContext().getUserPrincipal().getName();
+    public Response getChatsByIDByQuery( @QueryParam("idUltimaChat") Integer idUltimaChat) {
+        String username = securityContext.getUserPrincipal().getName();
         List<Message> messageList;
         try {
             if (idUltimaChat == 0){
