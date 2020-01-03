@@ -24,14 +24,29 @@ public class ChatBusiness implements ChatInterface {
     }
 
     @Override
-    public List<Message> findAllChatByUserByQuery(String username) throws DatabaseException {
-        User user = getUser(username);
+    public List<Message> findAllChatByUserByQuery(String username) {
+        User user = new User();
+        try {
+            user = getUser(username);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
         List<Message> messageList = new ArrayList<Message>();
         ChatDao chatDao = new ChatDao();
-        List<Chat> chatList = chatDao.getAllChatByIdUser(user.getIdUser());
+        List<Chat> chatList = new ArrayList<>();
+        try {
+            chatList = chatDao.getAllChatByIdUser(user.getIdUser());
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
         for (Chat chat: chatList) {
             MessageDao messageDao = new MessageDao();
-            List<Message> messages = messageDao.getAllMessagesOfChat(chat.getIdChat());
+            List<Message> messages = new ArrayList<>();
+            try {
+                messages = messageDao.getAllMessagesOfChat(chat.getIdChat());
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+            }
             messageList.addAll(messages);
         }
         return messageList;

@@ -84,6 +84,7 @@ public class BookingBusiness implements BookingInterface {
         return bookings;
     }
 
+
     @Override
     public Booking findBookingById(Integer idBooking) throws BookingBusinessException {
         BookingDaoInterface bookingDao = new BookingDao();
@@ -167,13 +168,15 @@ public class BookingBusiness implements BookingInterface {
     }
 
     @Override
-    public void crateBooking(Booking booking) throws PlanningBusinessException {
+    public void crateBookings(List<Booking> bookings) throws PlanningBusinessException {
         BookingDaoInterface bookingDao = new BookingDao();
-        try {
-            bookingDao.createBooking(booking);
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-            throw new PlanningBusinessException("Errore nel prendere l'oggetto booking");
+        for (Booking booking: bookings) {
+            try {
+                bookingDao.createBooking(booking);
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new PlanningBusinessException("Errore nel prendere l'oggetto booking");
+            }
         }
     }
 
@@ -316,7 +319,7 @@ public class BookingBusiness implements BookingInterface {
 
 
     @Override
-    public List<Booking> findAllBookingByTeacherAndFilter(Teacher teacher, String macroMateria, String nomeLezione, String microMateria, String date, String idStudente, String stato) throws ParseException, UserException {
+    public List<Booking> findAllBookingByTeacherAndFilter(Teacher teacher, String macroMateria, String nomeLezione, String microMateria, String date, String idUser, String stato) throws ParseException, UserException {
 
         BookingDao bookingDao = new BookingDao();
         UserDao userDao = new UserDao();
@@ -334,11 +337,11 @@ public class BookingBusiness implements BookingInterface {
         if (microMateria != null && !microMateria.isEmpty()) {
             microMateriaRelevant = 1;
         }
-        int idStudenteRelevant = 0;
-        int idStudenteAppo = 0;
-        if (idStudente != null && !idStudente.isEmpty()) {
-            idStudenteAppo = Integer.parseInt(idStudente);
-            idStudenteRelevant = 1;
+        int idUserRelevant = 0;
+        int idUserAppo = 0;
+        if (idUser != null && !idUser.isEmpty()) {
+            idUserAppo = Integer.parseInt(idUser);
+            idUserRelevant = 1;
         }
         int dateRelevant = 0;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -362,7 +365,7 @@ public class BookingBusiness implements BookingInterface {
             statoRelevant = 1;
         }
         try {
-            bookings = bookingDao.getHistoricalBokingsOfATeacherAndFilter(teacher, macroMateriaRelevant, macroMateria, nomeLezioneRevelant, nomeLezione, microMateriaRelevant, microMateria, dateRelevant, dateSql, idStudenteRelevant, idStudenteAppo, statoRelevant, statoAppo);
+            bookings = bookingDao.getHistoricalBokingsOfATeacherAndFilter(teacher, macroMateriaRelevant, macroMateria, nomeLezioneRevelant, nomeLezione, microMateriaRelevant, microMateria, dateRelevant, dateSql, idUserRelevant, idUserAppo, statoRelevant, statoAppo);
         } catch (DatabaseException e) {
             e.printStackTrace();
         }
