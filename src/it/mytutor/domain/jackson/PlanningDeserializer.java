@@ -11,7 +11,6 @@ import it.mytutor.domain.Subject;
 
 import java.io.IOException;
 import java.sql.Date;
-import java.sql.Time;
 
 public class PlanningDeserializer  extends StdDeserializer<Planning> {
 
@@ -26,6 +25,9 @@ public class PlanningDeserializer  extends StdDeserializer<Planning> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Planning planning = new Planning();
+        if (node.get("idPlanning") != null) {
+            planning.setIdPlanning(node.get("idPlanning").asInt());
+        }
         Date date = new Date(node.get("date").asLong());
         planning.setDate(date);
         planning.setStartTime(java.sql.Time.valueOf(node.get("startTime").asText()));
@@ -33,16 +35,16 @@ public class PlanningDeserializer  extends StdDeserializer<Planning> {
 
         Lesson lesson = new Lesson();
 
-        lesson.setIdLesson(node.findPath("idLesson").asInt());
-//        lesson.setPrice(node.findPath("lesson").findPath("price").asDouble());
-//        lesson.setDescription(node.findPath("lesson").findPath("description").asText());
-//        Date pDate = new Date(node.findPath("lesson").findPath("publicationDate").asLong());
-//        lesson.setPublicationDate(pDate);
-//
-//        Subject subject = new Subject();
-//        subject.setMacroSubject(node.findPath("lesson").findPath("subject").findPath("macroSubject").asText());
-//        subject.setMicroSubject(node.findPath("lesson").findPath("subject").findPath("microSubject").asText());
-//        lesson.setSubject(subject);
+        lesson.setPrice(node.findPath("lesson").findPath("name").asDouble());
+        lesson.setPrice(node.findPath("lesson").findPath("price").asDouble());
+        lesson.setDescription(node.findPath("lesson").findPath("description").asText());
+        Date pDate = new Date(node.findPath("lesson").findPath("publicationDate").asLong());
+        lesson.setPublicationDate(pDate);
+
+        Subject subject = new Subject();
+        subject.setMacroSubject(node.findPath("lesson").findPath("subject").findPath("macroSubject").asText());
+        subject.setMicroSubject(node.findPath("lesson").findPath("subject").findPath("microSubject").asText());
+        lesson.setSubject(subject);
 
         planning.setLesson(lesson);
 

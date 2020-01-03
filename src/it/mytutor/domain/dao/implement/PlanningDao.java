@@ -21,9 +21,13 @@ public class PlanningDao implements PlanningDaoInterface {
             "and (0 = ? or l.Name = ?) and (0 = ? or t.City = ?) and (0 = ? or s.MicroSubject = ?) \n" +
             "and (0 = ? or DAYOFWEEK(p.Date) =? ) and (0 = ? or l.Price =? ) and (0 = ? or p.StartTime >= ? ) \n" +
             "and (0 = ? or p.EndTime <=? )";
-    private static final String GET_PLANNING_BY_STUDENT_STATEMENT = "";
-    private static final String GET_PLANNING_BY_ID_STATEMENT = "";
-    private static final String GET_ALL_PLANNING_OF_A_STATEMENT = "";
+
+    //TODO query per la ricerca nei
+    // campi text. NB settare i campi sul db come indice FULTEXT
+//    select *
+//    from Message
+//    where match(Text) AGAINST ('mondo');
+
 
     private void configurePlanning(Planning planning, Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
         try {
@@ -88,8 +92,8 @@ public class PlanningDao implements PlanningDaoInterface {
         if (conn == null) {
             throw new DatabaseException("Connection is null");
         }
-        ResultSet rs=null;
-        PreparedStatement prs=null;
+        ResultSet rs = null;
+        PreparedStatement prs = null;
         try {
             prs = conn.prepareStatement(CREATE_PLANNING_STATEMENT);
             if (prs == null) {
@@ -100,7 +104,6 @@ public class PlanningDao implements PlanningDaoInterface {
             prs.setString(2, planning.getStartTime().toString());
             prs.setString(3, planning.getEndTime().toString());
             prs.setInt(4, planning.getLesson().getIdLesson());
-
             prs.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -126,7 +129,7 @@ public class PlanningDao implements PlanningDaoInterface {
     }
 
     @Override
-    public List<Planning> getPlanningByFilter(int macroMateriaRelevant, String  macroMateria, int nomeRelevant, String nome,
+    public List<Planning> getPlanningByFilter(int macroMateriaRelevant, String macroMateria, int nomeRelevant, String nome,
                                               int zonaRelevant, String zona, int microMateriaRelevant, String microMateria,
                                               int giornoSettimanaRelevant, String giornoSettimana, int prezzoRelevant,
                                               String prezzo, int oraInizioRelevant, String oraInizio,
@@ -189,13 +192,13 @@ public class PlanningDao implements PlanningDaoInterface {
             if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
-            prs.setObject(1, planning.getDate());
-            prs.setTime(2, planning.getStartTime());
-            prs.setTime(3, planning.getEndTime());
+            prs.setString(1, planning.getDate().toString());
+            prs.setString(2, planning.getStartTime().toString());
+            prs.setString(3, planning.getEndTime().toString());
             prs.setInt(4, planning.getLesson().getIdLesson());
             prs.setInt(5, planning.getIdPlanning());
 
-            prs.executeQuery();
+            prs.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
