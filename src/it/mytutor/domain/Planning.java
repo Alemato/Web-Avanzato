@@ -1,6 +1,5 @@
 package it.mytutor.domain;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import it.mytutor.domain.jackson.PlanningDeserializer;
@@ -119,7 +118,7 @@ public class Planning {
                 ", endTime=" + endTime +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
-                ", lesson=" + lesson +
+                "," + this.lesson +
                 '}';
     }
 

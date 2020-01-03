@@ -146,8 +146,8 @@ public class Message {
                 ", sendDate=" + sendDate +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
-                ", idChat=" + chat.toString() +
-                ", idUser=" + user.toString() +
+                "," + this.chat.toString() +
+                "," + this.user.toString() +
                 '}';
     }
 }

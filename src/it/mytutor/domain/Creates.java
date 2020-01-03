@@ -135,7 +135,7 @@ public class Creates {
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
                 ", userListser=" + userListerToString(this.userListser) +
-                ", chat=" + chat.toString() +
+                "," + this.chat.toString() +
                 '}';
     }
 }
