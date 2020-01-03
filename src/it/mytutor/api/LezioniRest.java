@@ -1,12 +1,14 @@
 package it.mytutor.api;
 
+import it.mytutor.api.test.ApiWebApplicationException;
+import it.mytutor.business.exceptions.LessonBusinessException;
+import it.mytutor.business.exceptions.SubjectBusinessException;
 import it.mytutor.business.exceptions.UserException;
 import it.mytutor.business.impl.LessonBusiness;
 import it.mytutor.business.impl.UserBusiness;
 import it.mytutor.business.services.LessonInterface;
 import it.mytutor.business.services.UserInterface;
 import it.mytutor.domain.Lesson;
-import it.mytutor.domain.Planning;
 import it.mytutor.domain.Teacher;
 import it.mytutor.domain.dao.exception.DatabaseException;
 
@@ -25,148 +27,62 @@ public class LezioniRest {
     private LessonInterface lessonService = new LessonBusiness();
     private UserInterface userService = new UserBusiness();
 
+    /**
+     * Rest per la lista delle lezioni della pagina "Lista Annunci" del Professore
+     * @param sc SecurityContext
+     * @return Lista di Lesson
+     */
     @GET
     @Path("teach")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"TEACHER"})
-    public Response getLezioniTeachAll(SecurityContext sc) throws UserException, DatabaseException {
+    public Response getLezioniTeachAll(SecurityContext sc) {
         String teacherEmail = sc.getUserPrincipal().getName();
-        Teacher teacher = (Teacher) userService.findUserByUsername(teacherEmail);
-        List<Lesson> lessons = new ArrayList<>(lessonService.findAllLessonByTeacher(teacher));
+        Teacher teacher;
+        try {
+            teacher = (Teacher) userService.findUserByUsername(teacherEmail);
+        } catch (UserException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
+        }
+        List<Lesson> lessons;
+        try {
+            lessons = new ArrayList<>(lessonService.findAllLessonByTeacher(teacher));
+        } catch (LessonBusinessException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
+        }
         return Response.ok(lessons).build();
     }
-//    @GET
-//    @Path("teach")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @RolesAllowed({"TEACHER"})
-//    public Response getLezioniTeach(@QueryParam("filtro") String filtro, @QueryParam("numero") Integer numero, @QueryParam("sotto") Integer sotto) {
-//
-//        List<Lesson> lessons = new ArrayList<Lesson>();
-//        List<Lesson> lessons20 = new ArrayList<Lesson>();
-//        int index = -1;
-//        String oof = "";
-//
-////      ############ SENZA FILTRO #############
-//        if (filtro == null) {
-//                Teacher teacher = new Teacher();
-//                lessons.addAll(lessonService.findAllLessonByTeacher(teacher));
-//        }
-////      ############ CON FILTRO #############
-//        else {
-//                lessons.addAll(lessonService.findLessonByFilter(filtro));
-//        }
-////      ############ PRIMA CHIAMATA #############
-//        if (numero == null && sotto == null) {
-//            if (lessons.size() > 20) {
-//                lessons20 = lessons.subList(0, 20);
-//            }else {
-//                lessons20 = lessons.subList(0, lessons.size());
-//            }
-//        }
-////      ############ SUCCESSIVE CHIAMATE #############
-//        else {
-//            for (Lesson lesson : lessons) {
-//                if (lesson.getIdLesson().equals(sotto)) {
-//                    index = lessons.indexOf(lesson);
-//                }
-//            }
-//            if (index < 0)
-//                return Response.ok("nessun elemento").build();
-//            if (lessons.size() > index + 1 + numero) {
-//                lessons20 = lessons.subList(index + 1 , index + 1  + numero);
-//            } else {
-//                System.out.println("else");
-//                if (index + 1 == lessons.size())
-//                    return Response.ok("nessun elemento").build();
-//                lessons20 = lessons.subList(index + 1 , lessons.size());
-//            }
-//        }
-//        return Response.ok(lessons20).build();
-//    }
 
-//    @GET
-//    @Path("stud")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @RolesAllowed({"STUDENT"})
-//    public Response getLezioniStud( @QueryParam("filtro") String filtro, @QueryParam("numero") Integer numero, @QueryParam("sotto") Integer sotto) {
-//        List<Lesson> lessons = new ArrayList<Lesson>();
-//        List<Lesson> lessons20 = new ArrayList<Lesson>();
-//        int index = -1;
-//        String oof = "";
-//
-////      ############ SENZA FILTRO #############
-//        if (filtro == null) {
-//            lessons.addAll(lessonService.findAllLesson());
-//        }
-////      ############ CON FILTRO #############
-//        else {
-//            lessons.addAll(lessonService.findLessonByFilter(filtro));
-//        }
-////      ############ PRIMA CHIAMATA #############
-//        if (numero == null && sotto == null) {
-//            if (lessons.size() > 20) {
-//                lessons20 = lessons.subList(0, 20);
-//            }else {
-//                lessons20 = lessons.subList(0, lessons.size());
-//            }
-//        }
-////      ############ SUCCESSIVE CHIAMATE #############
-//        else {
-//            for (Lesson lesson : lessons) {
-//                if (lesson.getIdLesson().equals(sotto)) {
-//                    index = lessons.indexOf(lesson);
-//                }
-//            }
-//            if (index < 0)
-//                return Response.ok("nessun elemento").build();
-//            if (lessons.size() > index + 1 + numero) {
-//                lessons20 = lessons.subList(index + 1 , index + 1  + numero);
-//            } else {
-//                System.out.println("else");
-//                if (index + 1 == lessons.size())
-//                    return Response.ok("nessun elemento").build();
-//                lessons20 = lessons.subList(index + 1 , lessons.size());
-//            }
-//        }
-//        return Response.ok(lessons20).build();
-//    }
-
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
-    public Response creaLezione(Planning planning) {
-        System.out.println(planning);
-
-        return Response.ok().build();
-
-    }
-
-
-//    @Path("{LID}")
-//    @GET
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.TEXT_HTML)
-//    public String getLezioniByID(@PathParam("LID") Integer lid, @QueryParam("numero") Integer numero, @QueryParam("sotto") Integer sotto) {
-//        return "<h1 style=\"" +
-//                "color: red; " +
-//                "margin: auto; " +
-//                "width: fit-content; " +
-//                "margin-top: 20%;\" " +
-//                ">Componente Lezioni con @PathParam(\"LID\"): " + lid + ", @QueryParam(\"numero\"):" + numero + " (a default vale null) e @QueryParam(\"sotto\"):" + sotto + " (a default vale null)</h1>";
-//    }
-
+    /**
+     * Rest per modificare la lezione da parte del professore
+     * @param lesson Lezione dal client
+     * @return Status accettato con messaggio "Lezione modificata"
+     */
     @Path("{LID}")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public Response modificaLezione(Planning plenning, @PathParam("LID") Integer lid) {
-        lessonService.updateLessson(plenning);
-        return Response.ok().build();
+    public Response modificaLezione(Lesson lesson) {
+        try {
+            lessonService.updateLessson(lesson);
+        } catch (LessonBusinessException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
+        } catch (SubjectBusinessException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
+        }
+        return Response.ok(Response.Status.ACCEPTED).entity("Lezione modificata").build();
     }
 
 }
