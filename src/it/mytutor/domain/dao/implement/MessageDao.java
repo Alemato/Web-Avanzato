@@ -23,7 +23,7 @@ public class MessageDao implements MessageDaoInterface {
 
     private void configureMessage(Message message, Chat chat, User user, ResultSet resultSet) throws DatabaseException {
         try {
-            message.setIdMessage(resultSet.getInt("idMessage"));
+            message.setIdMessage(resultSet.getInt("IdMessage"));
             message.setText(resultSet.getString("Text"));
             message.setSendDate(resultSet.getTimestamp("SendDate"));
             message.setCreateDate(resultSet.getTimestamp("m.CreateDate"));
@@ -69,27 +69,27 @@ public class MessageDao implements MessageDaoInterface {
 
     @Override
     public void createMessage(Message message) throws DatabaseException {
-        Connection conn= DaoFactory.getConnection();
-        if (conn==null){
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
             throw new DatabaseException("Connection is null");
         }
-        ResultSet rs=null;
-        PreparedStatement prs=null;
+        ResultSet rs = null;
+        PreparedStatement prs = null;
         try {
-            prs=conn.prepareStatement(CREATE_MESSAGE_STATEMENT);
-            if(prs==null){
+            prs = conn.prepareStatement(CREATE_MESSAGE_STATEMENT);
+            if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
-            prs.setString(1,message.getText());
-            prs.setTimestamp(2,message.getSendDate());
-            prs.setObject(3,message.getChat());
-            prs.setObject(4,message.getUser());
+            prs.setString(1, message.getText());
+            prs.setTimestamp(2, message.getSendDate());
+            prs.setObject(3, message.getChat());
+            prs.setObject(4, message.getUser());
             prs.executeUpdate();
 
-        }catch(SQLException e){
+        } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
-        }finally {
-            DaoFactory.closeDbConnection(conn,rs,prs);
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
         }
 
     }
@@ -111,10 +111,10 @@ public class MessageDao implements MessageDaoInterface {
                 throw new DatabaseException("Statement is null");
             }
             prs.setInt(1, id);
-            rs=prs.executeQuery();
-            if(rs.next()){
+            rs = prs.executeQuery();
+            if (rs.next()) {
                 configureMessage(message, chat, user, rs);
-            }else{
+            } else {
                 throw new DatabaseException("rs is empty");
             }
         } catch (SQLException e) {
@@ -130,7 +130,7 @@ public class MessageDao implements MessageDaoInterface {
 
     @Override
     public List<Message> getAllMessagesOfChat(int chatID) throws DatabaseException {
-        List<Message> messages=new ArrayList<Message>();
+        List<Message> messages = new ArrayList<Message>();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -143,9 +143,9 @@ public class MessageDao implements MessageDaoInterface {
                 throw new DatabaseException("Statement is null");
             }
             prs.setInt(1, chatID);
-            rs=prs.executeQuery();
-            configureMessageList(messages,rs);
-            if(messages.isEmpty()){
+            rs = prs.executeQuery();
+            configureMessageList(messages, rs);
+            if (messages.isEmpty()) {
                 throw new DatabaseException("rs is empty");
             }
         } catch (SQLException e) {
@@ -161,7 +161,7 @@ public class MessageDao implements MessageDaoInterface {
 
     @Override
     public List<Message> getAllMessagesOfChatLimitFive(int chatID) throws DatabaseException {
-        List<Message> messages=new ArrayList<Message>();
+        List<Message> messages = new ArrayList<Message>();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -174,9 +174,9 @@ public class MessageDao implements MessageDaoInterface {
                 throw new DatabaseException("Statement is null");
             }
             prs.setInt(1, chatID);
-            rs=prs.executeQuery();
-            configureMessageList(messages,rs);
-            if(messages.isEmpty()){
+            rs = prs.executeQuery();
+            configureMessageList(messages, rs);
+            if (messages.isEmpty()) {
                 throw new DatabaseException("rs is empty");
             }
         } catch (SQLException e) {
@@ -207,10 +207,10 @@ public class MessageDao implements MessageDaoInterface {
                 throw new DatabaseException("Statement is null");
             }
             prs.setInt(1, chatID);
-            rs=prs.executeQuery();
-            if(rs.next()){
+            rs = prs.executeQuery();
+            if (rs.next()) {
                 configureMessage(message, chat, user, rs);
-            }else{
+            } else {
                 throw new DatabaseException("rs is empty");
             }
         } catch (SQLException e) {
