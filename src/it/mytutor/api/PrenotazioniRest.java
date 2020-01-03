@@ -15,12 +15,16 @@ import it.mytutor.domain.dao.exception.DatabaseException;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.util.List;
 
 @Path("lezioni/prenotazioni")
 public class PrenotazioniRest {
+    @Context
+    private SecurityContext securityContext;
 
     private BookingInterface bookingService = new BookingBusiness();
     private UserInterface userService = new UserBusiness();
@@ -29,16 +33,15 @@ public class PrenotazioniRest {
      * Creazione della prenotazione da parte dello studente
      *
      * @param booking oggetto prenotazione ricevuto dal client
-     * @param context ContainerRequestContext da cui prendere l'email dell'utente
      * @return Response Status ACCEPTED
      */
+    // TODO fare la lista
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     @RolesAllowed({"STUDENT"})
-    public Response creaPrenotazione(Booking booking, ContainerRequestContext context){
+    public Response creaPrenotazione(List<Booking> bookings){
 
-        SecurityContext securityContext = context.getSecurityContext();
         String teacherEmail = securityContext.getUserPrincipal().getName();
         Student student;
         try {
@@ -47,9 +50,11 @@ public class PrenotazioniRest {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
-        booking.setStudent(student);
+        for (Booking booking1: bookings){
+            booking1.setStudent(student);
+        }
         try {
-            bookingService.crateBooking(booking);
+            bookingService.crateBookings(bookings);
         } catch (PlanningBusinessException e) {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
