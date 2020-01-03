@@ -1,5 +1,8 @@
 package it.mytutor.business.impl;
 
+import it.mytutor.business.exceptions.BookingBusinessException;
+import it.mytutor.business.exceptions.PlanningBusinessException;
+import it.mytutor.business.exceptions.UserException;
 import it.mytutor.business.services.BookingInterface;
 import it.mytutor.domain.*;
 import it.mytutor.domain.dao.exception.DatabaseException;
@@ -13,8 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.mytutor.business.impl.test.TestBusinness.simulateFindAllBooking;
-
 public class BookingBusiness implements BookingInterface {
 
     @Override
@@ -24,15 +25,10 @@ public class BookingBusiness implements BookingInterface {
     }
 
     public List<Booking> findBookingByFilter(String macroMateria, String nome, String zona, String microMateria,
-                                             String giornoSettimana, String prezzo, String oraInizio, String oraFine) {
+                                             String giornoSettimana, String prezzo, String oraInizio, String oraFine) throws PlanningBusinessException, UserException {
         UserDao userDao = new UserDao();
-        User user = new User();
-        Planning planning = new Planning();
-        Lesson lesson = new Lesson();
-        Teacher teacher = new Teacher();
-        Student student = new Student();
         BookingDao bookingDao = new BookingDao();
-        List<Booking> bookings = new ArrayList<>();
+        List<Booking> bookings;
         int macroMateriaRelevant = 0;
         if (macroMateria != null && !macroMateria.isEmpty()) {
             macroMateriaRelevant = 1;
@@ -72,17 +68,33 @@ public class BookingBusiness implements BookingInterface {
                     prezzoRelevant, prezzo, oraInizioRelevant, oraInizio, oraFineaRelevant, oraFine);
         } catch (DatabaseException e) {
             e.printStackTrace();
+            throw new PlanningBusinessException("Errore nel prendere gli oggetti booking");
         }
 
+        int i = 0;
         for (Booking booking : bookings) {
-            addUsersInBookingList(booking, user, userDao, planning, lesson, teacher, student);
+            try {
+                bookings.set(i, addUsersInBookingList(booking, userDao));
+                i++;
+            } catch (BookingBusinessException e) {
+                e.printStackTrace();
+                throw new UserException("Errore nel'aggiunta degli user");
+            }
         }
         return bookings;
     }
 
     @Override
-    public Booking findBookingById(Integer idBooking) {
-        return null;
+    public Booking findBookingById(Integer idBooking) throws BookingBusinessException {
+        BookingDaoInterface bookingDao = new BookingDao();
+        Booking booking;
+        try {
+            booking = bookingDao.getBookingById(idBooking);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new BookingBusinessException("Errore nel prendere l'oggetto booking");
+        }
+        return booking;
     }
 
     @Override
@@ -96,47 +108,55 @@ public class BookingBusiness implements BookingInterface {
     }
 
     @Override
-    public List<Booking> findAllBookingByStudnet(Student student) {
+    public List<Booking> findAllBookingByStudnet(Student student) throws BookingBusinessException, UserException {
         BookingDao bookingDao = new BookingDao();
         UserDao userDao = new UserDao();
-        List<Booking> bookings = new ArrayList<>();
-        User user = new User();
-        Planning planning = new Planning();
-        Lesson lesson = new Lesson();
-        Teacher teacher = new Teacher();
-        Student student1 = new Student();
+        List<Booking> bookings;
 
 
         try {
             bookings = bookingDao.getAllBookingOfAStudent(student);
         } catch (DatabaseException e) {
             e.printStackTrace();
+            throw new BookingBusinessException("Errore nel prendere gli oggetti booking");
         }
+        int i = 0;
         for (Booking booking : bookings) {
-            addUsersInBookingList(booking, user, userDao, planning, lesson, teacher, student1);
+            try {
+                bookings.set(i, addUsersInBookingList(booking, userDao));
+                i++;
+            } catch (BookingBusinessException e) {
+                e.printStackTrace();
+                throw new BookingBusinessException("Errore nel prendere gli oggetti booking");
+            } catch (UserException e) {
+                e.printStackTrace();
+                throw new UserException("Errore nel'aggiunta degli user");
+            }
         }
         return bookings;
     }
 
     @Override
-    public List<Booking> findAllBookingByTeacher(Teacher teacher) {
+    public List<Booking> findAllBookingByTeacher(Teacher teacher) throws BookingBusinessException, UserException {
         BookingDao bookingDao = new BookingDao();
         UserDao userDao = new UserDao();
-        List<Booking> bookings = new ArrayList<>();
-        User user = new User();
-        Planning planning = new Planning();
-        Lesson lesson = new Lesson();
-        Teacher teacher1 = new Teacher();
-        Student student1 = new Student();
-
+        List<Booking> bookings;
 
         try {
             bookings = bookingDao.getAllBookingOfATeacher(teacher);
         } catch (DatabaseException e) {
             e.printStackTrace();
+            throw new BookingBusinessException("Errore nel prendere gli oggetti booking");
         }
+        int i = 0;
         for (Booking booking : bookings) {
-            addUsersInBookingList(booking, user, userDao, planning, lesson, teacher1, student1);
+            try {
+                bookings.set(i, addUsersInBookingList(booking, userDao));
+                i++;
+            } catch (UserException e) {
+                e.printStackTrace();
+                throw new UserException("Errore nel'aggiunta degli user");
+            }
         }
         return bookings;
     }
@@ -147,32 +167,93 @@ public class BookingBusiness implements BookingInterface {
     }
 
     @Override
-    public void crateBooking(Booking booking) {
+    public void crateBooking(Booking booking) throws PlanningBusinessException {
         BookingDaoInterface bookingDao = new BookingDao();
         try {
             bookingDao.createBooking(booking);
         } catch (DatabaseException e) {
             e.printStackTrace();
+            throw new PlanningBusinessException("Errore nel prendere l'oggetto booking");
         }
     }
 
     @Override
-    public Booking updateBooking(Booking booking, Integer lessonState) {
-        return null;
+    public void updateBooking(Booking booking, Integer lessonState) throws BookingBusinessException {
+       BookingDaoInterface bookingDao = new BookingDao();
+       booking.setLessonState(lessonState);
+        try {
+            bookingDao.updateBooking(booking);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new BookingBusinessException("Errore nel modificare l'oggetto booking");
+        }
     }
 
     @Override
-    public List<Booking> findHistoricalBookingByStudent(Student student, String nomeLezione, String macroMateria, String microMateria,
-                                                        String idTeacher, String date, String rifiutata, String annullata, String eseguita) {
+    public List<Booking> findHistoricalBookingByStudent(Student student) throws BookingBusinessException, UserException {
+
+        BookingDao bookingDao = new BookingDao();
+        UserDao userDao = new UserDao();
+        List<Booking> bookings;
+
+        try {
+            bookings = bookingDao.getHistoricalBokingsOfAStudent(student);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new BookingBusinessException("Errore nel prendere gli oggetti booking");
+        }
+
+        int i = 0;
+        for (Booking booking : bookings) {
+            try {
+                bookings.set(i, addUsersInBookingList(booking, userDao));
+                i++;
+            } catch (BookingBusinessException e) {
+                e.printStackTrace();
+                throw new BookingBusinessException("Errore nel prendere gli oggetti booking");
+            } catch (UserException e) {
+                e.printStackTrace();
+                throw new UserException("Errore nel'aggiunta degli user");
+            }
+        }
+
+        return bookings;
+    }
+
+    @Override
+    public List<Booking> findHistoricalBookingByTeacher(Teacher teacher) throws BookingBusinessException, UserException {
+        BookingDao bookingDao = new BookingDao();
+        UserDao userDao = new UserDao();
+        List<Booking> bookings;
+
+        try {
+            bookings = bookingDao.getHistoricalBokingsOfATeacher(teacher);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new BookingBusinessException("Errore nel prendere gli oggetti booking");
+        }
+
+        int i = 0;
+        for (Booking booking : bookings) {
+            try {
+                bookings.set(i, addUsersInBookingList(booking, userDao));
+                i++;
+            } catch (UserException e) {
+                e.printStackTrace();
+                throw new UserException("Errore nel'aggiunta degli user");
+
+            }
+        }
+
+        return bookings;
+    }
+
+    @Override
+    public List<Booking> findAllBookingByStudnetAndFilter(Student student, String macroMateria, String nomeLezione, String microMateria, String date, String idProfessore, String stato) throws ParseException, UserException {
 
         BookingDao bookingDao = new BookingDao();
         UserDao userDao = new UserDao();
         List<Booking> bookings = new ArrayList<>();
-        User user = new User();
-        Planning planning = new Planning();
-        Lesson lesson = new Lesson();
-        Teacher teacher = new Teacher();
-        Student student1 = new Student();
 
         int nomeLezioneRevelant = 0;
         if (nomeLezione != null && !nomeLezione.isEmpty()) {
@@ -186,11 +267,11 @@ public class BookingBusiness implements BookingInterface {
         if (microMateria != null && !microMateria.isEmpty()) {
             microMateriaRelevant = 1;
         }
-        int idTeacherRelevant = 0;
-        int idTeacherAppo = 0;
-        if (idTeacher != null && !idTeacher.isEmpty()) {
-            idTeacherAppo = Integer.parseInt(idTeacher);
-            idTeacherRelevant = 1;
+        int idProfessoreRelevant = 0;
+        int idProfessoreAppo = 0;
+        if (idProfessore != null && !idProfessore.isEmpty()) {
+            idProfessoreAppo = Integer.parseInt(idProfessore);
+            idProfessoreRelevant = 1;
         }
         int dateRelevant = 0;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -203,47 +284,43 @@ public class BookingBusiness implements BookingInterface {
                 dateRelevant = 1;
             } catch (ParseException e) {
                 e.printStackTrace();
+                throw new ParseException("Errore nel parse della data", 0);
             }
         }
-        int rifiutataRelevant = 0;
-        if (rifiutata != null && !rifiutata.isEmpty()) {
-            rifiutataRelevant = 1;
-        }
-        int annullataRelevant = 0;
-        if (annullata != null && !annullata.isEmpty()) {
-            annullataRelevant = 1;
-        }
-        int eseguitaRelevant = 0;
-        if (eseguita != null && !eseguita.isEmpty()) {
-            eseguitaRelevant = 1;
-        }
 
+        int statoRelevant = 0;
+        int statoAppo = 0;
+        if (stato != null && !stato.isEmpty()) {
+            statoAppo = Integer.parseInt(stato);
+            statoRelevant = 1;
+        }
         try {
-            bookings = bookingDao.getHistoricalBokingsOfAStudent(student, nomeLezioneRevelant, nomeLezione, macroMateriaRelevant,
-                    macroMateria, microMateriaRelevant, microMateria, idTeacherRelevant, idTeacherAppo, dateRelevant, dateSql,
-                    rifiutataRelevant, rifiutata, annullataRelevant, annullata, eseguitaRelevant, eseguita);
+            bookings = bookingDao.getHistoricalBokingsOfAStudentAndFilter(student, macroMateriaRelevant, macroMateria, nomeLezioneRevelant, nomeLezione, microMateriaRelevant, microMateria, dateRelevant, dateSql, idProfessoreRelevant, idProfessoreAppo, statoRelevant, statoAppo);
         } catch (DatabaseException e) {
             e.printStackTrace();
         }
-
+        int i = 0;
         for (Booking booking : bookings) {
-            addUsersInBookingList(booking, user, userDao, planning, lesson, teacher, student1);
+            try {
+                bookings.set(i, addUsersInBookingList(booking, userDao));
+                i++;
+            } catch (BookingBusinessException e) {
+                e.printStackTrace();
+            } catch (UserException e) {
+                e.printStackTrace();
+                throw new UserException("Errore nel'aggiunta degli user");
+            }
         }
-
         return bookings;
     }
 
+
     @Override
-    public List<Booking> findHistoricalBookingByTeacher(Teacher teacher, String nomeLezione, String macroMateria, String microMateria,
-                                                        String idStudent, String date, String rifiutata, String annullata, String eseguita) {
+    public List<Booking> findAllBookingByTeacherAndFilter(Teacher teacher, String macroMateria, String nomeLezione, String microMateria, String date, String idStudente, String stato) throws ParseException, UserException {
+
         BookingDao bookingDao = new BookingDao();
         UserDao userDao = new UserDao();
         List<Booking> bookings = new ArrayList<>();
-        User user = new User();
-        Planning planning = new Planning();
-        Lesson lesson = new Lesson();
-        Teacher teacher1 = new Teacher();
-        Student student = new Student();
 
         int nomeLezioneRevelant = 0;
         if (nomeLezione != null && !nomeLezione.isEmpty()) {
@@ -257,11 +334,11 @@ public class BookingBusiness implements BookingInterface {
         if (microMateria != null && !microMateria.isEmpty()) {
             microMateriaRelevant = 1;
         }
-        int idStudentRelevant = 0;
-        int idStudentAppo = 0;
-        if (idStudent != null && !idStudent.isEmpty()) {
-            idStudentAppo = Integer.parseInt(idStudent);
-            idStudentRelevant = 1;
+        int idStudenteRelevant = 0;
+        int idStudenteAppo = 0;
+        if (idStudente != null && !idStudente.isEmpty()) {
+            idStudenteAppo = Integer.parseInt(idStudente);
+            idStudenteRelevant = 1;
         }
         int dateRelevant = 0;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -274,45 +351,48 @@ public class BookingBusiness implements BookingInterface {
                 dateRelevant = 1;
             } catch (ParseException e) {
                 e.printStackTrace();
+                throw new ParseException("Errore nel parse della data", 0);
             }
         }
-        int rifiutataRelevant = 0;
-        if (rifiutata != null && !rifiutata.isEmpty()) {
-            rifiutataRelevant = 1;
-        }
-        int annullataRelevant = 0;
-        if (annullata != null && !annullata.isEmpty()) {
-            annullataRelevant = 1;
-        }
-        int eseguitaRelevant = 0;
-        if (eseguita != null && !eseguita.isEmpty()) {
-            eseguitaRelevant = 1;
-        }
 
+        int statoRelevant = 0;
+        int statoAppo = 0;
+        if (stato != null && !stato.isEmpty()) {
+            statoAppo = Integer.parseInt(stato);
+            statoRelevant = 1;
+        }
         try {
-            bookings = bookingDao.getHistoricalBokingsOfATeacher(teacher, nomeLezioneRevelant, nomeLezione, macroMateriaRelevant,
-                    macroMateria, microMateriaRelevant, microMateria, idStudentRelevant, idStudentAppo, dateRelevant, dateSql,
-                    rifiutataRelevant, rifiutata, annullataRelevant, annullata, eseguitaRelevant, eseguita);
+            bookings = bookingDao.getHistoricalBokingsOfATeacherAndFilter(teacher, macroMateriaRelevant, macroMateria, nomeLezioneRevelant, nomeLezione, microMateriaRelevant, microMateria, dateRelevant, dateSql, idStudenteRelevant, idStudenteAppo, statoRelevant, statoAppo);
         } catch (DatabaseException e) {
             e.printStackTrace();
         }
-
+        int i = 0;
         for (Booking booking : bookings) {
-            addUsersInBookingList(booking, user, userDao, planning, lesson, teacher1, student);
+            try {
+                bookings.set(i, addUsersInBookingList(booking, userDao));
+                i++;
+            } catch (BookingBusinessException e) {
+                e.printStackTrace();
+                throw new UserException("Errore nel prendere booking dal database");
+            } catch (UserException e) {
+                e.printStackTrace();
+                throw new UserException("Errore nel'aggiunta degli user");
+            }
         }
-
         return bookings;
     }
 
 
-    private void addUsersInBookingList(Booking booking, User user, UserDao userDao, Planning planning, Lesson lesson, Teacher teacher, Student student) {
-        planning = booking.getPlanning();
-        lesson = planning.getLesson();
-        teacher = lesson.getTeacher();
+    private Booking addUsersInBookingList(Booking booking, UserDao userDao) throws BookingBusinessException, UserException {
+        Planning planning = booking.getPlanning();
+        Lesson lesson = planning.getLesson();
+        Teacher teacher = lesson.getTeacher();
+        User user;
         try {
             user = userDao.getUserById(teacher.getIdUser());
         } catch (DatabaseException e) {
             e.printStackTrace();
+            throw new UserException("Errore nel prendere l'user");
         }
 
         teacher.setIdUser(user.getIdUser());
@@ -331,11 +411,12 @@ public class BookingBusiness implements BookingInterface {
         planning.setLesson(lesson);
         booking.setPlanning(planning);
 
-        student = booking.getStudent();
+        Student student = booking.getStudent();
         try {
             user = userDao.getUserById(student.getIdStudent());
         } catch (DatabaseException e) {
             e.printStackTrace();
+            throw new BookingBusinessException("Errore nel prendere l'user");
         }
 
         student.setIdUser(user.getIdUser());
@@ -351,6 +432,8 @@ public class BookingBusiness implements BookingInterface {
         student.setUpdateDate(user.getUpdateDate());
 
         booking.setStudent(student);
+
+        return booking;
     }
 
 }

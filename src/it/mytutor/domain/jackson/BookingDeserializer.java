@@ -27,21 +27,22 @@ public class BookingDeserializer extends StdDeserializer<Booking> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Booking booking = new Booking();
-
         Date date = new Date(node.get("date").asLong());
         booking.setDate(date);
 
         booking.setLessonState(node.get("lessonState").asInt());
 
-        Student student = new Student();
-        student.setIdStudent(node.findPath("idStudent").asInt());
-        booking.setStudent(student);
+//        Student student = new Student();
+//        student.setIdStudent(node.findPath("idStudent").asInt());
+//        booking.setStudent(student);
 
         Planning planning = new Planning();
+        planning.setIdPlanning(node.findPath("idPlanning").asInt());
 
-        Lesson lesson = new Lesson();
-        lesson.setIdLesson(node.findPath("idLesson").asInt());
-        planning.setLesson(lesson);
+//        Lesson lesson = new Lesson();
+//        lesson.setIdLesson(node.findPath("idLesson").asInt());
+//        planning.setLesson(lesson);
+
         booking.setPlanning(planning);
 
         return booking;

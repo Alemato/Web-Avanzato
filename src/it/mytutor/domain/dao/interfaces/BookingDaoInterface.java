@@ -26,7 +26,11 @@ public interface BookingDaoInterface {
 
     List<Booking> getAllBookingOfATeacher(Teacher teacher) throws DatabaseException;
 
-    List<Booking> getHistoricalBokingsOfAStudent(Student student, int nomeLezioneRevelant, String nomeLezione, int macroMateriaRevelant, String macroMateria, int microMateriaRevelant, String microMateria, int idTeacherRevelant, int idTeacher, int dateRevelant, Date date, int rifiutataRevelant, String rifiutata, int annullataRevelant, String annullata, int eseguitaRevelant, String eseguita) throws DatabaseException;
+    List<Booking> getHistoricalBokingsOfAStudent(Student student) throws DatabaseException;
 
-    List<Booking> getHistoricalBokingsOfATeacher(Teacher teacher, int nomeLezioneRevelant, String nomeLezione, int macroMateriaRevelant, String macroMateria, int microMateriaRevelant, String microMateria, int idTeacherRevelant, int idStudent, int dateRevelant, Date date, int rifiutataRevelant, String rifiutata, int annullataRevelant, String annullata, int eseguitaRevelant, String eseguita) throws DatabaseException;
+    List<Booking> getHistoricalBokingsOfATeacher(Teacher teacher) throws DatabaseException;
+
+    List<Booking> getHistoricalBokingsOfAStudentAndFilter(Student student, int macroMateriaRevelant, String macroMateria, int nomeLezioneRevelant, String nomeLezione, int microMateriaRevelant, String microMateria, int dateRelevant, Date date, int idTeacherRelevant, int idProfessore, int statoRelevant, int stato) throws DatabaseException;
+
+    List<Booking> getHistoricalBokingsOfATeacherAndFilter(Teacher teacher, int macroMateriaRevelant, String macroMateria, int nomeLezioneRevelant, String nomeLezione, int microMateriaRevelant, String microMateria, int dateRelevant, Date date, int idStudentRelevant, int idStudent, int statoRelevant, int stato) throws DatabaseException;
 }

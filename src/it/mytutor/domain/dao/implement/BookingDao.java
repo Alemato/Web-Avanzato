@@ -12,36 +12,78 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
-public class BookingDao  implements BookingDaoInterface {
-    private static final String CREATE_BOOKING_STATEMENT="insert into Booking (Date, LessonState ,Idstudent, IdPlanning) values(?,?,?,?)";
-    private static final String UPDATE_BOOKING_STATEMENT="update Booking set Date=?,LessonState=?,IdStudent=?,IdPlanning=? where IdBooking=?";
-    private static final String GET_ALL_BOOOKING_OF_A_STUDENT_STATEMENT="select * from Booking where IdStudent = ? and (LessonState = 0 or LessonState = 1)";
-    private static final String GET_ALL_BOOOKING_OF_A_TEACHER_STATEMENT="select * from Booking b " +
+public class BookingDao implements BookingDaoInterface {
+    private static final String CREATE_BOOKING_STATEMENT = "insert into Booking (Date, LessonState ,Idstudent, IdPlanning) values(?,?,?,?)";
+    private static final String UPDATE_BOOKING_STATEMENT = "update Booking set Date=?,LessonState=?,IdStudent=?,IdPlanning=? where IdBooking=?";
+    private static final String GET_ALL_BOOOKING_OF_A_STUDENT_STATEMENT = "select * from Booking b " +
+            "join Planning p on b.IdPlanning = p.IdPlanning " +
+            "join Lesson l on p.IdLesson = l.IdLesson " +
+            "join Teacher t on t.IdTeacher = l.IdTeacher " +
+            "join Subject s on l.IdSubject = s.IdSubject " +
+            "join Student st on b.IdStudent = st.IdStudent " +
+            "where st.IdStudent = ? and (b.LessonState = 0 or b.LessonState = 1)";
+    private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_STUDENT_AND_FILTER_STATEMENT = "select * from Booking b " +
+            "join Planning p on b.IdPlanning = p.IdPlanning " +
+            "join Lesson l on p.IdLesson = l.IdLesson " +
+            "join Teacher t on t.IdTeacher = l.IdTeacher " +
+            "join Subject s on l.IdSubject = s.IdSubject " +
+            "join Student st on b.IdStudent = st.IdStudent " +
+            "where (b.IdStudent = ?) and (0 = ? or s.MacroSubject = ?) and (0 = ? or match(l.Name) AGAINST(?)) and (0 = ? or s.MicroSubject = ?) and (0 = ? or b.Date = ?) and (0 = ? or l.IdTeacher = ?) and (0 = ? or b.LessonState = ?)";
+    private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_TEACHER_AND_FILTER_STATEMENT = "select * from Booking b " +
+            "join Planning p on b.IdPlanning = p.IdPlanning " +
+            "join Lesson l on p.IdLesson = l.IdLesson " +
+            "join Teacher t on t.IdTeacher = l.IdTeacher " +
+            "join Subject s on l.IdSubject = s.IdSubject " +
+            "join Student st on b.IdStudent = st.IdStudent " +
+            "where (l.IdTeacher = ?) and (0 = ? or s.MacroSubject = ?) and (0 = ? or l.Name = ?) and (0 = ? or s.MicroSubject = ?) and (0 = ? or b.Date = ?) and (0 = ? or b.IdStudent = ?) and (0 = ? or b.LessonState = ?)";
+    private static final String GET_ALL_BOOOKING_OF_A_TEACHER_STATEMENT = "select * from Booking b " +
             "join Planning p on p.IdPlanning = b.IdPlanning " +
-            "join Lesson l on l.IdLesson = p.IdLesson join Teacher t on l.IdTeacher = t.IdTeacher " +
+            "join Lesson l on l.IdLesson = p.IdLesson " +
+            "join Teacher t on l.IdTeacher = t.IdTeacher " +
+            "join Subject s on l.IdSubject = s.IdSubject " +
+            "join Student st on b.IdStudent = st.IdStudent " +
             "where t.IdTeacher = ? and (LessonState = 0 or LessonState = 1)";
-    private static final String GET_BOOKING_BY_ID_STATEMENT="select * from Booking where IdBooking=?";
+    private static final String GET_BOOKING_BY_ID_STATEMENT = "select * from Booking b " +
+            "join Planning p on p.IdPlanning = b.IdPlanning " +
+            "join Lesson l on p.IdLesson = l.idLesson " +
+            "join Subject s on s.idSubject = l.idSubject " +
+            "join Teacher t on t.IdTeacher = l.IdTeacher " +
+            "join Student st on b.IdStudent = st.IdStudent " +
+            "where IdBooking=?";
 
     private static final String GET_BOOKING_BY_FILTER_STATEMENT = "select * from Booking b " +
             "join Planning p on p.IdPlanning = b.IdPlanning " +
             "join Lesson l on p.IdLesson = l.idLesson " +
             "join Subject s on s.idSubject = l.idSubject " +
-            "join Teacher t on t.IdTeacher = l.IdTeacher where (0 = ? or s.MacroSubject = ?) " +
+            "join Teacher t on t.IdTeacher = l.IdTeacher " +
+            "join Student st on b.IdStudent = st.IdStudent where (0 = ? or s.MacroSubject = ?) " +
             "and (0 = ? or l.Name = ?) and (0 = ? or t.City = ?) and (0 = ? or s.MicroSubject = ?) " +
             "and (0 = ? or DAYOFWEEK(p.Date) = ?) and (0 = ? or l.Price = ?) and (0 = ? or p.StartTime >= ?) " +
             "and (0 = ? or p.EndTime <= ?)";
-    private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_STUDENT_STATEMENT = "select * from Booking b join Planning p on b.IdPlanning = p.IdPlanning join Lesson l on p.IdLesson = l.IdLesson join Subject s on l.IdSubject = s.IdSubject where (b.IdStudent = ?) and (0 = ? or l.Name = ?) and (0 = ? or s.MacroSubject = ?) and (0 = ? or s.MicroSubject = ?) and (0 = ? or l.IdTeacher = ?) and (0 = ? or p.Date = ?) and (0 = ? or b.LessonState = 2) and (0 = ? or b.LessonState = 3) and (0 = ? or b.LessonState = 4)";
-    private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_TEACHER_STATEMENT = "select * from Booking b join Planning p on b.IdPlanning = p.IdPlanning join Lesson l on p.IdLesson = l.IdLesson join Subject s on l.IdSubject = s.IdSubject where (l.IdTeacher = ?) and (0 = ? or l.Name = ?) and (0 = ? or s.MacroSubject = ?) and (0 = ? or s.MicroSubject = ?) and (0 = ? or IdStudent = ?) and (0 = ? or p.Date = ?) and (0 = ? or b.LessonState = 2) and (0 = ? or b.LessonState = 3) and (0 = ? or b.LessonState = 4)";
+    private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_STUDENT_STATEMENT = "select * from Booking b " +
+            "join Planning p on b.IdPlanning = p.IdPlanning " +
+            "join Lesson l on p.IdLesson = l.IdLesson " +
+            "join Teacher t on t.IdTeacher = l.IdTeacher " +
+            "join Subject s on l.IdSubject = s.IdSubject " +
+            "join Student st on b.IdStudent = st.IdStudent " +
+            "where (b.IdStudent = ?) and (b.LessonState = 3 or b.LessonState = 4)";
+    private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_TEACHER_STATEMENT = "select * from Booking b " +
+            "join Planning p on b.IdPlanning = p.IdPlanning " +
+            "join Lesson l on p.IdLesson = l.IdLesson " +
+            "join Teacher t on t.IdTeacher = l.IdTeacher " +
+            "join Subject s on l.IdSubject = s.IdSubject " +
+            "join Student st on b.IdStudent = st.IdStudent " +
+            "where (b.IdStudent = ?) and (b.LessonState = 3 or b.LessonState = 4)";
 
 
-    private void configureBooking(Booking booking, Student student, Planning planning, Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
+    private void
+    configureBooking(Booking booking, Student student, Planning planning, Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
         try {
-            booking.setIdBooking(resultSet.getInt("b.idBooking"));
+            booking.setIdBooking(resultSet.getInt("b.IdBooking"));
             booking.setDate(resultSet.getDate("b.Date"));
             booking.setLessonState(resultSet.getInt("b.LessonState"));
-            booking.setCreateDate(resultSet.getTimestamp("b.createDate"));
-            booking.setUpdateDate(resultSet.getTimestamp("b.updateDate"));
+            booking.setCreateDate(resultSet.getTimestamp("b.CreateDate"));
+            booking.setUpdateDate(resultSet.getTimestamp("b.UpdateDate"));
 
             planning.setIdPlanning(resultSet.getInt("p.IdPlanning"));
             planning.setDate(resultSet.getDate("p.Date"));
@@ -74,14 +116,16 @@ public class BookingDao  implements BookingDaoInterface {
             teacher.setByography(resultSet.getString("t.Byography"));
             teacher.setCrateDateTeacher(resultSet.getTimestamp("t.CreateDate"));
             teacher.setUpdateDateTeacher(resultSet.getTimestamp("t.UpdateDate"));
+            teacher.setIdUser(resultSet.getInt("t.IdUser"));
 
             lesson.setTeacher(teacher);
             planning.setLesson(lesson);
             booking.setPlanning(planning);
-            student.setIdStudent(resultSet.getInt("s.IdStudent"));
-            student.setStudyGrade(resultSet.getString("s.StudyGrade"));
-            student.setCreateDateStudent(resultSet.getTimestamp("s.CreateDate"));
-            student.setUpdateDateStudent(resultSet.getTimestamp("s.UpdateDate"));
+            student.setIdStudent(resultSet.getInt("st.IdStudent"));
+            student.setStudyGrade(resultSet.getString("st.StudyGrade"));
+            student.setCreateDateStudent(resultSet.getTimestamp("st.CreateDate"));
+            student.setUpdateDateStudent(resultSet.getTimestamp("st.UpdateDate"));
+            student.setIdUser(resultSet.getInt("st.IdUser"));
 
             booking.setStudent(student);
         } catch (SQLException e) {
@@ -90,6 +134,7 @@ public class BookingDao  implements BookingDaoInterface {
         }
 
     }
+
     private void configureBookingList(List<Booking> bookings, Student student, Planning planning, Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
         try {
             while (resultSet.next()) {
@@ -102,8 +147,6 @@ public class BookingDao  implements BookingDaoInterface {
             throw new DatabaseException("Errore nel creare Lista oggetti Booking");
         }
     }
-
-
 
 
     @Override
@@ -120,11 +163,11 @@ public class BookingDao  implements BookingDaoInterface {
             if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
-        prs.setDate(1,booking.getDate());
-        prs.setInt(2,booking.getLessonState());
-            prs.setInt(3,booking.getStudent().getIdStudent());
-        prs.setInt(4,booking.getPlanning().getIdPlanning());
-        prs.executeUpdate();
+            prs.setDate(1, booking.getDate());
+            prs.setInt(2, 0);
+            prs.setInt(3, booking.getStudent().getIdStudent());
+            prs.setInt(4, booking.getPlanning().getIdPlanning());
+            prs.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -147,11 +190,11 @@ public class BookingDao  implements BookingDaoInterface {
             if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
-            prs.setDate(1,booking.getDate());
-            prs.setInt(2,booking.getLessonState());
-            prs.setInt(3,booking.getStudent().getIdStudent());
-            prs.setInt(4,booking.getPlanning().getIdPlanning());
-            prs.setInt(5,booking.getIdBooking());
+            prs.setDate(1, booking.getDate());
+            prs.setInt(2, booking.getLessonState());
+            prs.setInt(3, booking.getStudent().getIdStudent());
+            prs.setInt(4, booking.getPlanning().getIdPlanning());
+            prs.setInt(5, booking.getIdBooking());
             prs.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -166,7 +209,7 @@ public class BookingDao  implements BookingDaoInterface {
                                             String nome, int zonaRelevant, String zona, int microMateriaRelevant,
                                             String microMateria, int giornoSettimanaRelevant, String giornoSettimana,
                                             int prezzoRelevant, String prezzo, int oraInizioRelevant,
-                                            String oraInizio, int oraFineaRelevant, String oraFine) throws DatabaseException  {
+                                            String oraInizio, int oraFineaRelevant, String oraFine) throws DatabaseException {
 
         List<Booking> bookings = new ArrayList<>();
         Student student = new Student();
@@ -217,7 +260,7 @@ public class BookingDao  implements BookingDaoInterface {
     @Override
     public Booking getBookingById(int id) throws DatabaseException {
         Connection conn = DaoFactory.getConnection();
-        Booking booking=new Booking();
+        Booking booking = new Booking();
         Student student = new Student();
         Planning planning = new Planning();
         Lesson lesson = new Lesson();
@@ -231,13 +274,15 @@ public class BookingDao  implements BookingDaoInterface {
                 throw new DatabaseException("Statement is null");
             }
 
-        prs.setInt(1,id);
-        rs=prs.executeQuery();
+            prs.setInt(1, id);
+            rs = prs.executeQuery();
 
 
-            if (rs.next()){
+            if (rs.next()) {
                 configureBooking(booking, student, planning, lesson, subject, teacher, rs);
-            }else{throw new DatabaseException("rs is empty");}
+            } else {
+                throw new DatabaseException("rs is empty");
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -250,7 +295,7 @@ public class BookingDao  implements BookingDaoInterface {
 
     @Override
     public List<Booking> getAllBookingOfAStudent(Student student) throws DatabaseException {
-        List<Booking> bookings= new ArrayList<>();
+        List<Booking> bookings = new ArrayList<>();
         Student student1 = new Student();
         Planning planning = new Planning();
         Lesson lesson = new Lesson();
@@ -267,14 +312,9 @@ public class BookingDao  implements BookingDaoInterface {
             if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
-            prs.setInt(1,student.getIdStudent());
-            rs=prs.executeQuery();
-
-            if (rs.next()){
-                configureBookingList(bookings, student1, planning, lesson, subject, teacher, rs);
-            }else{
-                throw new DatabaseException("rs is empty");
-            }
+            prs.setInt(1, student.getIdStudent());
+            rs = prs.executeQuery();
+            configureBookingList(bookings, student1, planning, lesson, subject, teacher, rs);
 
 
         } catch (SQLException e) {
@@ -288,7 +328,7 @@ public class BookingDao  implements BookingDaoInterface {
 
     @Override
     public List<Booking> getAllBookingOfATeacher(Teacher teacher) throws DatabaseException {
-        List<Booking> bookings= new ArrayList<>();
+        List<Booking> bookings = new ArrayList<>();
         Student student = new Student();
         Planning planning = new Planning();
         Lesson lesson = new Lesson();
@@ -305,14 +345,10 @@ public class BookingDao  implements BookingDaoInterface {
             if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
-            prs.setInt(1,teacher.getIdTeacher());
-            rs=prs.executeQuery();
+            prs.setInt(1, teacher.getIdTeacher());
+            rs = prs.executeQuery();
 
-            if (rs.next()){
-                configureBookingList(bookings, student, planning, lesson, subject, teacher1, rs);
-            }else{
-                throw new DatabaseException("rs is empty");
-            }
+            configureBookingList(bookings, student, planning, lesson, subject, teacher1, rs);
 
 
         } catch (SQLException e) {
@@ -325,8 +361,8 @@ public class BookingDao  implements BookingDaoInterface {
     }
 
     @Override
-    public List<Booking> getHistoricalBokingsOfAStudent(Student student, int nomeLezioneRevelant, String nomeLezione, int macroMateriaRevelant, String macroMateria, int microMateriaRevelant, String microMateria, int idTeacherRevelant, int idTeacher, int dateRevelant, Date date, int rifiutataRevelant, String rifiutata, int annullataRevelant, String annullata, int eseguitaRevelant, String eseguita) throws DatabaseException {
-        List<Booking> bookings= new ArrayList<>();
+    public List<Booking> getHistoricalBokingsOfAStudent(Student student) throws DatabaseException {
+        List<Booking> bookings = new ArrayList<>();
         Student student1 = new Student();
         Planning planning = new Planning();
         Lesson lesson = new Lesson();
@@ -344,26 +380,8 @@ public class BookingDao  implements BookingDaoInterface {
                 throw new DatabaseException("Statement is null");
             }
             prs.setInt(1, student.getIdStudent());
-            prs.setInt(2, nomeLezioneRevelant);
-            prs.setString(3, nomeLezione);
-            prs.setInt(4, macroMateriaRevelant);
-            prs.setString(5, macroMateria);
-            prs.setInt(6, microMateriaRevelant);
-            prs.setString(7, microMateria);
-            prs.setInt(8, idTeacherRevelant);
-            prs.setInt(9, idTeacher);
-            prs.setInt(10, dateRevelant);
-            prs.setDate(11, date);
-            prs.setInt(12, rifiutataRevelant);
-            prs.setInt(13, annullataRevelant);
-            prs.setInt(14, eseguitaRevelant);
-            rs=prs.executeQuery();
 
-            if (rs.next()){
-                configureBookingList(bookings, student1, planning, lesson, subject, teacher, rs);
-            }else{
-                throw new DatabaseException("rs is empty");
-            }
+            configureBookingList(bookings, student1, planning, lesson, subject, teacher, rs);
 
 
         } catch (SQLException e) {
@@ -376,8 +394,8 @@ public class BookingDao  implements BookingDaoInterface {
     }
 
     @Override
-    public List<Booking> getHistoricalBokingsOfATeacher(Teacher teacher, int nomeLezioneRevelant, String nomeLezione, int macroMateriaRevelant, String macroMateria, int microMateriaRevelant, String microMateria, int idTeacherRevelant, int idStudent, int dateRevelant, Date date, int rifiutataRevelant, String rifiutata, int annullataRevelant, String annullata, int eseguitaRevelant, String eseguita) throws DatabaseException {
-        List<Booking> bookings= new ArrayList<>();
+    public List<Booking> getHistoricalBokingsOfATeacher(Teacher teacher) throws DatabaseException {
+        List<Booking> bookings = new ArrayList<>();
         Student student = new Student();
         Planning planning = new Planning();
         Lesson lesson = new Lesson();
@@ -394,30 +412,118 @@ public class BookingDao  implements BookingDaoInterface {
             if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
-            prs.setInt(1,teacher.getIdTeacher());
-            prs.setInt(2, nomeLezioneRevelant);
-            prs.setString(3, nomeLezione);
-            prs.setInt(4, macroMateriaRevelant);
-            prs.setString(5, macroMateria);
-            prs.setInt(6, microMateriaRevelant);
-            prs.setString(7, microMateria);
-            prs.setInt(8, idTeacherRevelant);
-            prs.setInt(9, idStudent);
-            prs.setInt(10, dateRevelant);
-            prs.setDate(11, date);
-            prs.setInt(12, rifiutataRevelant);
-            prs.setInt(13, annullataRevelant);
-            prs.setInt(14, eseguitaRevelant);
-            rs=prs.executeQuery();
+            prs.setInt(1, teacher.getIdTeacher());
+//            prs.setInt(2, nomeLezioneRevelant);
+//            prs.setString(3, nomeLezione);
+//            prs.setInt(4, macroMateriaRevelant);
+//            prs.setString(5, macroMateria);
+//            prs.setInt(6, microMateriaRevelant);
+//            prs.setString(7, microMateria);
+//            prs.setInt(8, idTeacherRevelant);
+//            prs.setInt(9, idStudent);
+//            prs.setInt(10, dateRevelant);
+//            prs.setDate(11, date);
+//            prs.setInt(12, rifiutataRevelant);
+//            prs.setInt(13, annullataRevelant);
+//            prs.setInt(14, eseguitaRevelant);
+            rs = prs.executeQuery();
 
-            if (rs.next()){
-                configureBookingList(bookings, student, planning, lesson, subject, teacher1, rs);
-            }else{
-                throw new DatabaseException("rs is empty");
-            }
+            configureBookingList(bookings, student, planning, lesson, subject, teacher1, rs);
 
 
         } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+        return bookings;
+    }
+
+    @Override
+    public List<Booking> getHistoricalBokingsOfAStudentAndFilter(Student student, int macroMateriaRevelant, String macroMateria, int nomeLezioneRevelant, String nomeLezione, int microMateriaRevelant, String microMateria, int dateRelevant, Date date, int idTeacherRelevant, int idProfessore, int statoRelevant, int stato) throws DatabaseException {
+        List<Booking> bookings = new ArrayList<>();
+        Student student1 = new Student();
+        Planning planning = new Planning();
+        Lesson lesson = new Lesson();
+        Subject subject = new Subject();
+        Teacher teacher = new Teacher();
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(GET_ALL_HISTORICAL_BOOOKING_OF_A_STUDENT_AND_FILTER_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            prs.setInt(1, student.getIdStudent());
+            prs.setInt(2, macroMateriaRevelant);
+            prs.setString(3, macroMateria);
+            prs.setInt(4, nomeLezioneRevelant);
+            prs.setString(5, nomeLezione);
+            prs.setInt(6, microMateriaRevelant);
+            prs.setString(7, microMateria);
+            prs.setInt(8, dateRelevant);
+            prs.setDate(9, date);
+            prs.setInt(10, idTeacherRelevant);
+            prs.setInt(11, idProfessore);
+            prs.setInt(12, statoRelevant);
+            prs.setInt(13, stato);
+            rs = prs.executeQuery();
+
+            configureBookingList(bookings, student1, planning, lesson, subject, teacher, rs);
+
+
+        } catch (SQLException | DatabaseException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+        return bookings;
+    }
+
+    @Override
+    public List<Booking> getHistoricalBokingsOfATeacherAndFilter(Teacher teacher, int macroMateriaRevelant, String macroMateria, int nomeLezioneRevelant, String nomeLezione, int microMateriaRevelant, String microMateria, int dateRelevant, Date date, int idStudentRelevant, int idStudent, int statoRelevant, int stato) throws DatabaseException {
+        List<Booking> bookings = new ArrayList<>();
+        Student student = new Student();
+        Planning planning = new Planning();
+        Lesson lesson = new Lesson();
+        Subject subject = new Subject();
+        Teacher teacher1 = new Teacher();
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(GET_ALL_HISTORICAL_BOOOKING_OF_A_TEACHER_AND_FILTER_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            prs.setInt(1, student.getIdStudent());
+            prs.setInt(2, macroMateriaRevelant);
+            prs.setString(3, macroMateria);
+            prs.setInt(4, nomeLezioneRevelant);
+            prs.setString(5, nomeLezione);
+            prs.setInt(6, microMateriaRevelant);
+            prs.setString(7, microMateria);
+            prs.setInt(8, dateRelevant);
+            prs.setDate(9, date);
+            prs.setInt(10, idStudentRelevant);
+            prs.setInt(11, idStudent);
+            prs.setInt(12, statoRelevant);
+            prs.setInt(13, stato);
+            rs = prs.executeQuery();
+
+            configureBookingList(bookings, student, planning, lesson, subject, teacher1, rs);
+
+
+        } catch (SQLException | DatabaseException e) {
             e.printStackTrace();
             throw new DatabaseException(e.getMessage());
         } finally {

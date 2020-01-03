@@ -34,6 +34,7 @@ public class BookingSerializer extends StdSerializer<Booking> {
         jsonGenerator.writeNumberField("studentIdStudent", booking.getStudent().getIdStudent());
         jsonGenerator.writeStringField("studentName", booking.getStudent().getName());
         jsonGenerator.writeStringField("studentSurname", booking.getStudent().getSurname());
+        jsonGenerator.writeNumberField("idUser", booking.getStudent().getIdUser());
         jsonGenerator.writeEndObject();
         jsonGenerator.writeFieldName("planning");
         jsonGenerator.writeStartObject();
@@ -53,10 +54,10 @@ public class BookingSerializer extends StdSerializer<Booking> {
         jsonGenerator.writeNumberField("lessonUpdateDate", lessonUpdateDate);
         jsonGenerator.writeFieldName("teacher");
         jsonGenerator.writeStartObject();
-//        TODO da capire se idTeacher o idUser
         jsonGenerator.writeNumberField("idTeacher", booking.getPlanning().getLesson().getTeacher().getIdTeacher());
         jsonGenerator.writeStringField("name", booking.getPlanning().getLesson().getTeacher().getName());
         jsonGenerator.writeStringField("surname", booking.getPlanning().getLesson().getTeacher().getSurname());
+        jsonGenerator.writeNumberField("idUser", booking.getPlanning().getLesson().getTeacher().getIdUser());
         jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();
