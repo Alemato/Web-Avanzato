@@ -32,16 +32,8 @@ public class BookingDeserializer extends StdDeserializer<Booking> {
 
         booking.setLessonState(node.get("lessonState").asInt());
 
-//        Student student = new Student();
-//        student.setIdStudent(node.findPath("idStudent").asInt());
-//        booking.setStudent(student);
-
         Planning planning = new Planning();
-        planning.setIdPlanning(node.findPath("idPlanning").asInt());
-
-//        Lesson lesson = new Lesson();
-//        lesson.setIdLesson(node.findPath("idLesson").asInt());
-//        planning.setLesson(lesson);
+        planning.setIdPlanning(node.findPath("planning").findPath("idPlanning").asInt());
 
         booking.setPlanning(planning);
 
