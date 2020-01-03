@@ -13,6 +13,7 @@ import it.mytutor.domain.dao.exception.DatabaseException;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -21,6 +22,9 @@ import java.util.List;
 
 @Path("lezioni/pianificazioni")
 public class PlanningRest {
+
+    @Context
+    private SecurityContext securityContext;
 
     private PlanningInterface planningService = new PlanningBusiness();
     private UserInterface userService = new UserBusiness();
@@ -36,9 +40,8 @@ public class PlanningRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     @RolesAllowed({"TEACHER"})
-    public Response creaPlanning(List<Planning> plannings, ContainerRequestContext context) {
+    public Response creaPlanning(List<Planning> plannings) {
 
-        SecurityContext securityContext = context.getSecurityContext();
         String teacherEmail = securityContext.getUserPrincipal().getName();
         Teacher teacher;
         try {
@@ -57,7 +60,7 @@ public class PlanningRest {
     }
 
     @Path("modifica")
-    @POST
+    @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     @RolesAllowed({"TEACHER"})
@@ -69,6 +72,9 @@ public class PlanningRest {
         }
         return Response.ok(Response.Status.ACCEPTED).entity("Lezione modificata").build();
     }
+
+    //TODO aggere AddPlanning
+    //
 
     @Path("research")
     @GET

@@ -8,7 +8,6 @@ import it.mytutor.domain.Chat;
 import it.mytutor.domain.Message;
 
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
