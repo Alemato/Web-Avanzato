@@ -1,14 +1,18 @@
 package it.mytutor.api;
+
+import it.mytutor.api.test.ApiWebApplicationException;
+import it.mytutor.business.exceptions.SubjectBusinessException;
 import it.mytutor.business.impl.SubjectBusiness;
 import it.mytutor.business.services.SubjectInterface;
 import it.mytutor.domain.Subject;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
+import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import java.util.ArrayList;
 import java.util.List;
 
 @Path("materie")
@@ -16,20 +20,37 @@ public class MaterieRest {
 
     private SubjectInterface subjectService = new SubjectBusiness();
 
+    /**
+     * @return lista di subject contenenti materie e micromaterie usate per i menu select
+     */
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public Response getMaterie(SecurityContext ciao, @QueryParam("macro-materia") String macroMateria, @QueryParam("micro-materia") String microMateria){
-        List<Subject> subjects = new ArrayList<>();
-        // TODO Per riprendere l'email che è utile per tornare l'user tramite una chiamata al DB
-        // ciao.getUserPrincipal().getName()
-        if (macroMateria == null && microMateria == null){
+    public Response getMaterie() {
+        List<Subject> subjects;
+        try {
             subjects = subjectService.findAll();
-        } else if (macroMateria != null && microMateria == null){
-            subjects = subjectService.findAllByMacroSubject(macroMateria);
-        }else if (macroMateria == null){
-            subjects = subjectService.findAllByMicroSubject(microMateria);
+        } catch (SubjectBusinessException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        }
+        return Response.ok(subjects).build();
+    }
+    @Path("storico")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"STUDENT", "TEACHER"})
+    public Response getMaterieStoriche(ContainerRequestContext context) {
+        List<Subject> subjects;
+        SecurityContext securityContext = context.getSecurityContext();
+        String email = securityContext.getUserPrincipal().getName();
+        try {
+            subjects = subjectService.findAllStorico(email);
+        } catch (SubjectBusinessException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
         return Response.ok(subjects).build();
     }
@@ -39,9 +60,7 @@ public class MaterieRest {
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
     public Response creaMaterie(Subject subject){
-        System.out.println(subject);
         subjectService.createSubject(subject);
-        System.out.println("nuova subject creata");
         return Response.ok().build();
     }
 }
