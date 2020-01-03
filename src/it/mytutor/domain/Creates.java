@@ -12,7 +12,6 @@ import java.util.Objects;
 @JsonDeserialize(using = CreatesDeserializer.class)
 public class Creates {
     private Integer idCreates;
-    private String name;
     private Timestamp createDate;
     private Timestamp updateDate;
     private List<User> userListser = new ArrayList<User>();   // lista contenente i due user coinvolti nella chat
@@ -25,12 +24,10 @@ public class Creates {
 
      public Creates(String name) {
         super();
-        this.name = name;
     }
 
     public Creates(Integer idCreates, String name, Timestamp createDate, Timestamp updateDate, List<User> userListser, Chat chat) {
         this.idCreates = idCreates;
-        this.name = name;
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.userListser = userListser;
@@ -42,9 +39,6 @@ public class Creates {
         return idCreates;
     }
 
-    public String getName() {
-        return name;
-    }
 
     public Timestamp getCreateDate() {
         return createDate;
@@ -101,7 +95,6 @@ public class Creates {
         if (!(o instanceof Creates)) return false;
         Creates creates = (Creates) o;
         return getIdCreates().equals(creates.getIdCreates()) &&
-                getName().equals(creates.getName()) &&
                 getCreateDate().equals(creates.getCreateDate()) &&
                 getUpdateDate().equals(creates.getUpdateDate()) &&
                 getUserListser().equals(creates.getUserListser()) &&
@@ -111,7 +104,7 @@ public class Creates {
     //HASHCODE
     @Override
     public int hashCode() {
-        return Objects.hash(getIdCreates(), getName(), getCreateDate(), getUpdateDate(), getUserListser(), getChat());
+        return Objects.hash(getIdCreates(), getCreateDate(), getUpdateDate(), getUserListser(), getChat());
     }
 
 
@@ -131,7 +124,6 @@ public class Creates {
     public String toString() {
         return "Creates{" +
                 "idCreates=" + idCreates +
-                ", Name='" + name +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
                 ", userListser=" + userListerToString(this.userListser) +
