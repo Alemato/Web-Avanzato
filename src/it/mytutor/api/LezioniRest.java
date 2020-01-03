@@ -15,6 +15,7 @@ import it.mytutor.domain.dao.exception.DatabaseException;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -23,13 +24,15 @@ import java.util.List;
 
 @Path("lezioni")
 public class LezioniRest {
+    @Context
+    private SecurityContext securityContext;
+
 
     private LessonInterface lessonService = new LessonBusiness();
     private UserInterface userService = new UserBusiness();
 
     /**
      * Rest per la lista delle lezioni della pagina "Lista Annunci" del Professore
-     * @param sc SecurityContext
      * @return Lista di Lesson
      */
     @GET
@@ -37,17 +40,14 @@ public class LezioniRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"TEACHER"})
-    public Response getLezioniTeachAll(SecurityContext sc) {
-        String teacherEmail = sc.getUserPrincipal().getName();
+    public Response getLezioniTeachAll() {
+        String teacherEmail = securityContext.getUserPrincipal().getName();
         Teacher teacher;
         try {
             teacher = (Teacher) userService.findUserByUsername(teacherEmail);
-        } catch (UserException e) {
+        } catch (UserException | DatabaseException e) {
             e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
         List<Lesson> lessons;
         try {
