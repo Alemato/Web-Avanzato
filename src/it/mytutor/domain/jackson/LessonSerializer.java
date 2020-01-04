@@ -41,12 +41,38 @@ public class LessonSerializer extends StdSerializer<Lesson> {
         long subjectUpdateDate = lesson.getSubject().getUpdateDate().getTime();
         jsonGenerator.writeNumberField("subjectUpdateDate", subjectUpdateDate);
         jsonGenerator.writeEndObject();
+
         jsonGenerator.writeFieldName("teacher");
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idTeacher", lesson.getTeacher().getIdTeacher());
+        jsonGenerator.writeNumberField("postCode", lesson.getTeacher().getPostCode());
+        jsonGenerator.writeStringField("City", lesson.getTeacher().getCity());
+        jsonGenerator.writeStringField("region", lesson.getTeacher().getRegion());
+        jsonGenerator.writeStringField("street", lesson.getTeacher().getStreet());
+        jsonGenerator.writeStringField("streetNumber", lesson.getTeacher().getStreetNumber());
+        jsonGenerator.writeStringField("byography", lesson.getTeacher().getByography());
+        long crateDateTeacherMillis = lesson.getTeacher().getCrateDateTeacher().getTime();
+        jsonGenerator.writeNumberField("crateDate", crateDateTeacherMillis);
+        long updateDateTeacherMillis = lesson.getTeacher().getUpdateDateTeacher().getTime();
+        jsonGenerator.writeNumberField("updateDate",updateDateTeacherMillis);
+        jsonGenerator.writeFieldName("user");
+        jsonGenerator.writeStartObject();
+        jsonGenerator.writeNumberField("idUser", lesson.getTeacher().getIdUser());
+        jsonGenerator.writeStringField("email", lesson.getTeacher().getEmail());
+        jsonGenerator.writeNumberField("roles", lesson.getTeacher().getRoles());
         jsonGenerator.writeStringField("name", lesson.getTeacher().getName());
         jsonGenerator.writeStringField("surname", lesson.getTeacher().getSurname());
+        long bMillis = lesson.getTeacher().getBirthday().getTime();
+        jsonGenerator.writeNumberField("birthday", bMillis);
+        jsonGenerator.writeBooleanField("language", lesson.getTeacher().getLanguage());
+        jsonGenerator.writeStringField("image", lesson.getTeacher().getImage());
+        long createDateMillis = lesson.getTeacher().getCreateDate().getTime();
+        jsonGenerator.writeNumberField("createDate", createDateMillis);
+        long updateDateMillis = lesson.getTeacher().getUpdateDate().getTime();
+        jsonGenerator.writeNumberField("updateDate", updateDateMillis);
         jsonGenerator.writeEndObject();
+        jsonGenerator.writeEndObject();
+
         jsonGenerator.writeEndObject();
     }
 }
