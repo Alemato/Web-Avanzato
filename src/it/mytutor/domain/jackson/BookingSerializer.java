@@ -55,6 +55,8 @@ public class BookingSerializer extends StdSerializer<Booking> {
         jsonGenerator.writeFieldName("planning");
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idPlanning", booking.getPlanning().getIdPlanning());
+        long bMillis1 = booking.getPlanning().getDate().getTime();
+        jsonGenerator.writeNumberField("date", bMillis1);
         jsonGenerator.writeStringField("startTime", booking.getPlanning().getStartTime().toString());
         jsonGenerator.writeStringField("endTime", booking.getPlanning().getEndTime().toString());
 
@@ -99,8 +101,8 @@ public class BookingSerializer extends StdSerializer<Booking> {
         jsonGenerator.writeNumberField("roles", booking.getPlanning().getLesson().getTeacher().getRoles());
         jsonGenerator.writeStringField("name", booking.getPlanning().getLesson().getTeacher().getName());
         jsonGenerator.writeStringField("surname", booking.getPlanning().getLesson().getTeacher().getSurname());
-        long bMillis1 = booking.getPlanning().getLesson().getTeacher().getBirthday().getTime();
-        jsonGenerator.writeNumberField("birthday", bMillis1);
+        long bMillis2 = booking.getPlanning().getLesson().getTeacher().getBirthday().getTime();
+        jsonGenerator.writeNumberField("birthday", bMillis2);
         jsonGenerator.writeBooleanField("language", booking.getPlanning().getLesson().getTeacher().getLanguage());
         jsonGenerator.writeStringField("image", booking.getPlanning().getLesson().getTeacher().getImage());
         long createDateMillis1 = booking.getPlanning().getLesson().getTeacher().getCreateDate().getTime();
