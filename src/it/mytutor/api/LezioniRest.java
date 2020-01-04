@@ -68,7 +68,7 @@ public class LezioniRest {
     @Path("modify")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     @RolesAllowed({"TEACHER"})
     public Response modificaLezione(Lesson lesson) {
         try {

@@ -23,5 +23,5 @@ public interface LessonDaoInterface {
     void modifyLesson(Lesson lesson) throws DatabaseException;
 
 
-    void createLesson(Lesson lesson) throws DatabaseException;
+    int createLesson(Lesson lesson) throws DatabaseException;
 }

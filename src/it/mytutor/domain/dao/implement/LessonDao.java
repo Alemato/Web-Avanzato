@@ -1,5 +1,6 @@
 package it.mytutor.domain.dao.implement;
 
+import com.mysql.jdbc.Statement;
 import it.mytutor.domain.Lesson;
 import it.mytutor.domain.Subject;
 import it.mytutor.domain.Teacher;
@@ -20,8 +21,8 @@ public class LessonDao implements LessonDaoInterface {
     private static final String GET_LESSON_BY_TEACHER_STATEMENT = "select * from Lesson l " +
             "join Subject s on l.IdSubject = s.IdSubject " +
             "join Teacher t on l.IdTeacher = t.IdTeacher " +
-            "join User u on t.IdUser = u.IdUser" +
-            " l.IdTeacher = ? ";
+            "join User u on t.IdUser = u.IdUser " +
+            "where l.IdTeacher = ? ";
 
     private static final String CREATE_LESSON_STATEMENT = "insert into Lesson (Name, Price, Description, IdSubject, IdTeacher) values (?, ?, ?, ?, ?)";
 
@@ -144,16 +145,17 @@ public class LessonDao implements LessonDaoInterface {
 //    }
 
     @Override
-    public void createLesson(Lesson lesson) throws DatabaseException {
+    public int createLesson(Lesson lesson) throws DatabaseException {
 
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
         }
+        int i = 0;
         ResultSet rs = null;
         PreparedStatement prs = null;
         try {
-            prs = conn.prepareStatement(CREATE_LESSON_STATEMENT);
+            prs = conn.prepareStatement(CREATE_LESSON_STATEMENT, Statement.RETURN_GENERATED_KEYS);
             if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
@@ -162,15 +164,30 @@ public class LessonDao implements LessonDaoInterface {
             prs.setString(2, lesson.getPrice().toString());
             prs.setString(3, lesson.getDescription());
             prs.setInt(4, lesson.getSubject().getIdSubject());
-            prs.setInt(4, lesson.getTeacher().getIdTeacher());
+            prs.setInt(5, lesson.getTeacher().getIdTeacher());
 
             prs.executeUpdate();
+
+            try {
+                rs = prs.getGeneratedKeys();
+                if (rs.next()) {
+                    System.out.println("id autogenrato");
+                    System.out.println(rs.getInt(1));
+                    i = rs.getInt(1);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DatabaseException(e.getMessage());
-        } finally {
+        }
+
+        finally {
             DaoFactory.closeDbConnection(conn, rs, prs);
         }
+        return i;
 
     }
 
@@ -189,9 +206,9 @@ public class LessonDao implements LessonDaoInterface {
             }
             prs.setString(1, lesson.getName());
             prs.setDouble(2, lesson.getPrice());
-            prs.setString(4, lesson.getDescription());
-            prs.setObject(5, lesson.getSubject());
-//            prs.setInt(6, lesson.getIdLesson());
+            prs.setString(3, lesson.getDescription());
+            prs.setInt(4, lesson.getSubject().getIdSubject());
+            prs.setInt(5, lesson.getIdLesson());
             prs.executeUpdate();
 
         } catch (SQLException e) {

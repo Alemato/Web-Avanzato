@@ -34,10 +34,12 @@ public class LessonDeserializer extends StdDeserializer<Lesson> {
         lesson.setName(node.get("name").asText());
         lesson.setPrice(node.get("price").asDouble());
         lesson.setDescription(node.get("description").asText());
-        lesson.setPublicationDate(new Date(node.get("sendDate").asLong()));
+        lesson.setPublicationDate(new Date(node.get("publicationDate").asLong()));
         Subject subject = new Subject();
         JsonNode subjectNode = node.get("subject");
-        subject.setIdSubject(subjectNode.get("idSubject").asInt());
+        if (subjectNode.get("idSubject") != null) {
+            subject.setIdSubject(subjectNode.get("idSubject").asInt());
+        }
         subject.setMacroSubject(subjectNode.get("macroSubject").asText());
         subject.setMicroSubject(subjectNode.get("microSubject").asText());
         lesson.setSubject(subject);
