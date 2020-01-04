@@ -12,7 +12,6 @@ import java.util.List;
 import static it.mytutor.business.impl.test.TestBusinness.simulateFindAll;
 
 public class SubjectBusiness implements SubjectInterface {
-    //TODO costruttore Subject
 
     @Override
     public List<Subject> findAll() throws SubjectBusinessException {
