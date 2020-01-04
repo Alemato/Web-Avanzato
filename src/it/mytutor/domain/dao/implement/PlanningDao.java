@@ -14,6 +14,7 @@ import java.util.List;
 
 public class PlanningDao implements PlanningDaoInterface {
     private static final String CREATE_PLANNING_STATEMENT = "insert into Planning (Date, StartTime, EndTime, IdLesson) values (?,?,?,?)";
+    private static final String ADD_PLANNING_STATEMENT = "insert into Planning (Date, StartTime, EndTime, IdLesson) values (?,?,?,?)";
     private static final String UPDATE_PLANNING_STATEMENT = "update into `Planning` set (Date=?,StartTime=?,EndTime=?,IdLesson=?) where id=?";
     private static final String GET_PLANNING_BY_FILTER_STATEMENT = "SELECT * from Planning p, Lesson l, Subject s, Teacher t \n" +
             "where p.IdLesson=l.IdLesson and l.IdSubject=s.IdSubject and l.IdTeacher= t.IdTeacher\n" +
@@ -96,6 +97,33 @@ public class PlanningDao implements PlanningDaoInterface {
         PreparedStatement prs = null;
         try {
             prs = conn.prepareStatement(CREATE_PLANNING_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+
+            prs.setString(1, planning.getDate().toString());
+            prs.setString(2, planning.getStartTime().toString());
+            prs.setString(3, planning.getEndTime().toString());
+            prs.setInt(4, planning.getLesson().getIdLesson());
+            prs.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+    }
+
+    @Override
+    public void addPlanning(Planning planning) throws DatabaseException {
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(ADD_PLANNING_STATEMENT);
             if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
