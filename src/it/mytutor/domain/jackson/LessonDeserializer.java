@@ -10,6 +10,7 @@ import it.mytutor.domain.Subject;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public class LessonDeserializer extends StdDeserializer<Lesson> {
 
@@ -33,9 +34,7 @@ public class LessonDeserializer extends StdDeserializer<Lesson> {
         lesson.setName(node.get("name").asText());
         lesson.setPrice(node.get("price").asDouble());
         lesson.setDescription(node.get("description").asText());
-        //TODO lo facciamo ServerSide
-//        Date pDate = new Date(node.get("publicationDate").asLong());
-//        lesson.setPublicationDate(pDate);
+        lesson.setPublicationDate(new Date(node.get("sendDate").asLong()));
         Subject subject = new Subject();
         JsonNode subjectNode = node.get("subject");
         subject.setIdSubject(subjectNode.get("idSubject").asInt());
