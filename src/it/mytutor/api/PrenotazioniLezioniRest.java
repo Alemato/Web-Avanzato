@@ -235,7 +235,7 @@ public class PrenotazioniLezioniRest {
      * @param stato        stato deolla prenotazione (0,1,2,3,4)
      * @return lista di Bookings
      */
-    @Path("history-filter")
+    @Path("history/filter")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
