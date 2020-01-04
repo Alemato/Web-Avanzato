@@ -135,10 +135,15 @@ public class BookingDao implements BookingDaoInterface {
 
     }
 
-    private void configureBookingList(List<Booking> bookings, Student student, Planning planning, Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
+    private void configureBookingList(List<Booking> bookings, ResultSet resultSet) throws DatabaseException {
         try {
             while (resultSet.next()) {
                 Booking booking = new Booking();
+                Student student = new Student();
+                Planning planning = new Planning();
+                Lesson lesson = new Lesson();
+                Subject subject = new Subject();
+                Teacher teacher = new Teacher();
                 configureBooking(booking, student, planning, lesson, subject, teacher, resultSet);
                 bookings.add(booking);
             }
@@ -212,11 +217,6 @@ public class BookingDao implements BookingDaoInterface {
                                             String oraInizio, int oraFineaRelevant, String oraFine) throws DatabaseException {
 
         List<Booking> bookings = new ArrayList<>();
-        Student student = new Student();
-        Planning planning = new Planning();
-        Lesson lesson = new Lesson();
-        Subject subject = new Subject();
-        Teacher teacher = new Teacher();
         Connection connection = DaoFactory.getConnection();
         if (connection == null) {
             throw new DatabaseException("Connection is null");
@@ -246,7 +246,7 @@ public class BookingDao implements BookingDaoInterface {
             prs.setString(16, oraFine);
 
             rs = prs.executeQuery();
-            configureBookingList(bookings, student, planning, lesson, subject, teacher, rs);
+            configureBookingList(bookings, rs);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DatabaseException(e.getMessage());
@@ -296,11 +296,6 @@ public class BookingDao implements BookingDaoInterface {
     @Override
     public List<Booking> getAllBookingOfAStudent(Student student) throws DatabaseException {
         List<Booking> bookings = new ArrayList<>();
-        Student student1 = new Student();
-        Planning planning = new Planning();
-        Lesson lesson = new Lesson();
-        Subject subject = new Subject();
-        Teacher teacher = new Teacher();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -314,7 +309,7 @@ public class BookingDao implements BookingDaoInterface {
             }
             prs.setInt(1, student.getIdStudent());
             rs = prs.executeQuery();
-            configureBookingList(bookings, student1, planning, lesson, subject, teacher, rs);
+            configureBookingList(bookings, rs);
 
 
         } catch (SQLException e) {
@@ -329,11 +324,6 @@ public class BookingDao implements BookingDaoInterface {
     @Override
     public List<Booking> getAllBookingOfATeacher(Teacher teacher) throws DatabaseException {
         List<Booking> bookings = new ArrayList<>();
-        Student student = new Student();
-        Planning planning = new Planning();
-        Lesson lesson = new Lesson();
-        Subject subject = new Subject();
-        Teacher teacher1 = new Teacher();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -348,7 +338,7 @@ public class BookingDao implements BookingDaoInterface {
             prs.setInt(1, teacher.getIdTeacher());
             rs = prs.executeQuery();
 
-            configureBookingList(bookings, student, planning, lesson, subject, teacher1, rs);
+            configureBookingList(bookings, rs);
 
 
         } catch (SQLException e) {
@@ -363,11 +353,6 @@ public class BookingDao implements BookingDaoInterface {
     @Override
     public List<Booking> getHistoricalBokingsOfAStudent(Student student) throws DatabaseException {
         List<Booking> bookings = new ArrayList<>();
-        Student student1 = new Student();
-        Planning planning = new Planning();
-        Lesson lesson = new Lesson();
-        Subject subject = new Subject();
-        Teacher teacher = new Teacher();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -381,7 +366,7 @@ public class BookingDao implements BookingDaoInterface {
             }
             prs.setInt(1, student.getIdStudent());
 
-            configureBookingList(bookings, student1, planning, lesson, subject, teacher, rs);
+            configureBookingList(bookings, rs);
 
 
         } catch (SQLException e) {
@@ -396,11 +381,6 @@ public class BookingDao implements BookingDaoInterface {
     @Override
     public List<Booking> getHistoricalBokingsOfATeacher(Teacher teacher) throws DatabaseException {
         List<Booking> bookings = new ArrayList<>();
-        Student student = new Student();
-        Planning planning = new Planning();
-        Lesson lesson = new Lesson();
-        Subject subject = new Subject();
-        Teacher teacher1 = new Teacher();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -428,7 +408,7 @@ public class BookingDao implements BookingDaoInterface {
 //            prs.setInt(14, eseguitaRevelant);
             rs = prs.executeQuery();
 
-            configureBookingList(bookings, student, planning, lesson, subject, teacher1, rs);
+            configureBookingList(bookings, rs);
 
 
         } catch (SQLException e) {
@@ -443,11 +423,6 @@ public class BookingDao implements BookingDaoInterface {
     @Override
     public List<Booking> getHistoricalBokingsOfAStudentAndFilter(Student student, int macroMateriaRevelant, String macroMateria, int nomeLezioneRevelant, String nomeLezione, int microMateriaRevelant, String microMateria, int dateRelevant, Date date, int idTeacherRelevant, int idProfessore, int statoRelevant, int stato) throws DatabaseException {
         List<Booking> bookings = new ArrayList<>();
-        Student student1 = new Student();
-        Planning planning = new Planning();
-        Lesson lesson = new Lesson();
-        Subject subject = new Subject();
-        Teacher teacher = new Teacher();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -474,7 +449,7 @@ public class BookingDao implements BookingDaoInterface {
             prs.setInt(13, stato);
             rs = prs.executeQuery();
 
-            configureBookingList(bookings, student1, planning, lesson, subject, teacher, rs);
+            configureBookingList(bookings, rs);
 
 
         } catch (SQLException | DatabaseException e) {
@@ -490,10 +465,6 @@ public class BookingDao implements BookingDaoInterface {
     public List<Booking> getHistoricalBokingsOfATeacherAndFilter(Teacher teacher, int macroMateriaRevelant, String macroMateria, int nomeLezioneRevelant, String nomeLezione, int microMateriaRevelant, String microMateria, int dateRelevant, Date date, int idStudentRelevant, int idStudent, int statoRelevant, int stato) throws DatabaseException {
         List<Booking> bookings = new ArrayList<>();
         Student student = new Student();
-        Planning planning = new Planning();
-        Lesson lesson = new Lesson();
-        Subject subject = new Subject();
-        Teacher teacher1 = new Teacher();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -520,7 +491,7 @@ public class BookingDao implements BookingDaoInterface {
             prs.setInt(13, stato);
             rs = prs.executeQuery();
 
-            configureBookingList(bookings, student, planning, lesson, subject, teacher1, rs);
+            configureBookingList(bookings, rs);
 
 
         } catch (SQLException | DatabaseException e) {

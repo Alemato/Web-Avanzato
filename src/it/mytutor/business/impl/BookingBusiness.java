@@ -101,6 +101,7 @@ public class BookingBusiness implements BookingInterface {
 
         try {
             bookings = bookingDao.getAllBookingOfAStudent(student);
+            System.out.println(bookings);
         } catch (DatabaseException e) {
             e.printStackTrace();
             throw new BookingBusinessException("Errore nel prendere gli oggetti booking");
@@ -395,7 +396,7 @@ public class BookingBusiness implements BookingInterface {
 
         Student student = booking.getStudent();
         try {
-            user = userDao.getUserById(student.getIdStudent());
+            user = userDao.getUserById(student.getIdUser());
         } catch (DatabaseException e) {
             e.printStackTrace();
             throw new BookingBusinessException("Errore nel prendere l'user");
