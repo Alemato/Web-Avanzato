@@ -15,12 +15,15 @@ import java.util.List;
 public class PlanningDao implements PlanningDaoInterface {
     private static final String CREATE_PLANNING_STATEMENT = "insert into Planning (Date, StartTime, EndTime, IdLesson) values (?,?,?,?)";
     private static final String ADD_PLANNING_STATEMENT = "insert into Planning (Date, StartTime, EndTime, IdLesson) values (?,?,?,?)";
-    private static final String UPDATE_PLANNING_STATEMENT = "update into `Planning` set (Date=?,StartTime=?,EndTime=?,IdLesson=?) where id=?";
-    private static final String GET_PLANNING_BY_FILTER_STATEMENT = "SELECT * from Planning p, Lesson l, Subject s, Teacher t \n" +
-            "where p.IdLesson=l.IdLesson and l.IdSubject=s.IdSubject and l.IdTeacher= t.IdTeacher\n" +
+    private static final String UPDATE_PLANNING_STATEMENT = "update into Planning set (Date=?,StartTime=?,EndTime=?,IdLesson=?) where id=?";
+    private static final String GET_PLANNING_BY_FILTER_STATEMENT = "SELECT * from Planning p " +
+            "join Lesson l on p.IdLesson = l.IdLesson " +
+            "join Subject s on l.IdSubject = s.IdSubject " +
+            "join Teacher t on l.IdTeacher = t.IdTeacher " +
+            "join User u on t.IdUser = u.IdUser " +
             "and (0 = ? or s.MacroSubject =?)\n" +
-            "and (0 = ? or l.Name = ?) and (0 = ? or t.City = ?) and (0 = ? or s.MicroSubject = ?) \n" +
-            "and (0 = ? or DAYOFWEEK(p.Date) =? ) and (0 = ? or l.Price =? ) and (0 = ? or p.StartTime >= ? ) \n" +
+            "and (0 = ? or l.Name = ?) and (0 = ? or t.City = ?) and (0 = ? or s.MicroSubject = ?) " +
+            "and (0 = ? or DAYOFWEEK(p.Date) =? ) and (0 = ? or l.Price =? ) and (0 = ? or p.StartTime >= ? ) " +
             "and (0 = ? or p.EndTime <=? )";
 
     //TODO query per la ricerca nei
@@ -64,6 +67,17 @@ public class PlanningDao implements PlanningDaoInterface {
             teacher.setCrateDateTeacher(resultSet.getTimestamp("t.CreateDate"));
             teacher.setUpdateDateTeacher(resultSet.getTimestamp("t.UpdateDate"));
 
+            teacher.setEmail(resultSet.getString("u.Email"));
+            teacher.setRoles(resultSet.getInt("u.Roles"));
+            teacher.setPassword(resultSet.getString("u.Password"));
+            teacher.setName(resultSet.getString("u.Name"));
+            teacher.setSurname(resultSet.getString("u.Surname"));
+            teacher.setBirthday(resultSet.getDate("u.Birthday"));
+            teacher.setLanguage(resultSet.getBoolean("u.Language"));
+            teacher.setImage(resultSet.getString("u.Image"));
+            teacher.setCreateDate(resultSet.getTimestamp("u.CreateDate"));
+            teacher.setUpdateDate(resultSet.getTimestamp("u.UpdateDate"));
+
             lesson.setTeacher(teacher);
             planning.setLesson(lesson);
         } catch (SQLException e) {
@@ -73,10 +87,14 @@ public class PlanningDao implements PlanningDaoInterface {
 
     }
 
-    private void configurelanningList(List<Planning> plannings, Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
+    private void configurelanningList(List<Planning> plannings, ResultSet resultSet) throws DatabaseException {
         try {
             while (resultSet.next()) {
+
                 Planning planning = new Planning();
+                Lesson lesson = new Lesson();
+                Subject subject = new Subject();
+                Teacher teacher = new Teacher();
                 configurePlanning(planning, lesson, subject, teacher, resultSet);
                 plannings.add(planning);
             }
@@ -163,9 +181,6 @@ public class PlanningDao implements PlanningDaoInterface {
                                               String prezzo, int oraInizioRelevant, String oraInizio,
                                               int oraFineaRelevant, String oraFine) throws DatabaseException {
         List<Planning> plannings = new ArrayList<>();
-        Lesson lesson = new Lesson();
-        Subject subject = new Subject();
-        Teacher teacher = new Teacher();
         Connection connection = DaoFactory.getConnection();
         if (connection == null) {
             throw new DatabaseException("Connection is null");
@@ -195,7 +210,7 @@ public class PlanningDao implements PlanningDaoInterface {
             prs.setString(16, oraFine);
 
             rs = prs.executeQuery();
-            configurelanningList(plannings, lesson, subject, teacher, rs);
+            configurelanningList(plannings, rs);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DatabaseException(e.getMessage());
