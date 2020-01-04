@@ -13,6 +13,8 @@ import java.util.List;
 public interface PlanningInterface {
     void creaPlanning(List<Planning> plannings, Teacher teacher) throws PlanningBusinessException, LessonBusinessException, SubjectBusinessException;
 
+    void deletePlannings(List<Planning> plannings) throws PlanningBusinessException;
+
     void addPlannings(List<Planning> plannings) throws PlanningBusinessException;
 
     void updatePlanning(List<Planning> plannings) throws PlanningBusinessException;

@@ -15,7 +15,8 @@ import java.util.List;
 public class PlanningDao implements PlanningDaoInterface {
     private static final String CREATE_PLANNING_STATEMENT = "insert into Planning (Date, StartTime, EndTime, IdLesson) values (?,?,?,?)";
     private static final String ADD_PLANNING_STATEMENT = "insert into Planning (Date, StartTime, EndTime, IdLesson) values (?,?,?,?)";
-    private static final String UPDATE_PLANNING_STATEMENT = "update into Planning set (Date=?,StartTime=?,EndTime=?,IdLesson=?) where id=?";
+    private static final String DELETE_PLANNING_STATEMENT = "delete from Planning where IdPlanning = ?";
+    private static final String UPDATE_PLANNING_STATEMENT = "update Planning set Date=?, StartTime=?, EndTime=?, IdLesson=? where IdPlanning=?";
     private static final String GET_PLANNING_BY_FILTER_STATEMENT = "SELECT * from Planning p " +
             "join Lesson l on p.IdLesson = l.IdLesson " +
             "join Subject s on l.IdSubject = s.IdSubject " +
@@ -66,6 +67,7 @@ public class PlanningDao implements PlanningDaoInterface {
             teacher.setByography(resultSet.getString("t.Byography"));
             teacher.setCrateDateTeacher(resultSet.getTimestamp("t.CreateDate"));
             teacher.setUpdateDateTeacher(resultSet.getTimestamp("t.UpdateDate"));
+            teacher.setIdUser(resultSet.getInt("u.IdUser"));
 
             teacher.setEmail(resultSet.getString("u.Email"));
             teacher.setRoles(resultSet.getInt("u.Roles"));
@@ -150,6 +152,30 @@ public class PlanningDao implements PlanningDaoInterface {
             prs.setString(2, planning.getStartTime().toString());
             prs.setString(3, planning.getEndTime().toString());
             prs.setInt(4, planning.getLesson().getIdLesson());
+            prs.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+    }
+
+    @Override
+    public void deletePlanning(Planning planning) throws DatabaseException  {
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(DELETE_PLANNING_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+
+            prs.setInt(1, planning.getIdPlanning());
             prs.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

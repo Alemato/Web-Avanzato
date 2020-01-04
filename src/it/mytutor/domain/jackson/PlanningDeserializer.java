@@ -34,8 +34,10 @@ public class PlanningDeserializer  extends StdDeserializer<Planning> {
         planning.setEndTime(java.sql.Time.valueOf(node.get("endTime").asText()));
 
         Lesson lesson = new Lesson();
-
-        lesson.setPrice(node.findPath("lesson").findPath("name").asDouble());
+        if (node.findPath("lesson").findPath("idLesson") != null){
+            lesson.setIdLesson(node.findPath("lesson").findPath("idLesson").asInt());
+        }
+        lesson.setName(node.findPath("lesson").findPath("name").asText());
         lesson.setPrice(node.findPath("lesson").findPath("price").asDouble());
         lesson.setDescription(node.findPath("lesson").findPath("description").asText());
         Date pDate = new Date(node.findPath("lesson").findPath("publicationDate").asLong());

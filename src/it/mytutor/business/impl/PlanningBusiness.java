@@ -25,13 +25,16 @@ public class PlanningBusiness implements PlanningInterface {
         PlanningDaoInterface planningDao = new PlanningDao();
         LessonDaoInterface lessonDao = new LessonDao();
         SubjectDaoInterface subjectDao = new SubjectDao();
+        int i;
 
         try {
+            System.out.println(plannings.get(0).getLesson().getSubject());
             subjectDao.createSubject(plannings.get(0).getLesson().getSubject());
         } catch (DatabaseException e) {
             e.printStackTrace();
             throw new SubjectBusinessException("Errore nel'aggiunta del subject nel database");
         }
+        System.out.println(plannings.get(0).getLesson().getName());
         Lesson lesson = plannings.get(0).getLesson();
         lesson.setTeacher(teacher);
 
@@ -52,19 +55,33 @@ public class PlanningBusiness implements PlanningInterface {
         }
         lesson.setSubject(subject);
         try {
-            lessonDao.createLesson(lesson);
+            i = lessonDao.createLesson(lesson);
+            lesson.setIdLesson(i);
         } catch (DatabaseException e) {
             e.printStackTrace();
             throw new LessonBusinessException("Errore nel'aggiunta della Lesson nel database");
         }
 
         for (Planning planning: plannings) {
-
+            planning.setLesson(lesson);
             try {
                 planningDao.createPlanning(planning);
             } catch (DatabaseException e) {
                 e.printStackTrace();
                 throw new PlanningBusinessException("Errore nel'aggiunta del planning nel database");
+            }
+        }
+    }
+
+    @Override
+    public void deletePlannings(List<Planning> plannings) throws PlanningBusinessException {
+        PlanningDaoInterface planningDao = new PlanningDao();
+        for (Planning planning: plannings){
+            try {
+                planningDao.deletePlanning(planning);
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new PlanningBusinessException("Errore nell'aggiunta dei plannings");
             }
         }
     }
