@@ -17,11 +17,15 @@ import java.util.List;
 
 public class LessonDao implements LessonDaoInterface {
 
-    private static final String GET_LESSON_BY_TEACHER_STATEMENT = "select * from Lesson l join Subject s on l.IdSubject = s.IdSubject  join Teacher t on l.IdTeacher = t.IdTeacher where IdTeacher = ? ";
+    private static final String GET_LESSON_BY_TEACHER_STATEMENT = "select * from Lesson l " +
+            "join Subject s on l.IdSubject = s.IdSubject " +
+            "join Teacher t on l.IdTeacher = t.IdTeacher " +
+            "join User u on t.IdUser = u.IdUser" +
+            " l.IdTeacher = ? ";
 
-    private static final String CREATE_LESSON_STATEMENT = "insert into Lesson (Name, Price, Description, PublicationDate, IdSubject, IdTeacher) values (?,?,?,?,?,?)";
+    private static final String CREATE_LESSON_STATEMENT = "insert into Lesson (Name, Price, Description, IdSubject, IdTeacher) values (?, ?, ?, ?, ?)";
 
-    private static final String UPDATE_LESSON_STATEMENT = "update Lesson set name=?,price=?,publicationDate=?,description=?,IdSubject=? where IdLesson=?";
+    private static final String UPDATE_LESSON_STATEMENT = "update Lesson set name=?, price=?, description=?, IdSubject=? where IdLesson=?";
 
     private void configureLesson(Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
         try {
@@ -51,17 +55,17 @@ public class LessonDao implements LessonDaoInterface {
             teacher.setCrateDateTeacher(resultSet.getTimestamp("t.CreateDate"));
             teacher.setUpdateDateTeacher(resultSet.getTimestamp("t.UpdateDate"));
 
-            teacher.setIdUser(resultSet.getInt("t.IdUser"));
-            teacher.setEmail(resultSet.getString("t.Email"));
-            teacher.setRoles(resultSet.getInt("t.Roles"));
-            teacher.setPassword(resultSet.getString("t.Password"));
-            teacher.setName(resultSet.getString("t.Name"));
-            teacher.setSurname(resultSet.getString("t.Surname"));
-            teacher.setBirthday(resultSet.getDate("t.Birthday"));
-            teacher.setLanguage(resultSet.getBoolean("t.Language"));
-            teacher.setImage(resultSet.getString("t.Image"));
-            teacher.setCreateDate(resultSet.getTimestamp("t.CreateDate"));
-            teacher.setUpdateDate(resultSet.getTimestamp("t.UpdateDate"));
+            teacher.setIdUser(resultSet.getInt("u.IdUser"));
+            teacher.setEmail(resultSet.getString("u.Email"));
+            teacher.setRoles(resultSet.getInt("u.Roles"));
+            teacher.setPassword(resultSet.getString("u.Password"));
+            teacher.setName(resultSet.getString("u.Name"));
+            teacher.setSurname(resultSet.getString("u.Surname"));
+            teacher.setBirthday(resultSet.getDate("u.Birthday"));
+            teacher.setLanguage(resultSet.getBoolean("u.Language"));
+            teacher.setImage(resultSet.getString("u.Image"));
+            teacher.setCreateDate(resultSet.getTimestamp("u.CreateDate"));
+            teacher.setUpdateDate(resultSet.getTimestamp("u.UpdateDate"));
             lesson.setTeacher(teacher);
 
         } catch (SQLException e) {
@@ -70,10 +74,12 @@ public class LessonDao implements LessonDaoInterface {
         }
     }
 
-    private void configureLessonList(List<Lesson> lessons, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
+    private void configureLessonList(List<Lesson> lessons, ResultSet resultSet) throws DatabaseException {
         try {
             while (resultSet.next()) {
                 Lesson lesson = new Lesson();
+                Subject subject = new Subject();
+                Teacher teacher = new Teacher();
                 configureLesson(lesson, subject, teacher, resultSet);
                 lessons.add(lesson);
             }
@@ -101,9 +107,6 @@ public class LessonDao implements LessonDaoInterface {
     @Override
     public List<Lesson> getLessonsByTeacher(Teacher teacher) throws DatabaseException {
         List<Lesson> lessons = new ArrayList<>();
-        Subject subject = new Subject();
-        Teacher teacher1 = new Teacher();
-        User user = new User();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -118,7 +121,7 @@ public class LessonDao implements LessonDaoInterface {
             prs.setInt(1, teacher.getIdTeacher());
             rs = prs.executeQuery();
 
-            configureLessonList(lessons, subject, teacher1, rs);
+            configureLessonList(lessons, rs);
 
 
         } catch (SQLException e) {
@@ -158,7 +161,6 @@ public class LessonDao implements LessonDaoInterface {
             prs.setString(1, lesson.getName());
             prs.setString(2, lesson.getPrice().toString());
             prs.setString(3, lesson.getDescription());
-            prs.setString(3, lesson.getPublicationDate().toString());
             prs.setInt(4, lesson.getSubject().getIdSubject());
             prs.setInt(4, lesson.getTeacher().getIdTeacher());
 
@@ -187,10 +189,9 @@ public class LessonDao implements LessonDaoInterface {
             }
             prs.setString(1, lesson.getName());
             prs.setDouble(2, lesson.getPrice());
-            prs.setDate(3, lesson.getPublicationDate());
             prs.setString(4, lesson.getDescription());
             prs.setObject(5, lesson.getSubject());
-            prs.setInt(6, lesson.getIdLesson());
+//            prs.setInt(6, lesson.getIdLesson());
             prs.executeUpdate();
 
         } catch (SQLException e) {
