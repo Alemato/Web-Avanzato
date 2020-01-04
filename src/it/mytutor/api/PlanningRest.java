@@ -12,7 +12,6 @@ import it.mytutor.domain.dao.exception.DatabaseException;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
-import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -20,7 +19,7 @@ import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 
-@Path("lezioni/pianificazioni")
+@Path("lessons/plannings")
 public class PlanningRest {
 
     @Context
@@ -35,7 +34,7 @@ public class PlanningRest {
      * @param plannings Lista di Pianificazioni della prenotazione della lezione
      * @return Response Status ACCEPTED
      */
-    @Path("crea")
+    @Path("create")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
@@ -59,7 +58,7 @@ public class PlanningRest {
         return Response.ok(Response.Status.ACCEPTED).entity("Lezione pianificata").build();
     }
 
-    @Path("modifica")
+    @Path("modify")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
@@ -73,8 +72,20 @@ public class PlanningRest {
         return Response.ok(Response.Status.ACCEPTED).entity("Lezione modificata").build();
     }
 
-    //TODO aggere AddPlanning
-    //
+    @Path("add")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    @RolesAllowed({"TEACHER"})
+    public Response addPlannings(List<Planning> plannings) {
+        try {
+            planningService.addPlannings(plannings);
+        } catch (PlanningBusinessException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
+        }
+        return Response.ok(Response.Status.ACCEPTED).entity("Lezione pianificata").build();
+    }
 
     @Path("research")
     @GET
