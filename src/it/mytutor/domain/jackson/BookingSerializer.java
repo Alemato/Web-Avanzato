@@ -32,8 +32,7 @@ public class BookingSerializer extends StdSerializer<Booking> {
         jsonGenerator.writeFieldName("student");
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idStudent", booking.getStudent().getIdStudent());
-        jsonGenerator.writeStringField("name", booking.getStudent().getName());
-        jsonGenerator.writeStringField("surname", booking.getStudent().getSurname());
+        jsonGenerator.writeStringField("studyGrade", booking.getStudent().getStudyGrade());
         jsonGenerator.writeNumberField("idUser", booking.getStudent().getIdUser());
 
         jsonGenerator.writeFieldName("user");
@@ -72,6 +71,17 @@ public class BookingSerializer extends StdSerializer<Booking> {
         long lessonUpdateDate = booking.getPlanning().getLesson().getUpdateDate().getTime();
         jsonGenerator.writeNumberField("updateDate", lessonUpdateDate);
 
+        jsonGenerator.writeFieldName("subject");
+        jsonGenerator.writeStartObject();
+        jsonGenerator.writeNumberField("idSubject", booking.getPlanning().getLesson().getSubject().getIdSubject());
+        jsonGenerator.writeStringField("macroSubject", booking.getPlanning().getLesson().getSubject().getMacroSubject());
+        jsonGenerator.writeStringField("microSubject", booking.getPlanning().getLesson().getSubject().getMicroSubject());
+        long createDateMillis = booking.getPlanning().getLesson().getSubject().getCreateDate().getTime();
+        jsonGenerator.writeNumberField("createDate", createDateMillis);
+        long updateDateMillis = booking.getPlanning().getLesson().getSubject().getUpdateDate().getTime();
+        jsonGenerator.writeNumberField("updateDate", updateDateMillis);
+        jsonGenerator.writeEndObject();
+
         jsonGenerator.writeFieldName("teacher");
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idTeacher", booking.getPlanning().getLesson().getTeacher().getIdTeacher());
@@ -93,10 +103,10 @@ public class BookingSerializer extends StdSerializer<Booking> {
         jsonGenerator.writeNumberField("birthday", bMillis1);
         jsonGenerator.writeBooleanField("language", booking.getPlanning().getLesson().getTeacher().getLanguage());
         jsonGenerator.writeStringField("image", booking.getPlanning().getLesson().getTeacher().getImage());
-        long createDateMillis = booking.getPlanning().getLesson().getTeacher().getCreateDate().getTime();
-        jsonGenerator.writeNumberField("createDate", createDateMillis);
-        long updateDateMillis = booking.getPlanning().getLesson().getTeacher().getUpdateDate().getTime();
-        jsonGenerator.writeNumberField("updateDate", updateDateMillis);
+        long createDateMillis1 = booking.getPlanning().getLesson().getTeacher().getCreateDate().getTime();
+        jsonGenerator.writeNumberField("createDate", createDateMillis1);
+        long updateDateMillis1 = booking.getPlanning().getLesson().getTeacher().getUpdateDate().getTime();
+        jsonGenerator.writeNumberField("updateDate", updateDateMillis1);
         jsonGenerator.writeEndObject();
 
         jsonGenerator.writeEndObject();
