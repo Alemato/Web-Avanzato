@@ -70,6 +70,19 @@ public class PlanningBusiness implements PlanningInterface {
     }
 
     @Override
+    public void addPlannings(List<Planning> plannings) throws PlanningBusinessException {
+        PlanningDaoInterface planningDao = new PlanningDao();
+        for (Planning planning: plannings){
+            try {
+                planningDao.addPlanning(planning);
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new PlanningBusinessException("Errore nell'aggiunta dei plannings");
+            }
+        }
+    }
+
+    @Override
     public void updatePlanning(List<Planning> plannings) throws PlanningBusinessException {
         PlanningDaoInterface planningDao = new PlanningDao();
         for (Planning planning: plannings){
