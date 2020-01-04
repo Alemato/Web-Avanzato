@@ -18,12 +18,6 @@ import java.util.List;
 
 public class BookingBusiness implements BookingInterface {
 
-    @Override
-    public List<Booking> findAllBooking() {
-
-        return null;
-    }
-
     public List<Booking> findBookingByFilter(String macroMateria, String nome, String zona, String microMateria,
                                              String giornoSettimana, String prezzo, String oraInizio, String oraFine) throws PlanningBusinessException, UserException {
         UserDao userDao = new UserDao();
@@ -99,16 +93,6 @@ public class BookingBusiness implements BookingInterface {
     }
 
     @Override
-    public List<Booking> findAllBookingByDate(Date date) {
-        return null;
-    }
-
-    @Override
-    public List<Booking> findAllBookingByLessonAndDate(Date date, Lesson lesson) {
-        return null;
-    }
-
-    @Override
     public List<Booking> findAllBookingByStudnet(Student student) throws BookingBusinessException, UserException {
         BookingDao bookingDao = new BookingDao();
         UserDao userDao = new UserDao();
@@ -163,14 +147,9 @@ public class BookingBusiness implements BookingInterface {
     }
 
     @Override
-    public List<Booking> findAllBookingByLesson(Lesson lesson) {
-        return null;
-    }
-
-    @Override
     public void crateBookings(List<Booking> bookings) throws PlanningBusinessException {
         BookingDaoInterface bookingDao = new BookingDao();
-        for (Booking booking: bookings) {
+        for (Booking booking : bookings) {
             try {
                 bookingDao.createBooking(booking);
             } catch (DatabaseException e) {
@@ -182,8 +161,8 @@ public class BookingBusiness implements BookingInterface {
 
     @Override
     public void updateBooking(Booking booking, Integer lessonState) throws BookingBusinessException {
-       BookingDaoInterface bookingDao = new BookingDao();
-       booking.setLessonState(lessonState);
+        BookingDaoInterface bookingDao = new BookingDao();
+        booking.setLessonState(lessonState);
         try {
             bookingDao.updateBooking(booking);
         } catch (DatabaseException e) {
@@ -438,5 +417,23 @@ public class BookingBusiness implements BookingInterface {
 
         return booking;
     }
+
+    @Override
+    public List<Booking> findAllBookingByDate(Date date) {
+        return null;
+    }
+
+    @Override
+    public List<Booking> findAllBookingByLessonAndDate(Date date, Lesson lesson) {
+        return null;
+    }
+
+    @Override
+    public List<Booking> findAllBookingByLesson(Lesson lesson) {
+        return null;
+    }
+
+    @Override
+    public List<Booking> findAllBooking() { return null; }
 
 }
