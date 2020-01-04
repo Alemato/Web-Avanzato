@@ -27,7 +27,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Path("prenotazioni-lezioni")
+@Path("bookings-lessons")
 public class PrenotazioniLezioniRest {
     @Context
     private SecurityContext securityContext;
@@ -37,64 +37,78 @@ public class PrenotazioniLezioniRest {
 
 
     /**
-     * Rest della HomePage del Professore
+     * Rest della HomePage di entrambe le tipologie di utente
      *
      * @return lista di Bookings
      */
-    @Path("home-teach")
+    @Path("home")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"TEACHER"})
+    @RolesAllowed({"TEACHER", "STUDENT"})
     public Response getPrenotazioniTeach() {
-        List<Booking> bookings;
-        String teacherEmail = securityContext.getUserPrincipal().getName();
-        Teacher teacher;
+        List<Booking> bookings = new ArrayList<>();
+        User user;
+        String email = securityContext.getUserPrincipal().getName();
         try {
-            teacher = (Teacher) userService.findUserByUsername(teacherEmail);
-        } catch (UserException | DatabaseException e) {
+            user = (User) userService.findUserByUsername(email);
+        } catch (UserException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        } catch (DatabaseException e) {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
-        try {
-            bookings = bookingService.findAllBookingByTeacher(teacher);
-        } catch (PlanningBusinessException | BookingBusinessException | UserException | DatabaseException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-        }
-        return Response.ok(bookings).build();
-    }
 
-    /**
-     * Rest della HomePage dello Studente
-     *
-     * @return lista di Bookings
-     */
-    @Path("home-stud")
-    @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"STUDENT"})
-    public Response getPrenotazioniStud() {
-        List<Booking> bookings;
-        String studentEmail = securityContext.getUserPrincipal().getName();
-        System.out.println(studentEmail);
-        Student student;
-        try {
-            student = (Student) userService.findUserByUsername(studentEmail);
-            System.out.println(student);
-        } catch (UserException | DatabaseException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        if (user.getRoles() == 1) {
+            StudentDao studentDao = new StudentDao();
+            Student student;
+            try {
+                student = studentDao.getStudentByIdUser(user.getIdUser());
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+            try {
+                bookings = bookingService.findAllBookingByStudnet(student);
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            } catch (PlanningBusinessException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            } catch (BookingBusinessException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            } catch (UserException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+        } else if (user.getRoles() == 2) {
+            TeacherDao teacherDao = new TeacherDao();
+            Teacher teacher;
+            try {
+                teacher = teacherDao.getTeacherByUserID(user.getIdUser());
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+            try {
+                bookings = bookingService.findAllBookingByTeacher(teacher);
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            } catch (PlanningBusinessException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            } catch (BookingBusinessException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            } catch (UserException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
         }
-        try {
-            bookings = bookingService.findAllBookingByStudnet(student);
-        } catch (DatabaseException | PlanningBusinessException | BookingBusinessException | UserException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-        }
-        System.out.println(bookings);
-
         return Response.ok(bookings).build();
     }
 
@@ -137,9 +151,10 @@ public class PrenotazioniLezioniRest {
     }
 
     /**
+     * Rest della pagina dello storico di entrambe le tipologie di utente
      * @return lista di Bookings
      */
-    @Path("storico")
+    @Path("history")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -210,6 +225,8 @@ public class PrenotazioniLezioniRest {
     }
 
     /**
+     * Rest della pagina dello storico con il filtro di entrambe le tipologie di utente
+     *
      * @param macroMateria macro materia
      * @param nomeLezione  nome della lezione
      * @param microMateria micro materia
@@ -218,11 +235,11 @@ public class PrenotazioniLezioniRest {
      * @param stato        stato deolla prenotazione (0,1,2,3,4)
      * @return lista di Bookings
      */
-    @Path("storico-filter")
+    @Path("history-filter")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"STUDENT"})
+    @RolesAllowed({"STUDENT", "TEACHER"})
     public Response getStoricoTeachFilter(@QueryParam("macro-materia") String macroMateria,
                                           @QueryParam("nome-lezione") String nomeLezione,
                                           @QueryParam("micro-materia") String microMateria,
