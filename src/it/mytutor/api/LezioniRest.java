@@ -12,7 +12,6 @@ import it.mytutor.domain.Lesson;
 import it.mytutor.domain.Teacher;
 import it.mytutor.domain.dao.exception.DatabaseException;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -22,7 +21,7 @@ import javax.ws.rs.core.SecurityContext;
 import java.util.ArrayList;
 import java.util.List;
 
-@Path("lezioni")
+@Path("lessons")
 public class LezioniRest {
     @Context
     private SecurityContext securityContext;
@@ -36,7 +35,6 @@ public class LezioniRest {
      * @return Lista di Lesson
      */
     @GET
-    @Path("teach")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"TEACHER"})
@@ -67,11 +65,11 @@ public class LezioniRest {
      * @param lesson Lezione dal client
      * @return Status accettato con messaggio "Lezione modificata"
      */
-    @Path("{LID}")
+    @Path("modify")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
+    @RolesAllowed({"TEACHER"})
     public Response modificaLezione(Lesson lesson) {
         try {
             lessonService.updateLessson(lesson);
