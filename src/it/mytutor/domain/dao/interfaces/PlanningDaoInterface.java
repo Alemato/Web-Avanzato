@@ -15,6 +15,9 @@ public interface PlanningDaoInterface {
 
     void updatePlanning(Planning planning) throws DatabaseException;
     void createPlanning(Planning planning) throws DatabaseException;
+
+    void addPlanning(Planning planning) throws DatabaseException;
+
     Planning getPlanningByID(int id) throws DatabaseException;
     Planning getPlanningByStudent(Student student) throws DatabaseException;
     List<Planning> getAllPlanningOfStudent(Student student) throws DatabaseException;
