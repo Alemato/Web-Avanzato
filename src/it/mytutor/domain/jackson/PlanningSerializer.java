@@ -39,25 +39,52 @@ public class PlanningSerializer extends StdSerializer<Planning> {
         long pDateMillis = planning.getLesson().getPublicationDate().getTime();
         jsonGenerator.writeNumberField("publicationDate", pDateMillis);
         long lessonCreateDate = planning.getLesson().getCreateDate().getTime();
-        jsonGenerator.writeNumberField("lessonCreateDate", lessonCreateDate);
+        jsonGenerator.writeNumberField("createDate", lessonCreateDate);
         long lessonUpdateDate = planning.getLesson().getUpdateDate().getTime();
-        jsonGenerator.writeNumberField("lessonUpdateDate", lessonUpdateDate);
+        jsonGenerator.writeNumberField("updateDate", lessonUpdateDate);
+
         jsonGenerator.writeFieldName("subject");
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idSubject", planning.getLesson().getSubject().getIdSubject());
         jsonGenerator.writeStringField("macroSubject", planning.getLesson().getSubject().getMacroSubject());
         jsonGenerator.writeStringField("microSubject", planning.getLesson().getSubject().getMicroSubject());
         long subjectCreateDate = planning.getLesson().getSubject().getCreateDate().getTime();
-        jsonGenerator.writeNumberField("subjectCreateDate", subjectCreateDate);
+        jsonGenerator.writeNumberField("createDate", subjectCreateDate);
         long subjectUpdateDate = planning.getLesson().getSubject().getUpdateDate().getTime();
-        jsonGenerator.writeNumberField("subjectUpdateDate", subjectUpdateDate);
+        jsonGenerator.writeNumberField("updateDate", subjectUpdateDate);
         jsonGenerator.writeEndObject();
+
         jsonGenerator.writeFieldName("teacher");
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idTeacher", planning.getLesson().getTeacher().getIdTeacher());
-        jsonGenerator.writeStringField("nameTeacher", planning.getLesson().getTeacher().getName());
-        jsonGenerator.writeStringField("surnameTeacher", planning.getLesson().getTeacher().getSurname());
+        jsonGenerator.writeNumberField("postCode", planning.getLesson().getTeacher().getPostCode());
+        jsonGenerator.writeStringField("City", planning.getLesson().getTeacher().getCity());
+        jsonGenerator.writeStringField("region", planning.getLesson().getTeacher().getRegion());
+        jsonGenerator.writeStringField("street", planning.getLesson().getTeacher().getStreet());
+        jsonGenerator.writeStringField("streetNumber", planning.getLesson().getTeacher().getStreetNumber());
+        jsonGenerator.writeStringField("byography", planning.getLesson().getTeacher().getByography());
+        long crateDateTeacherMillis = planning.getLesson().getTeacher().getCrateDateTeacher().getTime();
+        jsonGenerator.writeNumberField("crateDate", crateDateTeacherMillis);
+        long updateDateTeacherMillis = planning.getLesson().getTeacher().getUpdateDateTeacher().getTime();
+        jsonGenerator.writeNumberField("updateDate",updateDateTeacherMillis);
+        jsonGenerator.writeFieldName("user");
+        jsonGenerator.writeStartObject();
+        jsonGenerator.writeNumberField("idUser", planning.getLesson().getTeacher().getIdUser());
+        jsonGenerator.writeStringField("email", planning.getLesson().getTeacher().getEmail());
+        jsonGenerator.writeNumberField("roles", planning.getLesson().getTeacher().getRoles());
+        jsonGenerator.writeStringField("name", planning.getLesson().getTeacher().getName());
+        jsonGenerator.writeStringField("surname", planning.getLesson().getTeacher().getSurname());
+        long bMillis = planning.getLesson().getTeacher().getBirthday().getTime();
+        jsonGenerator.writeNumberField("birthday", bMillis);
+        jsonGenerator.writeBooleanField("language", planning.getLesson().getTeacher().getLanguage());
+        jsonGenerator.writeStringField("image", planning.getLesson().getTeacher().getImage());
+        long createDateMillis = planning.getLesson().getTeacher().getCreateDate().getTime();
+        jsonGenerator.writeNumberField("createDate", createDateMillis);
+        long updateDateMillis = planning.getLesson().getTeacher().getUpdateDate().getTime();
+        jsonGenerator.writeNumberField("updateDate", updateDateMillis);
         jsonGenerator.writeEndObject();
+        jsonGenerator.writeEndObject();
+
         jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();
     }
