@@ -14,14 +14,13 @@ import it.mytutor.domain.dao.exception.DatabaseException;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
-import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
-@Path("lezioni/prenotazioni")
+@Path("lessons/bookings")
 public class PrenotazioniRest {
     @Context
     private SecurityContext securityContext;
@@ -32,10 +31,9 @@ public class PrenotazioniRest {
     /**
      * Creazione della prenotazione da parte dello studente
      *
-     * @param booking oggetto prenotazione ricevuto dal client
+     * @param bookings lista di oggetti prenotazione ricevuti dal client
      * @return Response Status ACCEPTED
      */
-    // TODO fare la lista
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
