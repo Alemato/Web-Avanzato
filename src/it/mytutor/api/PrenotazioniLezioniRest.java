@@ -333,9 +333,6 @@ public class PrenotazioniLezioniRest {
             }
             try {
                 bookings = bookingService.findAllbookedUpByStudent(student);
-//                count = bookings.size();
-                System.out.println("stud");
-                System.out.println(bookings.size());
             } catch (BookingBusinessException e) {
                 e.printStackTrace();
                 throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
@@ -351,9 +348,6 @@ public class PrenotazioniLezioniRest {
             }
             try {
                 bookings = bookingService.findAllbookedUpByTeacher(teacher);
-//                count = bookings.size();
-                System.out.println("prof");
-                System.out.println(bookings.size());
             } catch (BookingBusinessException e) {
                 e.printStackTrace();
                 throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
