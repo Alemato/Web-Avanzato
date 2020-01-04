@@ -25,16 +25,12 @@ public class BookingDeserializer extends StdDeserializer<Booking> {
     @Override
     public Booking deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
-
+        Planning planning = new Planning();
         Booking booking = new Booking();
         Date date = new Date(node.get("date").asLong());
         booking.setDate(date);
 
-        booking.setLessonState(node.get("lessonState").asInt());
-
-        Planning planning = new Planning();
         planning.setIdPlanning(node.findPath("planning").findPath("idPlanning").asInt());
-
         booking.setPlanning(planning);
 
         return booking;

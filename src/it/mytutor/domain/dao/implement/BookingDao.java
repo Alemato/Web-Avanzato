@@ -22,20 +22,37 @@ public class BookingDao implements BookingDaoInterface {
             "join Subject s on l.IdSubject = s.IdSubject " +
             "join Student st on b.IdStudent = st.IdStudent " +
             "where st.IdStudent = ? and (b.LessonState = 0 or b.LessonState = 1)";
+
+    private static final String GET_BOOKED_UP_BY_STUDENT_STATEMENT = "select * from Booking b " +
+            "join Planning p on b.IdPlanning = p.IdPlanning " +
+            "join Lesson l on p.IdLesson = l.IdLesson " +
+            "join Teacher t on t.IdTeacher = l.IdTeacher " +
+            "join Subject s on l.IdSubject = s.IdSubject " +
+            "join Student st on b.IdStudent = st.IdStudent " +
+            "where st.IdStudent = ? and (b.LessonState = 0)";
+
+    private static final String GET_BOOKED_UP_BY_TEACHER_STATEMENT = "select * from Booking b " +
+            "join Planning p on b.IdPlanning = p.IdPlanning " +
+            "join Lesson l on p.IdLesson = l.IdLesson " +
+            "join Teacher t on t.IdTeacher = l.IdTeacher " +
+            "join Subject s on l.IdSubject = s.IdSubject " +
+            "join Student st on b.IdStudent = st.IdStudent " +
+            "where t.IdTeacher = ? and (b.LessonState = 0)";
+
     private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_STUDENT_AND_FILTER_STATEMENT = "select * from Booking b " +
             "join Planning p on b.IdPlanning = p.IdPlanning " +
             "join Lesson l on p.IdLesson = l.IdLesson " +
             "join Teacher t on t.IdTeacher = l.IdTeacher " +
             "join Subject s on l.IdSubject = s.IdSubject " +
             "join Student st on b.IdStudent = st.IdStudent " +
-            "where (b.IdStudent = ?) and (0 = ? or s.MacroSubject = ?) and (0 = ? or match(l.Name) AGAINST(?)) and (0 = ? or s.MicroSubject = ?) and (0 = ? or b.Date = ?) and (0 = ? or l.IdTeacher = ?) and (0 = ? or b.LessonState = ?)";
+            "where (b.IdStudent = ?) and (0 = ? or s.MacroSubject = ?) and (0 = ? or match(l.Name) AGAINST(?)) and (0 = ? or s.MicroSubject = ?) and (0 = ? or b.Date = ?) and (0 = ? or l.IdTeacher = ?) and (0 = ? or b.LessonState = ?) and (b.LessonState != 0) and (b.LessonState != 1) ";
     private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_TEACHER_AND_FILTER_STATEMENT = "select * from Booking b " +
             "join Planning p on b.IdPlanning = p.IdPlanning " +
             "join Lesson l on p.IdLesson = l.IdLesson " +
             "join Teacher t on t.IdTeacher = l.IdTeacher " +
             "join Subject s on l.IdSubject = s.IdSubject " +
             "join Student st on b.IdStudent = st.IdStudent " +
-            "where (l.IdTeacher = ?) and (0 = ? or s.MacroSubject = ?) and (0 = ? or l.Name = ?) and (0 = ? or s.MicroSubject = ?) and (0 = ? or b.Date = ?) and (0 = ? or b.IdStudent = ?) and (0 = ? or b.LessonState = ?)";
+            "where (l.IdTeacher = ?) and (0 = ? or s.MacroSubject = ?) and (0 = ? or l.Name = ?) and (0 = ? or s.MicroSubject = ?) and (0 = ? or b.Date = ?) and (0 = ? or b.IdStudent = ?) and (0 = ? or b.LessonState = ?) and (b.LessonState != 0) and (b.LessonState != 1) ";
     private static final String GET_ALL_BOOOKING_OF_A_TEACHER_STATEMENT = "select * from Booking b " +
             "join Planning p on p.IdPlanning = b.IdPlanning " +
             "join Lesson l on l.IdLesson = p.IdLesson " +
@@ -66,7 +83,7 @@ public class BookingDao implements BookingDaoInterface {
             "join Teacher t on t.IdTeacher = l.IdTeacher " +
             "join Subject s on l.IdSubject = s.IdSubject " +
             "join Student st on b.IdStudent = st.IdStudent " +
-            "where (b.IdStudent = ?) and (b.LessonState = 3 or b.LessonState = 4)";
+            "where (b.IdStudent = ?) and (b.LessonState = 2 or b.LessonState = 3 or b.LessonState = 4)";
 
     private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_TEACHER_STATEMENT = "select * from Booking b " +
             "join Planning p on b.IdPlanning = p.IdPlanning " +
@@ -74,7 +91,7 @@ public class BookingDao implements BookingDaoInterface {
             "join Teacher t on t.IdTeacher = l.IdTeacher " +
             "join Subject s on l.IdSubject = s.IdSubject " +
             "join Student st on b.IdStudent = st.IdStudent " +
-            "where (b.IdStudent = ?) and (b.LessonState = 3 or b.LessonState = 4)";
+            "where (b.IdStudent = ?) and (b.LessonState = 2 or b.LessonState = 3 or b.LessonState = 4)";
 
 
     private void configureBooking(Booking booking, Student student, Planning planning, Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
@@ -207,6 +224,62 @@ public class BookingDao implements BookingDaoInterface {
         } finally {
             DaoFactory.closeDbConnection(conn, rs, prs);
         }
+    }
+
+    @Override
+    public List<Booking> findAllbookedUpByStudent(Student student) throws DatabaseException {
+        List<Booking> bookings = new ArrayList<>();
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(GET_BOOKED_UP_BY_STUDENT_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            prs.setInt(1, student.getIdStudent());
+            rs = prs.executeQuery();
+            configureBookingList(bookings, rs);
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+        return bookings;
+    }
+
+    @Override
+    public List<Booking> findAllbookedUpByTeacher(Teacher teacher) throws DatabaseException {
+        List<Booking> bookings = new ArrayList<>();
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(GET_BOOKED_UP_BY_TEACHER_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            prs.setInt(1, teacher.getIdTeacher());
+            rs = prs.executeQuery();
+            configureBookingList(bookings, rs);
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+        return bookings;
     }
 
     @Override
@@ -365,6 +438,7 @@ public class BookingDao implements BookingDaoInterface {
                 throw new DatabaseException("Statement is null");
             }
             prs.setInt(1, student.getIdStudent());
+            rs = prs.executeQuery();
 
             configureBookingList(bookings, rs);
 
@@ -476,7 +550,7 @@ public class BookingDao implements BookingDaoInterface {
             if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
-            prs.setInt(1, student.getIdStudent());
+            prs.setInt(1, teacher.getIdTeacher());
             prs.setInt(2, macroMateriaRevelant);
             prs.setString(3, macroMateria);
             prs.setInt(4, nomeLezioneRevelant);

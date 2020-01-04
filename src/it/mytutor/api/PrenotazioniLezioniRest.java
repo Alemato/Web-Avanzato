@@ -159,7 +159,7 @@ public class PrenotazioniLezioniRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"STUDENT", "TEACHER"})
-    public Response getStoricoStud() {
+    public Response getStorico() {
         List<Booking> bookings = new ArrayList<>();
         User user;
         String email = securityContext.getUserPrincipal().getName();
@@ -182,10 +182,7 @@ public class PrenotazioniLezioniRest {
                 throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
             }
             try {
-                bookings = bookingService.findAllBookingByStudnet(student);
-            } catch (DatabaseException e) {
-                e.printStackTrace();
-                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+                bookings = bookingService.findHistoricalBookingByStudent(student);
             } catch (PlanningBusinessException e) {
                 e.printStackTrace();
                 throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
@@ -193,6 +190,13 @@ public class PrenotazioniLezioniRest {
                 e.printStackTrace();
                 throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
             } catch (UserException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            } catch (ParseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+            catch (DatabaseException e) {
                 e.printStackTrace();
                 throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
             }
@@ -206,7 +210,7 @@ public class PrenotazioniLezioniRest {
                 throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
             }
             try {
-                bookings = bookingService.findAllBookingByTeacher(teacher);
+                bookings = bookingService.findHistoricalBookingByTeacher(teacher);
             } catch (DatabaseException e) {
                 e.printStackTrace();
                 throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
@@ -217,6 +221,9 @@ public class PrenotazioniLezioniRest {
                 e.printStackTrace();
                 throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
             } catch (UserException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            } catch (Exception e) {
                 e.printStackTrace();
                 throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
             }
@@ -297,6 +304,62 @@ public class PrenotazioniLezioniRest {
         }
         return Response.ok(bookings).build();
     }
-
+    @Path("count")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"STUDENT", "TEACHER"})
+    public Response countbooking() {
+        List<Booking> bookings = new ArrayList<>();
+        User user;
+        String email = securityContext.getUserPrincipal().getName();
+        try {
+            user = (User) userService.findUserByUsername(email);
+        } catch (UserException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        }
+        if (user.getRoles() == 1) {
+            StudentDao studentDao = new StudentDao();
+            Student student;
+            try {
+                student = studentDao.getStudentByIdUser(user.getIdUser());
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+            try {
+                bookings = bookingService.findAllbookedUpByStudent(student);
+//                count = bookings.size();
+                System.out.println("stud");
+                System.out.println(bookings.size());
+            } catch (BookingBusinessException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+        } else if (user.getRoles() == 2) {
+            TeacherDao teacherDao = new TeacherDao();
+            Teacher teacher;
+            try {
+                teacher = teacherDao.getTeacherByUserID(user.getIdUser());
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+            try {
+                bookings = bookingService.findAllbookedUpByTeacher(teacher);
+//                count = bookings.size();
+                System.out.println("prof");
+                System.out.println(bookings.size());
+            } catch (BookingBusinessException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+        }
+        return Response.ok(bookings.size()).build();
+    }
 }
 

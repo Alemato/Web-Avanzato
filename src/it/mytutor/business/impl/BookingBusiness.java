@@ -78,6 +78,33 @@ public class BookingBusiness implements BookingInterface {
         return bookings;
     }
 
+    @Override
+    public List<Booking> findAllbookedUpByStudent(Student student) throws BookingBusinessException {
+        BookingDaoInterface bookingDao = new BookingDao();
+        List<Booking> bookings;
+        try {
+            bookings = bookingDao.findAllbookedUpByStudent(student);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new BookingBusinessException("Errore nel prendere l'oggetto booking");
+        }
+        return bookings;
+    }
+
+    @Override
+    public List<Booking> findAllbookedUpByTeacher(Teacher teacher) throws BookingBusinessException {
+        BookingDaoInterface bookingDao = new BookingDao();
+        List<Booking> bookings;
+        try {
+            bookings = bookingDao.findAllbookedUpByTeacher(teacher);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new BookingBusinessException("Errore nel prendere l'oggetto booking");
+        }
+        return bookings;
+    }
+
+
 
     @Override
     public Booking findBookingById(Integer idBooking) throws BookingBusinessException {
@@ -101,7 +128,6 @@ public class BookingBusiness implements BookingInterface {
 
         try {
             bookings = bookingDao.getAllBookingOfAStudent(student);
-            System.out.println(bookings);
         } catch (DatabaseException e) {
             e.printStackTrace();
             throw new BookingBusinessException("Errore nel prendere gli oggetti booking");

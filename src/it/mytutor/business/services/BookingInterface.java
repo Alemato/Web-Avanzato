@@ -17,6 +17,11 @@ public interface BookingInterface {
     List<Booking> findAllBooking();
     List<Booking> findBookingByFilter(String macroMateria, String nome, String zona, String microMateria,
                                       String giornoSettimana, String prezzo, String oraInizio, String oraFine) throws DatabaseException, PlanningBusinessException, BookingBusinessException, UserException;
+
+    List<Booking> findAllbookedUpByStudent(Student student) throws BookingBusinessException;
+
+    List<Booking> findAllbookedUpByTeacher(Teacher teacher) throws BookingBusinessException;
+
     Booking findBookingById(Integer idBooking) throws BookingBusinessException;
     List<Booking> findAllBookingByLessonAndDate(Date date, Lesson lesson);
     List<Booking> findAllBookingByDate(Date date);

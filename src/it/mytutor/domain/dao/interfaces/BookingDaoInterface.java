@@ -14,6 +14,10 @@ public interface BookingDaoInterface {
 
     void updateBooking(Booking booking)throws DatabaseException;
 
+    List<Booking> findAllbookedUpByStudent(Student student) throws DatabaseException;
+
+    List<Booking> findAllbookedUpByTeacher(Teacher teacher) throws DatabaseException;
+
     List<Booking> getBookingByFilter(int macroMateriaRelevant, String macroMateria, int nomeRelevant,
                                      String nome, int zonaRelevant, String zona, int microMateriaRelevant,
                                      String microMateria, int giornoSettimanaRelevant, String giornoSettimana,

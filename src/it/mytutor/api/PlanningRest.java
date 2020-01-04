@@ -58,6 +58,11 @@ public class PlanningRest {
         return Response.ok(Response.Status.ACCEPTED).entity("Lezione pianificata").build();
     }
 
+    /**
+     * modifica dei planning
+     * @param plannings lista di planning
+     * @return Response Status ACCEPTED
+     */
     @Path("modify")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -69,11 +74,16 @@ public class PlanningRest {
         } catch (PlanningBusinessException e) {
             e.printStackTrace();
         }
-        return Response.ok(Response.Status.ACCEPTED).entity("Lezione modificata").build();
+        return Response.ok(Response.Status.ACCEPTED).entity("Pianificazione modificata").build();
     }
 
+    /**
+     * aggiunta dei planning
+     * @param plannings lista di planning
+     * @return Response Status ACCEPTED
+     */
     @Path("add")
-    @GET
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     @RolesAllowed({"TEACHER"})
@@ -84,7 +94,21 @@ public class PlanningRest {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
         }
-        return Response.ok(Response.Status.ACCEPTED).entity("Lezione pianificata").build();
+        return Response.ok(Response.Status.ACCEPTED).entity("Pianificazione pianificata").build();
+    }
+
+    @Path("delete")
+    @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response deletePlannings(List<Planning> plannings) {
+        try {
+            planningService.deletePlannings(plannings);
+        } catch (PlanningBusinessException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
+        }
+        return Response.ok(Response.Status.ACCEPTED).entity("Pianificazione eliminata").build();
     }
 
     @Path("research")
