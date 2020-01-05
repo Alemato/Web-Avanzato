@@ -1,37 +1,71 @@
 package it.mytutor.api;
 
+import it.mytutor.api.test.ApiWebApplicationException;
+import it.mytutor.business.exceptions.UserException;
+import it.mytutor.business.impl.UserBusiness;
+import it.mytutor.business.services.UserInterface;
+import it.mytutor.domain.Student;
+import it.mytutor.domain.Teacher;
+import it.mytutor.domain.dao.exception.DatabaseException;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import java.util.List;
 
-@Path("auth/profili")
+@Path("auth/profiles")
 public class ProfiliRest {
+    @Context
+    private SecurityContext securityContext;
+    private UserInterface userService = new UserBusiness();
 
-    @GET
+    @Path("/student")
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_HTML)
+    @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public String getProfili(@QueryParam("filtro") String filtro){
-        return "<h1 style=\"" +
-                "color: red; "+
-                "margin: auto; " +
-                "width: fit-content; " +
-                "margin-top: 20%;\" " +
-                ">Componente Lezioni con @QueryParam(\"filtro\"):" + filtro + " (a default vale null)</h1>";
+    public Response modificaStudent(Student student){
+        String emailStudent = securityContext.getUserPrincipal().getName();
+        if(student.getEmail().equals(emailStudent)){
+            try {
+                userService.editUser(student);
+            } catch (UserException | DatabaseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException(e.getMessage());
+            }
+        } else {
+            throw new ApiWebApplicationException("Errore non sei lo stesso account");
+        }
+        return Response.status(Response.Status.CREATED).build();
     }
 
-    @Path("{UID}")
-    @GET
+    @Path("/teacher")
+    @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_HTML)
-    @PermitAll
-    public String getProfiliByID(@PathParam("UID") String uid){
-        return "<h1 style=\"" +
-                "color: red; "+
-                "margin: auto; " +
-                "width: fit-content; " +
-                "margin-top: 20%;\" " +
-                ">Componente Lezioni con @PathParam(\"UID\"):" + uid + " (a default vale null)</h1>";
-    }
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"TEACHER"})
+    public Response modificaTeacher(Teacher teacher, @QueryParam("hspwd") String hspwd){
+        String emailTeacher = securityContext.getUserPrincipal().getName();
+        Teacher teacher1;
+        try {
+            teacher1 = (Teacher) userService.findUserByUsername(emailTeacher);
+            if(teacher.getEmail().equals(emailTeacher) && teacher1.getPassword().equals(hspwd)){
+                try {
+                    userService.editUser(teacher);
+                } catch (UserException | DatabaseException e) {
+                    e.printStackTrace();
+                    throw new ApiWebApplicationException(e.getMessage());
+                }
+            } else {
+                throw new ApiWebApplicationException("Errore non sei lo stesso account");
+            }
+        } catch (UserException | DatabaseException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException(e.getMessage());
+        }
+        return Response.status(Response.Status.CREATED).build();}
 }

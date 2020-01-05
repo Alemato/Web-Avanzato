@@ -33,6 +33,24 @@ public class UserBusiness implements UserInterface {
     }
 
     @Override
+    public void editUser(Object user) throws UserException, DatabaseException {
+        UserDao userDao = new UserDao();
+        if(user instanceof Teacher){
+            TeacherDao teacherDao = new TeacherDao();
+            Teacher t = (Teacher) user;
+            t.setPassword(SecurityHash.SetHash(t.getPassword()));
+            userDao.modifyUser(t, t.getIdUser());
+            teacherDao.modifyTeacher(t);
+        } else if(user instanceof Student) {
+            StudentDao studentDao = new StudentDao();
+            Student s = (Student) user;
+            s.setPassword(SecurityHash.SetHash(s.getPassword()));
+            userDao.modifyUser(s, s.getIdUser());
+            studentDao.modifyStudent(s);
+        } else throw new UserException("USER NON VALIDO");
+    }
+
+    @Override
     public Object autentication(String username, String password) throws UserException, DatabaseException {
         Object object;
         // QUERY USER: per vedere se esiste ed di che tipo è
