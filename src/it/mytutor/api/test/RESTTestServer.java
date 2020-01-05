@@ -7,11 +7,16 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.SecurityContext;
 
 @Path("test")
 public class RESTTestServer {
+    @Context
+    private SecurityContext securityContext;
+
     @GET
     @Consumes("application/json")
     @Produces("text/html")
@@ -392,8 +397,8 @@ public class RESTTestServer {
     @Consumes("application/json")
     @Produces("text/plain")
     @RolesAllowed({"STUDENT"})
-    public String aut(ContainerRequestContext requestContext) {
-        System.out.println(requestContext.getSecurityContext().getUserPrincipal().getName());
+    public String aut() {
+        System.out.println(securityContext.getUserPrincipal().getName());
         return  "<h1>OK</h1>";
     }
 }
