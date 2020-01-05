@@ -20,7 +20,7 @@ public class CreatesDao implements CreatesDaoInterface {
     private static final String GET_CREATES_BY_ID_STATEMENT="select * from Creates c, Chat ch, User u, User u1 where c.IdCreates=? and c.IdChat=ch.IdChat and c.IdUser=u.IdUser and c.IdUser2=u1.IdUser";
     private static final String GET_ALL_CREATES_STATEMENT="select * from Creates c, Chat ch, User u, User u1 where c.IdChat=ch.IdChat and c.IdUser=u.IdUser and c.IdUser2=u1.IdUser";
 
-    public void configureCreates(ResultSet rs, Creates creates,Chat c, List<User> users) throws DatabaseException {
+    public void configureCreates(ResultSet rs, Creates creates,Chat c, List<Object> users) throws DatabaseException {
         try{
             User u= new User();
             u.setIdUser(rs.getInt("u.IdUser"));
@@ -70,7 +70,7 @@ public class CreatesDao implements CreatesDaoInterface {
             while (rs.next()) {
                 Creates c= new Creates();
                 Chat ch= new Chat();
-                List<User> users= new ArrayList<>();
+                List<Object> users= new ArrayList<>();
                 configureCreates(rs, c, ch, users);
                 createsList.add(c);}
         } catch (SQLException e) {
@@ -91,8 +91,10 @@ public class CreatesDao implements CreatesDaoInterface {
             if (prs == null){
                 throw new DatabaseException("Statement is null");
             }
-            prs.setInt(1, creates.getUserListser().get(1).getIdUser());
-            prs.setInt(2, creates.getUserListser().get(2).getIdUser());
+            User user = (User) creates.getUserListser().get(0);
+            User user1 = (User) creates.getUserListser().get(1);
+            prs.setInt(1, user.getIdUser());
+            prs.setInt(2, user1.getIdUser());
             prs.setInt(3, creates.getChat().getIdChat());
 
             prs.executeUpdate();
@@ -111,7 +113,7 @@ public class CreatesDao implements CreatesDaoInterface {
     @Override
     public Creates getCreates(int id) throws DatabaseException {
         Creates creates=new Creates();
-        List<User> users = new ArrayList<User>();
+        List<Object> users = new ArrayList<>();
         Chat c= new Chat();
         Connection connection = getConnection();
         if(connection == null){
