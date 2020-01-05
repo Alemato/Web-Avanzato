@@ -1,5 +1,8 @@
 package it.mytutor.api.test;
 
+import it.mytutor.domain.Teacher;
+import it.mytutor.domain.User;
+
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
@@ -11,6 +14,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Path("test")
 public class RESTTestServer {
@@ -395,10 +402,21 @@ public class RESTTestServer {
     @GET
     @Path("aut")
     @Consumes("application/json")
-    @Produces("text/plain")
+    @Produces("application/json")
     @RolesAllowed({"STUDENT"})
-    public String aut() {
+    public Response aut() {
         System.out.println(securityContext.getUserPrincipal().getName());
-        return  "<h1>OK</h1>";
+        User user = new User(1, "abb", 1, "1234", "ABB", "BBA", new Date(System.currentTimeMillis()), false, "hjhjh", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+        Teacher teacher = new Teacher(1, "sd","sds","FGFG","sdsds",new Date(System.currentTimeMillis()),false,"sds",new Timestamp(System.currentTimeMillis()),new Timestamp(System.currentTimeMillis()),1,2,"city","sdsd","adsds","sdsd,","cbskdjbdckvjbsdkjcvbksdbvcksbkvjbskdbvkjbskvb,", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), 1);
+        List<Object> list = new ArrayList<Object>();
+        list.add(user);
+        list.add(teacher);
+        List<Object> list2 = new ArrayList<Object>();
+        list.add(user);
+        list.add(null);
+        List<Object> list1 = new ArrayList<Object>();
+        list1.add(list);
+        list1.add(list2);
+        return  Response.ok(list1).build();
     }
 }
