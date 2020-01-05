@@ -11,11 +11,11 @@ public class ApiWebApplicationException extends WebApplicationException {
 
     public ApiWebApplicationException(String message) {
         super(Response.serverError()
-                .entity(message)
-                .type("text/plain")
+                .entity("{ \"status\" : \""+ Response.Status.INTERNAL_SERVER_ERROR.getStatusCode() + "\", \"message\" : \"" + message + "\" }")
+                .type(MediaType.APPLICATION_JSON)
                 .build());
     }
     public ApiWebApplicationException(String message, int status){
-        super(Response.status(status).entity(message).type(MediaType.TEXT_PLAIN_TYPE).build());
+        super(Response.status(status).entity("{ \"status\" : \"status\", \"message\" : \"" + message + "\" }").type(MediaType.APPLICATION_JSON).build());
     }
 }
