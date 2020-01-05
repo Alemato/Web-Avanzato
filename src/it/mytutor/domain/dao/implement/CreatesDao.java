@@ -65,7 +65,7 @@ public class CreatesDao implements CreatesDaoInterface {
             throw new DatabaseException("Errore nel creare oggetto Chat");
         }
     }
-    public void configureCreatesList(ResultSet rs, List<Creates> createsList) throws DatabaseException {
+    public void configureCreatesList(List<Creates> createsList, ResultSet rs) throws DatabaseException {
         try {
             while (rs.next()) {
                 Creates c= new Creates();
@@ -91,9 +91,9 @@ public class CreatesDao implements CreatesDaoInterface {
             if (prs == null){
                 throw new DatabaseException("Statement is null");
             }
-            prs.setString(1, creates.getUserListser().get(1));
-            prs.setString(2, creates.getUserListser().get(2));
-            prs.setString(3, creates.getChat());
+            prs.setInt(1, creates.getUserListser().get(1).getIdUser());
+            prs.setInt(2, creates.getUserListser().get(2).getIdUser());
+            prs.setInt(3, creates.getChat().getIdChat());
 
             prs.executeUpdate();
         } catch(SQLException e) {
