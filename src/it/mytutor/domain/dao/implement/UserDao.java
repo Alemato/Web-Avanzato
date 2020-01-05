@@ -22,6 +22,7 @@ public class UserDao implements UserDaoInterface {
     private static final String GET_USER_BY_EMAIL_STATEMENT = "select * from User where Email=?";
     private static final String GET_ALL_USER_STATEMENT = "select * from User";
 
+
     private void configureUser(User user, ResultSet resultSet) throws DatabaseException {
         try {
             user.setIdUser(resultSet.getInt("IdUser"));
@@ -118,7 +119,7 @@ public class UserDao implements UserDaoInterface {
 
 
     @Override
-    public User getUserById(int id) throws DatabaseException {
+    public  User getUserById(int id) throws DatabaseException {
         User user = new User();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {

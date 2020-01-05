@@ -7,6 +7,9 @@ public class CreatesBusiness implements CreatesInterface {
     //TODO Costruttore Creates
 
     @Override
-    public Creates createCreates(Creates creates){ return null; }
-
+    public Creates createCreates(Creates creates){ return creates; }
+    @Override
+    public Creates getCreates(int id){
+        Creates creates=null;
+        return creates;}
 }
