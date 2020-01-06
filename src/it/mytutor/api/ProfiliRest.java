@@ -26,13 +26,22 @@ public class ProfiliRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"TEACHER", "STUDENT"})
-    public Response profilo(){
+    public Response profilo(@QueryParam("email") String email){
         Object user;
-        try {
-            user = userService.findUserByUsername(securityContext.getUserPrincipal().getName());
-        } catch (UserException | DatabaseException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException(e.getMessage());
+        if (email == null || email.isEmpty() || email.equals(" ")){
+            try {
+                user = userService.findUserByUsername(securityContext.getUserPrincipal().getName());
+            } catch (UserException | DatabaseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException(e.getMessage());
+            }
+        } else {
+            try {
+                user = userService.findUserByUsername(email);
+            } catch (UserException | DatabaseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException(e.getMessage());
+            }
         }
         return Response.ok(user).build();
     }
