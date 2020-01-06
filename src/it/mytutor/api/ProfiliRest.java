@@ -42,17 +42,19 @@ public class ProfiliRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public Response modificaStudent(Student student){
+    public Response modificaStudent(Student student, @QueryParam("hspwd") String hspwd){
         String emailStudent = securityContext.getUserPrincipal().getName();
-        if(student.getEmail().equals(emailStudent)){
-            try {
+        Student student1;
+        try {
+            student1 = (Student) userService.findUserByUsername(emailStudent);
+            if(student.getEmail().equals(emailStudent) && student1.getPassword().equals(hspwd)){
                 userService.editUser(student);
-            } catch (UserException | DatabaseException e) {
-                e.printStackTrace();
-                throw new ApiWebApplicationException(e.getMessage());
+            } else {
+                throw new ApiWebApplicationException("Errore non sei lo stesso account");
             }
-        } else {
-            throw new ApiWebApplicationException("Errore non sei lo stesso account");
+        } catch (UserException | DatabaseException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException(e.getMessage());
         }
         return Response.status(Response.Status.CREATED).build();
     }
