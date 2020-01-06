@@ -15,13 +15,27 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import java.util.List;
 
 @Path("auth/profiles")
 public class ProfiliRest {
     @Context
     private SecurityContext securityContext;
     private UserInterface userService = new UserBusiness();
+
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"TEACHER", "STUDENT"})
+    public Response profilo(){
+        Object user;
+        try {
+            user = userService.findUserByUsername(securityContext.getUserPrincipal().getName());
+        } catch (UserException | DatabaseException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException(e.getMessage());
+        }
+        return Response.ok(user).build();
+    }
 
     @Path("/student")
     @POST
