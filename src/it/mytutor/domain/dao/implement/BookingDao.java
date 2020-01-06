@@ -21,7 +21,7 @@ public class BookingDao implements BookingDaoInterface {
             "join Teacher t on t.IdTeacher = l.IdTeacher " +
             "join Subject s on l.IdSubject = s.IdSubject " +
             "join Student st on b.IdStudent = st.IdStudent " +
-            "where st.IdStudent = ? and (b.LessonState = 0 or b.LessonState = 1)";
+            "where st.IdStudent = ?";
 
     private static final String GET_BOOKED_UP_BY_STUDENT_STATEMENT = "select * from Booking b " +
             "join Planning p on b.IdPlanning = p.IdPlanning " +
@@ -59,7 +59,7 @@ public class BookingDao implements BookingDaoInterface {
             "join Teacher t on l.IdTeacher = t.IdTeacher " +
             "join Subject s on l.IdSubject = s.IdSubject " +
             "join Student st on b.IdStudent = st.IdStudent " +
-            "where t.IdTeacher = ? and (LessonState = 0 or LessonState = 1)";
+            "where t.IdTeacher = ?";
     private static final String GET_BOOKING_BY_ID_STATEMENT = "select * from Booking b " +
             "join Planning p on p.IdPlanning = b.IdPlanning " +
             "join Lesson l on p.IdLesson = l.idLesson " +

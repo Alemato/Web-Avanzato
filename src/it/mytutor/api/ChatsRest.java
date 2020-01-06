@@ -34,7 +34,7 @@ public class ChatsRest {
     /**
      * rest per ricevere la lista di tutte le chat che saranno salvate nello storage
      * Con un solo l'ULTIMO MESSAGGIO ricevuto o inviato.
-     * @return
+     * @return lista di ultimi messaggi per ogni chat
      */
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
@@ -64,7 +64,7 @@ public class ChatsRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"STUDENT", "TEACHER"})
-    public Response getChatsByIDByQuery( @QueryParam("idUltimaChat") Integer idUltimaChat) {
+    public Response getChatsByIDByQuery(@QueryParam("idUltimaChat") Integer idUltimaChat) {
         String username = securityContext.getUserPrincipal().getName();
         List<Message> messageList;
         try {
@@ -81,19 +81,14 @@ public class ChatsRest {
         }
     }
 
-    /**
-     * @param creates oggetto preso dal json
-     * @return Response, 200 se è andato tutto bene
-     */
+
     @Path("post")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
-    public Response postChats(Creates creates) {
-        System.out.println(creates);
-//        chatService.creationChat(creates.getChat());
-        createsService.createCreates(creates);
+    @RolesAllowed({"STUDENT", "TEACHER"})
+    public Response createChats(@QueryParam("idAddressee") Integer addressee, @QueryParam("ChatName") String chatName) {
+
         return Response.ok().build();
     }
 

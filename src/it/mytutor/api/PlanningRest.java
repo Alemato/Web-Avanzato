@@ -16,6 +16,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -110,6 +111,16 @@ public class PlanningRest {
         }
         return Response.ok(Response.Status.ACCEPTED).entity("Pianificazione eliminata").build();
     }
+
+    /*@Path("{PID}")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPlanning(@PathParam("PID") Integer pid){
+        List<Planning> plannings = new ArrayList<>();
+        plannings = planningService.findPlanningsById(pid);
+        return Response.ok(plannings).build();
+    }*/
 
     @Path("research")
     @GET

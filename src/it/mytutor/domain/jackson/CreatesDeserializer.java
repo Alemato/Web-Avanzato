@@ -30,7 +30,7 @@ public class CreatesDeserializer extends StdDeserializer<Creates> {
 
         Creates creates = new Creates();
 
-        List<User> userList = new ArrayList<User>();
+        List<Object> userList = new ArrayList<>();
         ArrayNode users = (ArrayNode) node.get("users");
         Iterator<JsonNode> usersIterator = users.elements();
         while (usersIterator.hasNext()) {

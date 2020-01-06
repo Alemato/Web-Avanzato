@@ -3,18 +3,20 @@ package it.mytutor.domain;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import it.mytutor.domain.jackson.CreatesDeserializer;
+import it.mytutor.domain.jackson.CreatesSerializer;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@JsonSerialize(using = CreatesSerializer.class)
 @JsonDeserialize(using = CreatesDeserializer.class)
 public class Creates {
     private Integer idCreates;
     private Timestamp createDate;
     private Timestamp updateDate;
-    private List<User> userListser = new ArrayList<User>();   // lista contenente i due user coinvolti nella chat
+    private List<Object> userListser = new ArrayList<Object>();   // lista contenente i due user coinvolti nella chat
     private Chat chat;
 
     //COSTRUTTORI
@@ -26,7 +28,7 @@ public class Creates {
         super();
     }
 
-    public Creates(Integer idCreates, String name, Timestamp createDate, Timestamp updateDate, List<User> userListser, Chat chat) {
+    public Creates(Integer idCreates, String name, Timestamp createDate, Timestamp updateDate, List<Object> userListser, Chat chat) {
         this.idCreates = idCreates;
         this.createDate = createDate;
         this.updateDate = updateDate;
@@ -48,7 +50,7 @@ public class Creates {
         return updateDate;
     }
 
-    public List<User> getUserListser() {
+    public List<Object> getUserListser() {
         return userListser;
     }
 
@@ -75,7 +77,7 @@ public class Creates {
         this.updateDate = updateDate;
     }
 
-    public void setUserListser(List<User> userListser) {
+    public void setUserListser(List<Object> userListser) {
         this.userListser = userListser;
     }
 
@@ -126,8 +128,9 @@ public class Creates {
                 "idCreates=" + idCreates +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
-                ", userListser=" + userListerToString(this.userListser) +
-                "," + this.chat.toString() +
+                ", userListser=[" + userListser.get(0).toString() +
+                ", " + userListser.get(1).toString() +
+                "]," + this.chat.toString() +
                 '}';
     }
 }

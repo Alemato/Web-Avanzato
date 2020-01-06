@@ -6,7 +6,6 @@ import it.mytutor.business.impl.SubjectBusiness;
 import it.mytutor.business.services.SubjectInterface;
 import it.mytutor.domain.Subject;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -30,7 +29,7 @@ public class MaterieRest {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
+    @RolesAllowed({"STUDENT", "TEACHER"})
     public Response getMaterie() {
         List<Subject> subjects;
         try {
@@ -51,8 +50,8 @@ public class MaterieRest {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
-    public Response getMaterie(@QueryParam("storico") String storico) {
+    @RolesAllowed({"STUDENT", "TEACHER"})
+    public Response getMaterie(@QueryParam("history") String storico) {
         List<Subject> subjects;
         if (storico != null && !storico.isEmpty()) {
             try {
