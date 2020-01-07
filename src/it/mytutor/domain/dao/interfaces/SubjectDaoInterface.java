@@ -20,5 +20,7 @@ public interface SubjectDaoInterface {
 
     List<Subject> getAllSubject () throws DatabaseException;
 
-    List<Subject> getStoricoSubject(String email) throws DatabaseException;
+    List<Subject> getStoricoSubjectStudent(String email) throws DatabaseException;
+
+    List<Subject> getStoricoSubjectTeacher(String email) throws DatabaseException;
 }

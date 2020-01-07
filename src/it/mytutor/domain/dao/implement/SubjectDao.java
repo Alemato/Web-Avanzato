@@ -16,11 +16,20 @@ public class SubjectDao implements SubjectDaoInterface {
     private static final String GET_SUBJECT_BY_ID_STATEMENT = "select * from Subject where IdSubject=?";
     private static final String GET_SUBJECTS_BY_NAME_STATEMENT = "select * from Subject where macroSubject=?";
     private static final String UPDATE_SUBJECT_STATEMENT = "update Subject set macroSubject=?, microSubject=? where idSubject=?";
-    private static final String GET_STORICO_SUBJECT_STATEMENT = "select * from Subject s " +
+    private static final String GET_STORICO_SUBJECT_STUDENT_STATEMENT = "select * from Subject s " +
             "join Lesson l on l.IdSubject = s.IdSubject " +
             "join Planning p on l.IdLesson = p.IdLesson " +
             "join Booking b on p.IdPlanning = b.IdPlanning " +
-            "";
+            "join Student st on b.IdStudent = st.IdStudent " +
+            "join User u on st.IdStudent = u.IdUser " +
+            "where u.Email = ?";
+    private static final String GET_STORICO_SUBJECT_TEACHER_STATEMENT = "select * from Subject s " +
+            "join Lesson l on l.IdSubject = s.IdSubject " +
+            "join Planning p on l.IdLesson = p.IdLesson " +
+            "join Booking b on p.IdPlanning = b.IdPlanning " +
+            "join Teacher t on l.IdTeacher = t.IdTeacher " +
+            "join User u on t.IdUser = u.IdUser " +
+            "where u.Email = ?";
     private static final String CREATE_SUBJECT_STATEMENT = "insert into Subject(macroSubject,microSubject) values(?,?)";
     private static final String GET_ALL_SUBJECT_STATEMENT = "select * from Subject";
 
@@ -31,7 +40,7 @@ public class SubjectDao implements SubjectDaoInterface {
             subject.setMacroSubject(resultSet.getString("MacroSubject"));
             subject.setMicroSubject(resultSet.getString("MicroSubject"));
             subject.setCreateDate(resultSet.getTimestamp("CreateDate"));
-            subject.setCreateDate(resultSet.getTimestamp("UpdateDate"));
+            subject.setUpdateDate(resultSet.getTimestamp("UpdateDate"));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -182,7 +191,7 @@ public class SubjectDao implements SubjectDaoInterface {
     }
 
     @Override
-    public List<Subject> getStoricoSubject(String email) throws DatabaseException {
+    public List<Subject> getStoricoSubjectStudent(String email) throws DatabaseException {
         List<Subject> Subejcts = new ArrayList<Subject>();
 
         Connection conn = DaoFactory.getConnection();
@@ -192,10 +201,38 @@ public class SubjectDao implements SubjectDaoInterface {
         ResultSet rs = null;
         PreparedStatement prs = null;
         try {
-            prs = conn.prepareStatement(GET_STORICO_SUBJECT_STATEMENT);
+            prs = conn.prepareStatement(GET_STORICO_SUBJECT_STUDENT_STATEMENT);
             if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
+            prs.setString(1, email);
+            rs = prs.executeQuery();
+            configureSubjectList(Subejcts, rs);
+
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+        return Subejcts;
+    }
+
+    @Override
+    public List<Subject> getStoricoSubjectTeacher(String email) throws DatabaseException {
+        List<Subject> Subejcts = new ArrayList<Subject>();
+
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(GET_STORICO_SUBJECT_TEACHER_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            prs.setString(1, email);
             rs = prs.executeQuery();
             configureSubjectList(Subejcts, rs);
 
