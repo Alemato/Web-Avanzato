@@ -21,4 +21,8 @@ public interface PlanningInterface {
 
     List<Planning> FindPlanningByFilter(String macroMateria, String nome, String zona, String microMateria,
                                         String giornoSettimana, String prezzo, String oraInizio, String oraFine) throws DatabaseException, BookingBusinessException, PlanningBusinessException;
+
+    List<Planning> findAllPlanningByLessonId(Integer idLesson) throws PlanningBusinessException;
+
+    List<Planning> findAllPlanningBookedUpByLessonId(Integer idLesson, Integer idStudent) throws PlanningBusinessException;
 }
