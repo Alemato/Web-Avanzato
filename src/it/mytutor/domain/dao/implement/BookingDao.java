@@ -15,6 +15,15 @@ import java.util.List;
 public class BookingDao implements BookingDaoInterface {
     private static final String CREATE_BOOKING_STATEMENT = "insert into Booking (Date, LessonState ,Idstudent, IdPlanning) values(?,?,?,?)";
     private static final String UPDATE_BOOKING_STATEMENT = "update Booking set Date=?,LessonState=?,IdStudent=?,IdPlanning=? where IdBooking=?";
+
+    private static final String GET_BOOKING_BY_ID_LESSON_STATEMENT = "select * from Booking b " +
+            "join Planning p on b.IdPlanning = p.IdPlanning " +
+            "join Lesson l on p.IdLesson = l.IdLesson " +
+            "join Teacher t on t.IdTeacher = l.IdTeacher " +
+            "join Subject s on l.IdSubject = s.IdSubject " +
+            "join Student st on b.IdStudent = st.IdStudent " +
+            "where l.IdLesson = ?";
+
     private static final String GET_ALL_BOOOKING_OF_A_STUDENT_STATEMENT = "select * from Booking b " +
             "join Planning p on b.IdPlanning = p.IdPlanning " +
             "join Lesson l on p.IdLesson = l.IdLesson " +
@@ -224,6 +233,34 @@ public class BookingDao implements BookingDaoInterface {
         } finally {
             DaoFactory.closeDbConnection(conn, rs, prs);
         }
+    }
+
+    @Override
+    public List<Booking> getAllBookingByIdLesson(Integer idLesson) throws DatabaseException {
+        List<Booking> bookings = new ArrayList<>();
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(GET_BOOKING_BY_ID_LESSON_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            prs.setInt(1, idLesson);
+            rs = prs.executeQuery();
+            configureBookingList(bookings, rs);
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+        return bookings;
     }
 
     @Override
