@@ -13,6 +13,10 @@ public interface PlanningDaoInterface {
                                        String prezzo, int oraInizioRelevant, String oraInizio,
                                        int oraFineaRelevant, String oraFine) throws DatabaseException;
 
+    List<Planning> getPlanningByLessonId(Integer idLesson) throws DatabaseException;
+
+    List<Planning> getPlanningBookedUpByLessonId(Integer idLesson, Integer idStudent) throws DatabaseException;
+
     void updatePlanning(Planning planning) throws DatabaseException;
     void createPlanning(Planning planning) throws DatabaseException;
 

@@ -26,6 +26,19 @@ public class PlanningDao implements PlanningDaoInterface {
             "and (0 = ? or l.Name = ?) and (0 = ? or t.City = ?) and (0 = ? or s.MicroSubject = ?) " +
             "and (0 = ? or DAYOFWEEK(p.Date) =? ) and (0 = ? or l.Price =? ) and (0 = ? or p.StartTime >= ? ) " +
             "and (0 = ? or p.EndTime <=? )";
+    private static final String GET_PLANNING_BY_LESSON_ID_STATEMENT = "select * from Planning p " +
+            "join Lesson l on p.IdLesson = l.IdLesson " +
+            "join Subject s on l.IdSubject = s.IdSubject " +
+            "join Teacher t on l.IdTeacher = t.IdTeacher " +
+            "join User u on t.IdUser = u.IdUser " +
+            "where p.IdLesson = ? order by p.CreateDate";
+    private static final String GET_PLANNING_BOOKED_UP_BY_LESSONID_STATEMENT = "select * from Planning p " +
+            "join Booking b on p.IdPlanning = b.IdPlanning " +
+            "join Lesson l on p.IdLesson = l.IdLesson " +
+            "join Subject s on l.IdSubject = s.IdSubject " +
+            "join Teacher t on l.IdTeacher = t.IdTeacher " +
+            "join User u on t.IdUser = u.IdUser " +
+            "where p.IdLesson = ? and b.IdStudent = ? order by p.CreateDate";
 
     //TODO query per la ricerca nei
     // campi text. NB settare i campi sul db come indice FULTEXT
@@ -234,6 +247,65 @@ public class PlanningDao implements PlanningDaoInterface {
             prs.setString(14, oraInizio);
             prs.setInt(15, oraFineaRelevant);
             prs.setString(16, oraFine);
+
+            rs = prs.executeQuery();
+            configurelanningList(plannings, rs);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+
+        } finally {
+            DaoFactory.closeDbConnection(connection, rs, prs);
+        }
+        return plannings;
+    }
+
+    @Override
+    public List<Planning> getPlanningByLessonId(Integer idLesson) throws DatabaseException {
+        List<Planning> plannings = new ArrayList<>();
+
+        Connection connection = DaoFactory.getConnection();
+        if (connection == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = connection.prepareStatement(GET_PLANNING_BY_LESSON_ID_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            prs.setInt(1, idLesson);
+
+            rs = prs.executeQuery();
+            configurelanningList(plannings, rs);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+
+        } finally {
+            DaoFactory.closeDbConnection(connection, rs, prs);
+        }
+        return plannings;
+    }
+
+    @Override
+    public List<Planning> getPlanningBookedUpByLessonId(Integer idLesson, Integer idStudent) throws DatabaseException {
+        List<Planning> plannings = new ArrayList<>();
+
+        Connection connection = DaoFactory.getConnection();
+        if (connection == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = connection.prepareStatement(GET_PLANNING_BOOKED_UP_BY_LESSONID_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            prs.setInt(1, idLesson);
+            prs.setInt(2, idStudent);
 
             rs = prs.executeQuery();
             configurelanningList(plannings, rs);
