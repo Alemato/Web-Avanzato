@@ -15,7 +15,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import java.util.List;
 
 @Path("auth/profiles")
 public class ProfiliRest {
@@ -23,22 +22,48 @@ public class ProfiliRest {
     private SecurityContext securityContext;
     private UserInterface userService = new UserBusiness();
 
-    @Path("/student")
-    @POST
+    @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
-    public Response modificaStudent(Student student){
-        String emailStudent = securityContext.getUserPrincipal().getName();
-        if(student.getEmail().equals(emailStudent)){
+    @RolesAllowed({"TEACHER", "STUDENT"})
+    public Response profilo(@QueryParam("email") String email){
+        Object user;
+        if (email == null || email.isEmpty() || email.equals(" ")){
             try {
-                userService.editUser(student);
+                user = userService.findUserByUsername(securityContext.getUserPrincipal().getName());
             } catch (UserException | DatabaseException e) {
                 e.printStackTrace();
                 throw new ApiWebApplicationException(e.getMessage());
             }
         } else {
-            throw new ApiWebApplicationException("Errore non sei lo stesso account");
+            try {
+                user = userService.findUserByUsername(email);
+            } catch (UserException | DatabaseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException(e.getMessage());
+            }
+        }
+        return Response.ok(user).build();
+    }
+
+    @Path("/student")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
+    public Response modificaStudent(Student student, @QueryParam("hspwd") String hspwd){
+        String emailStudent = securityContext.getUserPrincipal().getName();
+        Student student1;
+        try {
+            student1 = (Student) userService.findUserByUsername(emailStudent);
+            if(student.getEmail().equals(emailStudent) && student1.getPassword().equals(hspwd)){
+                userService.editUser(student);
+            } else {
+                throw new ApiWebApplicationException("Errore non sei lo stesso account");
+            }
+        } catch (UserException | DatabaseException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException(e.getMessage());
         }
         return Response.status(Response.Status.CREATED).build();
     }
