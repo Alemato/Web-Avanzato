@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ChatDaoInterface {
     List<Chat> getAllChatByIdUser(int idUser) throws DatabaseException;
-    void crateAChat(Chat chat) throws DatabaseException;
+    Integer crateAChat(String chatName) throws DatabaseException;
 }

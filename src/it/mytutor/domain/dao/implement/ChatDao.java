@@ -15,7 +15,11 @@ import java.util.List;
 
 public class ChatDao implements ChatDaoInterface {
     private static final String CREATE_A_CHAT = "insert into Chat(Name,CreateDate, UpdateDate) value (?, DEFAULT , DEFAULT)";
-    private static final String GET_ALL_CHAT_BY_ID_USER = "select distinct t.idchat, t.name, t.createdate, t.updatedate from Chat t, Message s Where s.IdChat=t.IdChat and s.IdUser = ? ORDER BY CreateDate DESC LIMIT 10";
+//    private static final String GET_ALL_CHAT_BY_ID_USER = "select distinct t.idchat, t.name, t.createdate, t.updatedate from Chat t, Message s Where s.IdChat=t.IdChat and s.IdUser = ? ORDER BY CreateDate DESC LIMIT 10";
+private static final String GET_ALL_CHAT_BY_ID_USER = "select * from Chat c " +
+        "join Creates cr on c.IdChat = cr.IdChat " +
+        "where cr.IdUser = ? or cr.IdUser2 = ?";
+
 
     private void configureChat(Chat chat, ResultSet resultSet) throws DatabaseException {
         try{
@@ -44,25 +48,37 @@ public class ChatDao implements ChatDaoInterface {
     }
 
     @Override
-    public void crateAChat(Chat chat) throws DatabaseException {
+    public Integer crateAChat(String chatName) throws DatabaseException {
         Connection connection = DaoFactory.getConnection();
         if(connection == null){
             throw new DatabaseException("Connection is null");
         }
+        int i = 0;
         ResultSet rs = null;
         PreparedStatement prs = null;
         try {
-            prs = connection.prepareStatement(CREATE_A_CHAT);
+            prs = connection.prepareStatement(CREATE_A_CHAT, com.mysql.jdbc.Statement.RETURN_GENERATED_KEYS);
             if (prs == null){
                 throw new DatabaseException("Statement is null");
             }
-            prs.setString(1, chat.getName());
+            prs.setString(1, chatName);
             prs.executeUpdate();
+
+            try {
+                rs = prs.getGeneratedKeys();
+                if (rs.next()) {
+                    i = rs.getInt(1);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
         } catch(SQLException e) {
             throw new DatabaseException(e.getMessage());
         } finally {
             DaoFactory.closeDbConnection(connection, rs, prs);
         }
+        return i;
     }
 
     @Override
@@ -80,6 +96,7 @@ public class ChatDao implements ChatDaoInterface {
                 throw new DatabaseException("Statement is null");
             }
             prs.setInt(1, idUser);
+            prs.setInt(2, idUser);
             rs = prs.executeQuery();
             configureChatList(chatList, rs);
             if (chatList.isEmpty()) {
