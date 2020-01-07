@@ -1,46 +1,70 @@
 package it.mytutor.business.impl;
 
+import it.mytutor.business.exceptions.MessageBusinessException;
 import it.mytutor.business.services.MessageInterface;
-import it.mytutor.domain.Chat;
 import it.mytutor.domain.Message;
 import it.mytutor.domain.User;
+import it.mytutor.domain.dao.exception.DatabaseException;
+import it.mytutor.domain.dao.implement.MessageDao;
+import it.mytutor.domain.dao.interfaces.MessageDaoInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.mytutor.business.impl.test.TestBusinness.simulateFindAllMessageByChat;
-import static it.mytutor.business.impl.test.TestBusinness.simulateFindAllMessageByUser;
-
 public class MessageBusiness implements MessageInterface {
-    // TODO costruttore Messaggio
 
     @Override
-    public List<Message> findAllMessageByChat(Chat chat) {
-        List<Message> messages = new ArrayList<>();
+    public List<Message> findAllMessageByChat(int idChat) throws MessageBusinessException {
+        List<Message> messages;
+        MessageDaoInterface messageDao = new MessageDao();
         try {
-            messages.addAll(simulateFindAllMessageByChat(chat));
-        } catch (InterruptedException e) {
+            messages = messageDao.getAllMessagesOfChat(idChat);
+        } catch (DatabaseException e) {
             e.printStackTrace();
+            throw new MessageBusinessException("Errore nel prendere i messaggi");
         }
         return  messages;
     }
 
+
+
     @Override
     public Message getMessageById(int id){ return null; }
 
-//    @Override
-//    public boolean getIfNewMessages(int id){ return true; }
-
     @Override
-    public List<Message> getNewMessagesByIdLast(int id){ return null; }
-
-    @Override
-    public List<Message> findAllMessageByUser(User user) {
-        return simulateFindAllMessageByUser(user);
+    public List<Message> getNewMessagesByIdLast(Integer idChat, Integer idLastMessage) throws MessageBusinessException {
+        List<Message> messages;
+        List<Message> messages1 = new ArrayList<>();
+        MessageDaoInterface messageDao = new MessageDao();
+        boolean i = false;
+        try {
+            messages = messageDao.getAllMessagesOfChat(idChat);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new MessageBusinessException("Errore nel prendere i messaggi");
+        }
+        for (Message message : messages) {
+            if (message.getIdMessage().equals(idLastMessage) || i) {
+                i = true;
+                messages1.add(message);
+            }
+        }
+        return messages1;
     }
 
     @Override
-    public Message crateMessage(Message message) {
+    public List<Message> findAllMessageByUser(User user) {
         return null;
+    }
+
+    @Override
+    public void crateMessage(Message message) throws MessageBusinessException {
+        MessageDaoInterface messageDao = new MessageDao();
+        try {
+            messageDao.createMessage(message);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new MessageBusinessException("Errore nella creazione del messaggio");
+        }
     }
 }
