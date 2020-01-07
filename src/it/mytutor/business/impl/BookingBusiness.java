@@ -18,10 +18,12 @@ import java.util.List;
 
 public class BookingBusiness implements BookingInterface {
 
+
+    //TODO da testare
     public List<Booking> findBookingByFilter(String macroMateria, String nome, String zona, String microMateria,
-                                             String giornoSettimana, String prezzo, String oraInizio, String oraFine) throws PlanningBusinessException, UserException {
+                                             String giornoSettimana, String prezzo, String oraInizio, String oraFine) throws PlanningBusinessException, UserException, BookingBusinessException {
         UserDao userDao = new UserDao();
-        BookingDao bookingDao = new BookingDao();
+        BookingDaoInterface bookingDao = new BookingDao();
         List<Booking> bookings;
         int macroMateriaRelevant = 0;
         if (macroMateria != null && !macroMateria.isEmpty()) {
@@ -75,7 +77,31 @@ public class BookingBusiness implements BookingInterface {
                 throw new UserException("Errore nel'aggiunta degli user");
             }
         }
-        return bookings;
+        int j = 0;
+        List<Lesson> lessons = new ArrayList<>();
+        for (Booking booking : bookings){
+            if (j == 0){
+                lessons.add(booking.getPlanning().getLesson());
+            }
+            for (Lesson lesson: lessons){
+                if (!lesson.getIdLesson().equals(booking.getPlanning().getLesson().getIdLesson())) {
+                    lessons.add(booking.getPlanning().getLesson());
+                    j++;
+                }
+            }
+        }
+
+        List<Booking> bookings1 = new ArrayList<>();
+        for (Lesson lesson: lessons) {
+            try {
+                bookings1.addAll(bookingDao.getAllBookingByIdLesson(lesson.getIdLesson()));
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new BookingBusinessException("Errore nel prendere gli oggetti booking");
+            }
+        }
+
+        return bookings1;
     }
 
     @Override
@@ -125,7 +151,6 @@ public class BookingBusiness implements BookingInterface {
         UserDao userDao = new UserDao();
         List<Booking> bookings;
 
-
         try {
             bookings = bookingDao.getAllBookingOfAStudent(student);
         } catch (DatabaseException e) {
@@ -165,6 +190,9 @@ public class BookingBusiness implements BookingInterface {
             try {
                 bookings.set(i, addUsersInBookingList(booking, userDao));
                 i++;
+            }catch (BookingBusinessException e) {
+                e.printStackTrace();
+                throw new BookingBusinessException("Errore nel prendere gli oggetti booking");
             } catch (UserException e) {
                 e.printStackTrace();
                 throw new UserException("Errore nel'aggiunta degli user");
@@ -176,6 +204,7 @@ public class BookingBusiness implements BookingInterface {
     @Override
     public void crateBookings(List<Booking> bookings) throws PlanningBusinessException {
         BookingDaoInterface bookingDao = new BookingDao();
+
         for (Booking booking : bookings) {
             try {
                 bookingDao.createBooking(booking);
