@@ -55,10 +55,12 @@ public class ChatBusiness implements ChatInterface {
     @Override
     public List<Message> findAllChatByUser(String username) throws DatabaseException {
         User user = getUser(username);
+        System.out.println(username);
         List<Message> messageList = new ArrayList<Message>();
         ChatDao chatDao = new ChatDao();
-        List<Chat> chatList = chatDao.getAllChatByIdUser(user.getIdUser());
+        List<Chat> chatList = chatDao.getAllChatByIdUser(user.getIdUser());;
         for (Chat chat: chatList) {
+            System.out.println(chat.getIdChat());
             MessageDao messageDao = new MessageDao();
             messageList.add(messageDao.getAMessageOfChat(chat.getIdChat()));
         }
