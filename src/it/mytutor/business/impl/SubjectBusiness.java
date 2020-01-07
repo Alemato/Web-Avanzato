@@ -27,11 +27,24 @@ public class SubjectBusiness implements SubjectInterface {
     }
 
     @Override
-    public List<Subject> findAllStorico (String email) throws SubjectBusinessException {
+    public List<Subject> findAllStoricoStudent (String email) throws SubjectBusinessException {
         SubjectDao subjectDao = new SubjectDao();
         List<Subject> subjects = new ArrayList<Subject>();
         try {
-            subjects = subjectDao.getStoricoSubject(email);
+            subjects = subjectDao.getStoricoSubjectStudent(email);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new SubjectBusinessException("Errore prender la lista di materie");
+        }
+        return subjects;
+    }
+
+    @Override
+    public List<Subject> findAllStoricoTeacher (String email) throws SubjectBusinessException {
+        SubjectDao subjectDao = new SubjectDao();
+        List<Subject> subjects = new ArrayList<Subject>();
+        try {
+            subjects = subjectDao.getStoricoSubjectTeacher(email);
         } catch (DatabaseException e) {
             e.printStackTrace();
             throw new SubjectBusinessException("Errore prender la lista di materie");

@@ -8,7 +8,10 @@ import java.util.List;
 public interface SubjectInterface {
     List<Subject> findAll() throws SubjectBusinessException;
 
-    List<Subject> findAllStorico(String email) throws SubjectBusinessException;
+
+    List<Subject> findAllStoricoStudent(String email) throws SubjectBusinessException;
+
+    List<Subject> findAllStoricoTeacher(String email) throws SubjectBusinessException;
 
     List<Subject> findAllByMacroSubject(String macroSubject);
     List<Subject> findAllByMicroSubject(String microSubject);
