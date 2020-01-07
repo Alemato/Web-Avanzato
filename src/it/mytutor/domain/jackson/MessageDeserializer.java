@@ -45,10 +45,9 @@ public class MessageDeserializer extends StdDeserializer<Message> {
         JsonNode userNode = node.get("user");
         user.setIdUser(userNode.findPath("idUser").asInt());
         user.setEmail(userNode.findPath("email").asText());
-        user.setRoles(userNode.findPath("roles").asInt());
-        user.setName(userNode.findPath("name").asText());
-        user.setSurname(userNode.findPath("surname").asText());
-        user.setImage(userNode.findPath("image").asText());
+//        user.setRoles(userNode.findPath("roles").asInt());
+//        user.setName(userNode.findPath("name").asText());
+//        user.setSurname(userNode.findPath("surname").asText());
         message.setUser(user);
 
         return message;
