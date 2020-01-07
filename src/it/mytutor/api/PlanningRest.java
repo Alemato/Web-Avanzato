@@ -7,7 +7,9 @@ import it.mytutor.business.impl.UserBusiness;
 import it.mytutor.business.services.PlanningInterface;
 import it.mytutor.business.services.UserInterface;
 import it.mytutor.domain.Planning;
+import it.mytutor.domain.Student;
 import it.mytutor.domain.Teacher;
+import it.mytutor.domain.User;
 import it.mytutor.domain.dao.exception.DatabaseException;
 
 import javax.annotation.security.RolesAllowed;
@@ -16,7 +18,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -61,6 +62,7 @@ public class PlanningRest {
 
     /**
      * modifica dei planning
+     *
      * @param plannings lista di planning
      * @return Response Status ACCEPTED
      */
@@ -80,6 +82,7 @@ public class PlanningRest {
 
     /**
      * aggiunta dei planning
+     *
      * @param plannings lista di planning
      * @return Response Status ACCEPTED
      */
@@ -93,7 +96,7 @@ public class PlanningRest {
             planningService.addPlannings(plannings);
         } catch (PlanningBusinessException e) {
             e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
         return Response.ok(Response.Status.ACCEPTED).entity("Pianificazione pianificata").build();
     }
@@ -107,7 +110,7 @@ public class PlanningRest {
             planningService.deletePlannings(plannings);
         } catch (PlanningBusinessException e) {
             e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
         return Response.ok(Response.Status.ACCEPTED).entity("Pianificazione eliminata").build();
     }
@@ -122,6 +125,7 @@ public class PlanningRest {
         return Response.ok(plannings).build();
     }*/
 
+    //TODO Modificare secondo appunti quadernino
     @Path("research")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
@@ -140,10 +144,69 @@ public class PlanningRest {
             plannings = planningService.FindPlanningByFilter(macroMateria, nome, zona, microMateria, giornoSettimana, prezzo, oraInizio, oraFine);
         } catch (DatabaseException | PlanningBusinessException | BookingBusinessException e) {
             e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
-        return  Response.ok(plannings).build();
+        return Response.ok(plannings).build();
     }
+
+    @Path("{LID}")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"STUDENT, TEACHER"})
+    public Response getPlanningsForALesson(@PathParam("LID") Integer idLesson, @QueryParam("booked-up") String bookedUp) {
+        List<Planning> plannings;
+        String userEmail = securityContext.getUserPrincipal().getName();
+        User user;
+        try {
+            user = (User) userService.findUserByUsername(userEmail);
+        } catch (UserException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        }
+        if (user instanceof Student && bookedUp != null && !bookedUp.isEmpty()) {
+            String studentEmail = securityContext.getUserPrincipal().getName();
+            Student student;
+            try {
+                student = (Student) userService.findUserByUsername(studentEmail);
+            } catch (UserException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+            try {
+                plannings = planningService.findAllPlanningBookedUpByLessonId(idLesson, student.getIdStudent());
+            } catch (PlanningBusinessException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+        } else {
+            try {
+                plannings = planningService.findAllPlanningByLessonId(idLesson);
+            } catch (PlanningBusinessException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+        }
+        return Response.ok(plannings).build();
+    }
+
+/*    @Path("{LID}")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"STUDENT, TEACHER"})
+    public Response getPlanningsBookedForALesson(@PathParam("LID") Integer idLesson, @) {
+        List<Planning> plannings = new ArrayList<>();
+        plannings = planningService.findAllPlanningByLessonId();
+    }*/
+
 
     //TODO rest per liste dei campi in storico lezione per professore e per studente per Booking LessonState 2,3,4
 
