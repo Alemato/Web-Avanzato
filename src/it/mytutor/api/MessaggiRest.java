@@ -1,19 +1,20 @@
 package it.mytutor.api;
 
+import it.mytutor.api.test.ApiWebApplicationException;
+import it.mytutor.business.exceptions.MessageBusinessException;
 import it.mytutor.business.impl.ChatBusiness;
 import it.mytutor.business.impl.MessageBusiness;
 import it.mytutor.business.services.ChatInterface;
 import it.mytutor.business.services.MessageInterface;
-import it.mytutor.domain.Chat;
 import it.mytutor.domain.Message;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Path("chats/{CID}/messaggi")
 public class MessaggiRest {
@@ -21,46 +22,9 @@ public class MessaggiRest {
     private MessageInterface messageService = new MessageBusiness();
     private ChatInterface chatService = new ChatBusiness();
 
-//    @GET
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @PermitAll
-//    public Response getMessaggi(@PathParam("CID") Integer cid, @QueryParam("numero") Integer numero, @QueryParam("sotto") Integer sotto) {
-//
-//        Chat chat = new Chat();
-//        chat.setIdChat(cid);
-//        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-//        chat.setName("chat col prof");
-//        chat.setCreateDate(timestamp);
-//        chat.setUpdateDate(timestamp);
-//        List<Message> messages = new ArrayList<>(messageService.findAllMessageByChat(chat));
-//        List<Message> messages20 = new ArrayList<Message>();
-//        int index = 0;
-//        if (numero == null && sotto == null) {
-//            if (messages.size() > 20) {
-//                messages20.subList(0, 20);
-//            } else {
-//                messages20.addAll(messages);
-//            }
-//        } else {
-//            for (Message message : messages) {
-//                if (message.getIdMessage().equals(sotto)) {
-//                    index = messages.indexOf(message);
-//                }
-//            }
-//            if (messages.size() > index + 1 + numero) {
-//                messages20.subList(index + 1, index + 1 + numero);
-//            } else {
-//                messages20.subList(index + 1, messages.size());
-//            }
-//        }
-//        return Response.ok(messages20).build();
-//    }
-
-
     /**
-     * Query rest che chiamata la prima volta che si apre una chat
-     * e nel relativo storage del client non vi è nulla
+     * Rest per tutti i messaggi della chat
+     *
      * @param cid id della chat ricevuto dal client
      * @return lista di messaggi
      */
@@ -69,19 +33,128 @@ public class MessaggiRest {
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
     public Response getAllMessaggi(@PathParam("CID") Integer cid) {
-        Chat chat = chatService.findChatByID(cid);
-        List<Message> messages = new ArrayList<>(messageService.findAllMessageByChat(chat));
+        List<Message> messages = null;
+        try {
+            messages = new ArrayList<>(messageService.findAllMessageByChat(cid));
+        } catch (MessageBusinessException e) {
+            e.printStackTrace();
+        }
         return Response.ok(messages).build();
     }
 
     /**
-     * Query rest chiamata per vedere se ci sono nuovi messaggi
-     * ed in tal caso riceverli
-     * @param cid id della chat ricevuto dal client
-     * @param idLastMessage id dell'ultimo messaggio che il client h nello storage
+     * Rest per creare un nuovo messaggio
+     *
+     * @param cid           id della chat ricevuto dal client
+     * @param message id dell'ultimo messaggio che il client h nello storage
      * @return lista di messaggi oppure 304 per nessun mnuovo messaggio
      */
-    @Path("new")
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
+    public Response createMessage(Message message, @PathParam("CID") Integer cid) {
+        try {
+            messageService.crateMessage(message);
+        } catch (MessageBusinessException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        }
+        return Response.ok().build();
+    }
+
+
+    @Path("check")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
+    public Response checkMessaggi(Map<Integer, Integer> map) {
+        List<Message> messages = new ArrayList<>();
+        List<Message> messages1 = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+//            Key = entry.getKey()
+//            Value = entry.getValue())
+            boolean i = false;
+            try {
+                messages = messageService.findAllMessageByChat(entry.getKey());
+            } catch (MessageBusinessException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+            for (Message message : messages) {
+                if (message.getIdMessage().equals(entry.getValue()) || i) {
+                    i = true;
+                    messages1.add(message);
+                }
+            }
+        }
+        if (!messages1.isEmpty()) {
+            return Response.ok(messages1).build();
+        } else {
+            return Response.status(Response.Status.NOT_MODIFIED).entity("nessun nuovo messaggio").build();
+        }
+    }
+
+    @Path("countmessage")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
+    public Response countMessaggi(@PathParam("CID") Integer idChat, @QueryParam("id-last-message") Integer idLastMessage) {
+        List<Message> messages;
+        try {
+            messages = messageService.getNewMessagesByIdLast(idChat, idLastMessage);
+        } catch (MessageBusinessException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        }
+        if (!messages.isEmpty()) {
+            return Response.ok(messages).build();
+        } else {
+            return Response.status(Response.Status.NOT_MODIFIED).entity("nessun nuovo messaggio").build();
+        }
+    }
+
+
+
+
+    @Path("count")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
+    public Response CountMessage(@PathParam("CID") Integer idChat) {
+        List<Message> messages = new ArrayList<>();
+        try {
+            messages = messageService.findAllMessageByChat(idChat);
+        } catch (MessageBusinessException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        }
+        return Response.ok(messages.size()).build();
+    }
+
+/*    @Path("allchat")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
+    public Response getAllMessageOfAChat(@QueryParam("id-chat") Integer idChat) {
+        List<Message> messages = new ArrayList<>();
+        try {
+            messages = messageService.findAllMessageByChat(idChat);
+        } catch (MessageBusinessException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        }
+        return Response.ok(messages).build();
+    }*/
+
+
+
+    /*@Path("new")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -92,25 +165,42 @@ public class MessaggiRest {
             return Response.ok(newMessages).build();
         }
         return Response.status(Response.Status.NOT_MODIFIED).entity("nessun nuovo messaggio").build();
-    }
+    }*/
 
-    @POST
+/*    @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public Response setMessaggi(Message message, @PathParam("CID") Integer cid) {
+    public Response getMessaggi(@PathParam("CID") Integer cid, @QueryParam("numero") Integer numero, @QueryParam("sotto") Integer sotto) {
+
         Chat chat = new Chat();
         chat.setIdChat(cid);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        chat.setUpdateDate(timestamp);
+        chat.setName("chat col prof");
         chat.setCreateDate(timestamp);
-        chat.setName(message.getChat().getName());
-        message.setChat(chat);
-        message.setIdMessage(2);
-        message.setUpdateDate(timestamp);
-        message.setCreateDate(timestamp);
-//        messageService.crateMessage(message);
-        System.out.println(message.toString());
-        return Response.ok(message).build();
-    }
+        chat.setUpdateDate(timestamp);
+        List<Message> messages = new ArrayList<>(messageService.findAllMessageByChat(chat));
+        List<Message> messages20 = new ArrayList<Message>();
+        int index = 0;
+        if (numero == null && sotto == null) {
+            if (messages.size() > 20) {
+                messages20.subList(0, 20);
+            } else {
+                messages20.addAll(messages);
+            }
+        } else {
+            for (Message message : messages) {
+                if (message.getIdMessage().equals(sotto)) {
+                    index = messages.indexOf(message);
+                }
+            }
+            if (messages.size() > index + 1 + numero) {
+                messages20.subList(index + 1, index + 1 + numero);
+            } else {
+                messages20.subList(index + 1, messages.size());
+            }
+        }
+        return Response.ok(messages20).build();
+    }*/
+
 }
