@@ -102,7 +102,7 @@ public class MessaggiRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public Response countMessaggi(@PathParam("CID") Integer idChat, @QueryParam("id-last-message") Integer idLastMessage) {
+    public Response MessageAfterId(@PathParam("CID") Integer idChat, @QueryParam("id-last-message") Integer idLastMessage) {
         List<Message> messages;
         try {
             messages = messageService.getNewMessagesByIdLast(idChat, idLastMessage);
