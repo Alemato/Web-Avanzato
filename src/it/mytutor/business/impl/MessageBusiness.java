@@ -45,8 +45,10 @@ public class MessageBusiness implements MessageInterface {
         }
         for (Message message : messages) {
             if (message.getIdMessage().equals(idLastMessage) || i) {
+                if (i) {
+                    messages1.add(message);
+                }
                 i = true;
-                messages1.add(message);
             }
         }
         return messages1;
