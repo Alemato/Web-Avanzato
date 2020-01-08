@@ -32,8 +32,7 @@ public class CreatesSerializer extends StdSerializer<Creates> {
         Student student = new Student();
         Teacher teacher = new Teacher();
 
-        jsonGenerator.writeFieldName("student");
-        jsonGenerator.writeStartObject();
+
 
         if (creates.getUserListser().get(0) instanceof Student) {
             student = (Student) creates.getUserListser().get(0);
@@ -45,7 +44,8 @@ public class CreatesSerializer extends StdSerializer<Creates> {
         } else if(creates.getUserListser().get(1) instanceof Teacher) {
             teacher = (Teacher) creates.getUserListser().get(1);
         }
-
+//        jsonGenerator.writeFieldName("student");
+        jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idStudent", student.getIdStudent());
         jsonGenerator.writeStringField("studyGrade", student.getStudyGrade());
         long createDateStudent = student.getCreateDateStudent().getTime();
@@ -69,7 +69,7 @@ public class CreatesSerializer extends StdSerializer<Creates> {
         jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();
 
-        jsonGenerator.writeFieldName("teacher");
+//        jsonGenerator.writeFieldName("teacher");
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idTeacher", teacher.getIdTeacher());
         jsonGenerator.writeNumberField("postCode", teacher.getPostCode());
@@ -101,8 +101,8 @@ public class CreatesSerializer extends StdSerializer<Creates> {
         jsonGenerator.writeEndObject();
         jsonGenerator.writeEndArray();
 
-        jsonGenerator.writeStartObject();
         jsonGenerator.writeFieldName("chat");
+        jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idChat", creates.getChat().getIdChat());
         jsonGenerator.writeStringField("name", creates.getChat().getName());
         long createDateCreates = creates.getChat().getCreateDate().getTime();
