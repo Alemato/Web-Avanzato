@@ -171,8 +171,6 @@ public class LessonDao implements LessonDaoInterface {
             try {
                 rs = prs.getGeneratedKeys();
                 if (rs.next()) {
-                    System.out.println("id autogenrato");
-                    System.out.println(rs.getInt(1));
                     i = rs.getInt(1);
                 }
             } catch (SQLException e) {
