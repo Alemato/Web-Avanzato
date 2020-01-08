@@ -86,7 +86,7 @@ public class Creates {
     }
 
     //AGGIUNGI USER
-    public void addUserInList(User user){
+    public void addUserInList(Object user){
         this.userListser.add(user);
     }
 
@@ -110,9 +110,9 @@ public class Creates {
     }
 
 
-    private String userListerToString(List<User> userList){
+    private String userListerToString(List<Object> userList){
         String userListToString="[";
-        for (User user: userList) {
+        for (Object user: userList) {
             userListToString = userListToString.concat(", ").concat(user.toString());
         }
         userListToString =userListToString.concat("]");
