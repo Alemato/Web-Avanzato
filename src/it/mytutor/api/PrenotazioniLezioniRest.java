@@ -46,7 +46,7 @@ public class PrenotazioniLezioniRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"TEACHER", "STUDENT"})
-    public Response getPrenotazioniTeach() {
+    public Response getPrenotazioni() {
         List<Booking> bookings = new ArrayList<>();
         User user;
         String email = securityContext.getUserPrincipal().getName();
