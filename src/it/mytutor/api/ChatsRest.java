@@ -11,7 +11,6 @@ import it.mytutor.business.services.ChatInterface;
 import it.mytutor.business.services.CreatesInterface;
 import it.mytutor.business.services.MessageInterface;
 import it.mytutor.business.services.UserInterface;
-import it.mytutor.domain.Chat;
 import it.mytutor.domain.Creates;
 import it.mytutor.domain.Message;
 import it.mytutor.domain.User;
@@ -131,7 +130,7 @@ public class ChatsRest {
         }
     }*/
 
-    @Path("post")
+    @Path("create")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
