@@ -5,11 +5,10 @@ import it.mytutor.business.services.SubjectInterface;
 import it.mytutor.domain.Subject;
 import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.implement.SubjectDao;
+import it.mytutor.domain.dao.interfaces.SubjectDaoInterface;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static it.mytutor.business.impl.test.TestBusinness.simulateFindAll;
 
 public class SubjectBusiness implements SubjectInterface {
 
@@ -27,8 +26,8 @@ public class SubjectBusiness implements SubjectInterface {
     }
 
     @Override
-    public List<Subject> findAllStoricoStudent (String email) throws SubjectBusinessException {
-        SubjectDao subjectDao = new SubjectDao();
+    public List<Subject> findAllStoricoStudent(String email) throws SubjectBusinessException {
+        SubjectDaoInterface subjectDao = new SubjectDao();
         List<Subject> subjects = new ArrayList<Subject>();
         try {
             subjects = subjectDao.getStoricoSubjectStudent(email);
@@ -40,8 +39,8 @@ public class SubjectBusiness implements SubjectInterface {
     }
 
     @Override
-    public List<Subject> findAllStoricoTeacher (String email) throws SubjectBusinessException {
-        SubjectDao subjectDao = new SubjectDao();
+    public List<Subject> findAllStoricoTeacher(String email) throws SubjectBusinessException {
+        SubjectDaoInterface subjectDao = new SubjectDao();
         List<Subject> subjects = new ArrayList<Subject>();
         try {
             subjects = subjectDao.getStoricoSubjectTeacher(email);
