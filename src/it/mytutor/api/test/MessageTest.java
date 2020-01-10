@@ -29,7 +29,7 @@ public class MessageTest {
 
     private MessageInterface service = new MessageBusiness();
 
-    @Path("all")
+/*    @Path("all")
     @GET
     @Consumes("application/json")
     @Produces("application/json")
@@ -37,8 +37,8 @@ public class MessageTest {
     public List<Message> getMessageByUser() {
 
         Chat chat = new Chat();
-        return service.findAllMessageByChat(chat);
-    }
+        return service.findAllMessageByChat(0);
+    }*/
 
     @Path("new")
     @POST
