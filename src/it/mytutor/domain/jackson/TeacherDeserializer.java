@@ -29,18 +29,17 @@ public class TeacherDeserializer extends StdDeserializer<Teacher> {
         teacher.setStreet(node.get("street").asText());
         teacher.setStreetNumber(node.get("streetNumber").asText());
         teacher.setByography(node.get("byography").asText());
-        JsonNode userNode = node.get("user");
-        teacher.setIdUser(userNode.get("idUser").asInt());
-        teacher.setEmail(userNode.get("email").asText());
-        teacher.setPassword(userNode.get("password").asText());
-        teacher.setName(userNode.get("name").asText());
-        teacher.setSurname(userNode.get("surname").asText());
-        Date bDate = new Date(userNode.get("birthday").asLong());
+        teacher.setIdUser(node.get("idUser").asInt());
+        teacher.setEmail(node.get("email").asText());
+        teacher.setPassword(node.get("password").asText());
+        teacher.setName(node.get("name").asText());
+        teacher.setSurname(node.get("surname").asText());
+        Date bDate = new Date(node.get("birthday").asLong());
         teacher.setBirthday(bDate);
-        teacher.setLanguage(Boolean.getBoolean(userNode.get("language").asText()));
-        if(userNode.get("image").asText().equals("null") || userNode.get("image").asText().equals("")){
+        teacher.setLanguage(Boolean.getBoolean(node.get("language").asText()));
+        if(node.get("image").asText().equals("null") || node.get("image").asText().equals("")){
             teacher.setImage(null);
-        } else teacher.setImage(userNode.get("image").asText());
+        } else teacher.setImage(node.get("image").asText());
 
         return teacher;
     }
