@@ -29,18 +29,17 @@ public class StudentDeserializer extends StdDeserializer<Student> {
             student.setIdStudent(node.get("idStudent").asInt());
         }
         student.setStudyGrade(node.get("studyGrade").asText());
-        JsonNode userNode = node.get("user");
-        student.setIdUser(userNode.get("idUser").asInt());
-        student.setEmail(userNode.get("email").asText());
-        student.setPassword(userNode.get("password").asText());
-        student.setName(userNode.get("name").asText());
-        student.setSurname(userNode.get("surname").asText());
-        Date bDate = new Date(userNode.get("birthday").asLong());
+        student.setIdUser(node.get("idUser").asInt());
+        student.setEmail(node.get("email").asText());
+        student.setPassword(node.get("password").asText());
+        student.setName(node.get("name").asText());
+        student.setSurname(node.get("surname").asText());
+        Date bDate = new Date(node.get("birthday").asLong());
         student.setBirthday(bDate);
-        student.setLanguage(Boolean.getBoolean(userNode.get("language").asText()));
-        if(userNode.get("image").asText().equals("null")){
+        student.setLanguage(Boolean.getBoolean(node.get("language").asText()));
+        if(node.get("image").asText().equals("null")){
             student.setImage(null);
-        } else student.setImage(userNode.get("image").asText());
+        } else student.setImage(node.get("image").asText());
         return student;
     }
 }
