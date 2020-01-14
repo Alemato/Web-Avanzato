@@ -38,13 +38,11 @@ public class UserBusiness implements UserInterface {
         if(user instanceof Teacher){
             TeacherDao teacherDao = new TeacherDao();
             Teacher t = (Teacher) user;
-            t.setPassword(SecurityHash.SetHash(t.getPassword()));
             userDao.modifyUser(t, t.getIdUser());
             teacherDao.modifyTeacher(t);
         } else if(user instanceof Student) {
             StudentDao studentDao = new StudentDao();
             Student s = (Student) user;
-            s.setPassword(SecurityHash.SetHash(s.getPassword()));
             userDao.modifyUser(s, s.getIdUser());
             studentDao.modifyStudent(s);
         } else throw new UserException("USER NON VALIDO");

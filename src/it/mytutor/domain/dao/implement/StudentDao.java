@@ -97,6 +97,7 @@ public class StudentDao implements StudentDaoInterface {
                 throw new DatabaseException("Statement is null");
             }
             prs.setString(1, student.getStudyGrade());
+            prs.setInt(2, student.getIdStudent());
             prs.executeUpdate();
 
         } catch (SQLException e) {

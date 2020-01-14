@@ -29,16 +29,17 @@ public class StudentSerializer extends StdSerializer<Student> {
 
         jsonGenerator.writeNumberField("idUser", student.getIdUser());
         jsonGenerator.writeStringField("email", student.getEmail());
+        jsonGenerator.writeNumberField("roles", student.getRoles());
         jsonGenerator.writeStringField("name", student.getName());
         jsonGenerator.writeStringField("surname", student.getSurname());
         long bMillis = student.getBirthday().getTime();
         jsonGenerator.writeNumberField("birthday", bMillis);
         jsonGenerator.writeBooleanField("language", student.getLanguage());
         jsonGenerator.writeStringField("image", student.getImage());
-        long createDate = student.getCreateDate().getTime();
-        jsonGenerator.writeNumberField("createDate", createDate);
-        long updateDate = student.getUpdateDate().getTime();
-        jsonGenerator.writeNumberField("updateDate", updateDate);
+        long createDateMillis = student.getCreateDate().getTime();
+        jsonGenerator.writeNumberField("createDate", createDateMillis);
+        long updateDateMillis = student.getUpdateDate().getTime();
+        jsonGenerator.writeNumberField("updateDate", updateDateMillis);
         jsonGenerator.writeEndObject();
     }
 }

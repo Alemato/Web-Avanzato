@@ -31,6 +31,7 @@ public class StudentDeserializer extends StdDeserializer<Student> {
         student.setStudyGrade(node.get("studyGrade").asText());
         student.setIdUser(node.get("idUser").asInt());
         student.setEmail(node.get("email").asText());
+        student.setRoles(node.get("roles").asInt());
         student.setPassword(node.get("password").asText());
         student.setName(node.get("name").asText());
         student.setSurname(node.get("surname").asText());

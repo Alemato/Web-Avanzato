@@ -3,6 +3,7 @@ package it.mytutor.api;
 import it.mytutor.api.test.ApiWebApplicationException;
 import it.mytutor.business.exceptions.UserException;
 import it.mytutor.business.impl.UserBusiness;
+import it.mytutor.business.security.SecurityHash;
 import it.mytutor.business.services.UserInterface;
 import it.mytutor.domain.Student;
 import it.mytutor.domain.Teacher;
@@ -47,17 +48,27 @@ public class ProfiliRest {
     }
 
     @Path("/student")
-    @POST
+    @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
+    @RolesAllowed({"STUDENT"})
     public Response modificaStudent(Student student, @QueryParam("hspwd") String hspwd){
         String emailStudent = securityContext.getUserPrincipal().getName();
         Student student1;
         try {
             student1 = (Student) userService.findUserByUsername(emailStudent);
             if(student.getEmail().equals(emailStudent) && student1.getPassword().equals(hspwd)){
-                userService.editUser(student);
+                try {
+                    if (student.getPassword().equals("")) {
+                        student.setPassword(student1.getPassword());
+                    } else {
+                        student.setPassword(SecurityHash.SetHash(student.getPassword()));
+                    }
+                    userService.editUser(student);
+                } catch (UserException | DatabaseException e) {
+                    e.printStackTrace();
+                    throw new ApiWebApplicationException(e.getMessage());
+                }
             } else {
                 throw new ApiWebApplicationException("Errore non sei lo stesso account");
             }
@@ -78,15 +89,22 @@ public class ProfiliRest {
         Teacher teacher1;
         try {
             teacher1 = (Teacher) userService.findUserByUsername(emailTeacher);
+            System.out.println(teacher1.getPassword());
+            System.out.println(hspwd);
             if(teacher.getEmail().equals(emailTeacher) && teacher1.getPassword().equals(hspwd)){
                 try {
+                    if(teacher.getPassword().equals("")){
+                        teacher.setPassword(teacher1.getPassword());
+                    } else {
+                        teacher.setPassword(SecurityHash.SetHash(teacher.getPassword()));
+                    }
                     userService.editUser(teacher);
                 } catch (UserException | DatabaseException e) {
                     e.printStackTrace();
                     throw new ApiWebApplicationException(e.getMessage());
                 }
             } else {
-                throw new ApiWebApplicationException("Errore non sei lo stesso account");
+                throw new ApiWebApplicationException("Errore non sei lo stesso account", 401);
             }
         } catch (UserException | DatabaseException e) {
             e.printStackTrace();
