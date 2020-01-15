@@ -74,7 +74,7 @@ public class PrenotazioniRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     @RolesAllowed({"TEACHER", "STUDENT"})
-    public Response rispostaTheacher(@PathParam("PID") Integer pid, @QueryParam("lesson-state") Integer lessonState){
+    public Response changeLessonState(@PathParam("PID") Integer pid, @QueryParam("lesson-state") Integer lessonState){
         try {
             bookingService.updateBooking(bookingService.findBookingById(pid), lessonState);
         } catch (BookingBusinessException e) {
