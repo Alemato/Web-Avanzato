@@ -30,6 +30,7 @@ public class PlanningBusiness implements PlanningInterface {
         PlanningDaoInterface planningDao = new PlanningDao();
         LessonDaoInterface lessonDao = new LessonDao();
         SubjectDaoInterface subjectDao = new SubjectDao();
+        List<Planning> planningList = new ArrayList<>();
         int i;
 
         try {
@@ -70,10 +71,25 @@ public class PlanningBusiness implements PlanningInterface {
         boolean check = false;
         long cost = 3600000;
 
-        for (Planning planning : plannings) {
-            java.util.Date startDate = new java.util.Date(planning.getStartTime().getTime());
-            java.util.Date endDate = new java.util.Date(planning.getEndTime().getTime());
-            java.util.Date dateZero = new java.util.Date(Time.valueOf("00:00:00").getTime() + cost);
+
+
+        for (Planning planning: plannings) {
+            Date dateAppo = new Date(planning.getDate().getTime());
+            Date dateAddWeek = new Date(planning.getDate().getTime());
+            planningList.add(planning);
+
+            while (dateAddWeek.before(addYearToJavaUtilDate(dateAppo))){
+                dateAddWeek = addWeekToJavaUtilDate(dateAddWeek);
+                planningList.add(new Planning(planning.getIdPlanning(), new java.sql.Date(dateAddWeek.getTime()),
+                        planning.getStartTime(), planning.getEndTime(), planning.getCreateDate(),
+                        planning.getUpdateDate(), planning.getLesson()));
+            }
+        }
+
+        for (Planning planning : planningList) {
+            Date startDate = new Date(planning.getStartTime().getTime());
+            Date endDate = new Date(planning.getEndTime().getTime());
+            Date dateZero = new Date(Time.valueOf("00:00:00").getTime() + cost);
 
             if (endDate.before(addHoursToJavaUtilDate(startDate))) {
                 throw new PlanningBusinessException("Errore nell'immissione della data");
@@ -122,19 +138,27 @@ public class PlanningBusiness implements PlanningInterface {
         }
     }
 
-    private java.util.Date addHoursToJavaUtilDate(java.util.Date date) {
+    private Date addHoursToJavaUtilDate(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.HOUR_OF_DAY, 1);
         return calendar.getTime();
     }
 
-//    private java.util.Date subtractHoursToJavaUtilDate(java.util.Date date) {
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTime(date);
-//        calendar.add(Calendar.HOUR_OF_DAY, -1);
-//        return calendar.getTime();
-//    }
+    private Date addWeekToJavaUtilDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.WEEK_OF_YEAR, 1);
+        return calendar.getTime();
+    }
+
+    private Date addYearToJavaUtilDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.YEAR, 1);
+        return calendar.getTime();
+    }
+
 
 
     @Override
@@ -142,13 +166,26 @@ public class PlanningBusiness implements PlanningInterface {
         List<Planning> planningsOrari = new ArrayList<>();
         PlanningDaoInterface planningDao = new PlanningDao();
         SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
+        List<Planning> planningList = new ArrayList<>();
         boolean check = false;
         long cost = 3600000;
 
-        for (Planning planning : plannings) {
-            java.util.Date startDate = new java.util.Date(planning.getStartTime().getTime());
-            java.util.Date endDate = new java.util.Date(planning.getEndTime().getTime());
-            java.util.Date dateZero = new java.util.Date(Time.valueOf("00:00:00").getTime() + cost);
+        for (Planning planning: plannings) {
+            Date dateAppo = new Date(planning.getDate().getTime());
+            Date dateAddWeek = new Date(planning.getDate().getTime());
+            planningList.add(planning);
+
+            while (dateAddWeek.before(addYearToJavaUtilDate(dateAppo))){
+                dateAddWeek = addWeekToJavaUtilDate(dateAddWeek);
+                planningList.add(new Planning(planning.getIdPlanning(), new java.sql.Date(dateAddWeek.getTime()), planning.getStartTime(),
+                        planning.getEndTime(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
+            }
+        }
+
+        for (Planning planning : planningList) {
+            Date startDate = new Date(planning.getStartTime().getTime());
+            Date endDate = new Date(planning.getEndTime().getTime());
+            Date dateZero = new Date(Time.valueOf("00:00:00").getTime() + cost);
 
             if (endDate.before(addHoursToJavaUtilDate(startDate))) {
                 throw new PlanningBusinessException("Errore nell'immissione della data");
