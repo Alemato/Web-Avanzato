@@ -125,7 +125,17 @@ public class PlanningRest {
         return Response.ok(plannings).build();
     }*/
 
-    //TODO Modificare secondo appunti quadernino
+    /**
+     * @param macroMateria
+     * @param nome
+     * @param zona
+     * @param microMateria
+     * @param giornoSettimana
+     * @param prezzo
+     * @param oraInizio
+     * @param oraFine
+     * @return
+     */
     @Path("research")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
@@ -149,6 +159,11 @@ public class PlanningRest {
         return Response.ok(plannings).build();
     }
 
+    /**
+     * @param idLesson id della lezione in oggetto
+     * @param bookedUp 
+     * @return
+     */
     @Path("{LID}")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
