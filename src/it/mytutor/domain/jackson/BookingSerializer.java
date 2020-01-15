@@ -35,8 +35,6 @@ public class BookingSerializer extends StdSerializer<Booking> {
         jsonGenerator.writeStringField("studyGrade", booking.getStudent().getStudyGrade());
         jsonGenerator.writeNumberField("idUser", booking.getStudent().getIdUser());
 
-        jsonGenerator.writeFieldName("user");
-        jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idUser", booking.getStudent().getIdUser());
         jsonGenerator.writeStringField("email", booking.getStudent().getEmail());
         jsonGenerator.writeStringField("name", booking.getStudent().getName());
@@ -49,7 +47,6 @@ public class BookingSerializer extends StdSerializer<Booking> {
         jsonGenerator.writeNumberField("createDate", createDate1);
         long updateDate1 = booking.getStudent().getUpdateDate().getTime();
         jsonGenerator.writeNumberField("updateDate", updateDate1);
-        jsonGenerator.writeEndObject();
 
         jsonGenerator.writeEndObject();
         jsonGenerator.writeFieldName("planning");
@@ -94,8 +91,6 @@ public class BookingSerializer extends StdSerializer<Booking> {
         jsonGenerator.writeStringField("streetNumber", booking.getPlanning().getLesson().getTeacher().getStreetNumber());
         jsonGenerator.writeStringField("byography", booking.getPlanning().getLesson().getTeacher().getByography());
 
-        jsonGenerator.writeFieldName("user");
-        jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idUser", booking.getPlanning().getLesson().getTeacher().getIdUser());
         jsonGenerator.writeStringField("email", booking.getPlanning().getLesson().getTeacher().getEmail());
         jsonGenerator.writeNumberField("roles", booking.getPlanning().getLesson().getTeacher().getRoles());
@@ -109,7 +104,6 @@ public class BookingSerializer extends StdSerializer<Booking> {
         jsonGenerator.writeNumberField("createDate", createDateMillis1);
         long updateDateMillis1 = booking.getPlanning().getLesson().getTeacher().getUpdateDate().getTime();
         jsonGenerator.writeNumberField("updateDate", updateDateMillis1);
-        jsonGenerator.writeEndObject();
 
         jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();

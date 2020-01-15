@@ -67,8 +67,7 @@ public class PlanningSerializer extends StdSerializer<Planning> {
         jsonGenerator.writeNumberField("crateDate", crateDateTeacherMillis);
         long updateDateTeacherMillis = planning.getLesson().getTeacher().getUpdateDateTeacher().getTime();
         jsonGenerator.writeNumberField("updateDate",updateDateTeacherMillis);
-        jsonGenerator.writeFieldName("user");
-        jsonGenerator.writeStartObject();
+
         jsonGenerator.writeNumberField("idUser", planning.getLesson().getTeacher().getIdUser());
         jsonGenerator.writeStringField("email", planning.getLesson().getTeacher().getEmail());
         jsonGenerator.writeNumberField("roles", planning.getLesson().getTeacher().getRoles());
@@ -82,7 +81,6 @@ public class PlanningSerializer extends StdSerializer<Planning> {
         jsonGenerator.writeNumberField("createDate", createDateMillis);
         long updateDateMillis = planning.getLesson().getTeacher().getUpdateDate().getTime();
         jsonGenerator.writeNumberField("updateDate", updateDateMillis);
-        jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();
 
         jsonGenerator.writeEndObject();

@@ -32,8 +32,6 @@ public class CreatesSerializer extends StdSerializer<Creates> {
         Student student = new Student();
         Teacher teacher = new Teacher();
 
-
-
         if (creates.getUserListser().get(0) instanceof Student) {
             student = (Student) creates.getUserListser().get(0);
         } else if(creates.getUserListser().get(0) instanceof Teacher) {
@@ -52,8 +50,7 @@ public class CreatesSerializer extends StdSerializer<Creates> {
         jsonGenerator.writeNumberField("createDateStudent", createDateStudent);
         long updateDateStudent = student.getUpdateDateStudent().getTime();
         jsonGenerator.writeNumberField("updateDateStudent", updateDateStudent);
-        jsonGenerator.writeFieldName("user");
-        jsonGenerator.writeStartObject();
+
         jsonGenerator.writeNumberField("idUser", student.getIdUser());
         jsonGenerator.writeStringField("email", student.getEmail());
         jsonGenerator.writeStringField("name", student.getName());
@@ -66,7 +63,6 @@ public class CreatesSerializer extends StdSerializer<Creates> {
         jsonGenerator.writeNumberField("createDate", createDateUser);
         long updateDateUser = student.getUpdateDate().getTime();
         jsonGenerator.writeNumberField("updateDate", updateDateUser);
-        jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();
 
 //        jsonGenerator.writeFieldName("teacher");
@@ -81,9 +77,8 @@ public class CreatesSerializer extends StdSerializer<Creates> {
         long crateDateTeacherMillis = teacher.getCrateDateTeacher().getTime();
         jsonGenerator.writeNumberField("crateDateTeacher", crateDateTeacherMillis);
         long updateDateTeacherMillis = teacher.getUpdateDateTeacher().getTime();
-        jsonGenerator.writeNumberField("updateDateTeacher",updateDateTeacherMillis);
-        jsonGenerator.writeFieldName("user");
-        jsonGenerator.writeStartObject();
+        jsonGenerator.writeNumberField("updateDateTeacher", updateDateTeacherMillis);
+
         jsonGenerator.writeNumberField("idUser", teacher.getIdUser());
         jsonGenerator.writeStringField("email", teacher.getEmail());
         jsonGenerator.writeNumberField("roles", teacher.getRoles());
