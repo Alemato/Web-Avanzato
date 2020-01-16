@@ -14,6 +14,8 @@ public interface BookingDaoInterface {
 
     void updateBooking(Booking booking)throws DatabaseException;
 
+    List<Booking> getAllBookingBooked(Date date) throws DatabaseException;
+
     List<Booking> getAllBookingByIdLesson(Integer idLesson) throws DatabaseException;
 
     List<Booking> findAllbookedUpByStudent(Student student) throws DatabaseException;
