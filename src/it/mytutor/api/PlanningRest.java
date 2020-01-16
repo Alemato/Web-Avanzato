@@ -151,7 +151,7 @@ public class PlanningRest {
                                            @QueryParam("ora-fine") String oraFine) {
         List<Planning> plannings;
         try {
-            plannings = planningService.FindPlanningByFilter(macroMateria, nome, zona, microMateria, giornoSettimana, prezzo, oraInizio, oraFine);
+            plannings = planningService.findPlanningByFilter(macroMateria, nome, zona, microMateria, giornoSettimana, prezzo, oraInizio, oraFine);
         } catch (DatabaseException | PlanningBusinessException | BookingBusinessException e) {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
@@ -161,8 +161,9 @@ public class PlanningRest {
 
     /**
      * @param idLesson id della lezione in oggetto
-     * @param bookedUp 
-     * @return
+     * @param bookedUp parametro per stabilire se si tratta di un planning di una
+     *                 lezione prenotata
+     * @return lista di planning
      */
     @Path("{LID}")
     @GET
