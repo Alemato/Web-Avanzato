@@ -4,14 +4,13 @@ import it.mytutor.business.exceptions.LessonBusinessException;
 import it.mytutor.business.exceptions.PlanningBusinessException;
 import it.mytutor.business.exceptions.SubjectBusinessException;
 import it.mytutor.business.services.PlanningInterface;
-import it.mytutor.domain.Lesson;
-import it.mytutor.domain.Planning;
-import it.mytutor.domain.Subject;
-import it.mytutor.domain.Teacher;
+import it.mytutor.domain.*;
 import it.mytutor.domain.dao.exception.DatabaseException;
+import it.mytutor.domain.dao.implement.BookingDao;
 import it.mytutor.domain.dao.implement.LessonDao;
 import it.mytutor.domain.dao.implement.PlanningDao;
 import it.mytutor.domain.dao.implement.SubjectDao;
+import it.mytutor.domain.dao.interfaces.BookingDaoInterface;
 import it.mytutor.domain.dao.interfaces.LessonDaoInterface;
 import it.mytutor.domain.dao.interfaces.PlanningDaoInterface;
 import it.mytutor.domain.dao.interfaces.SubjectDaoInterface;
@@ -235,9 +234,10 @@ public class PlanningBusiness implements PlanningInterface {
     }
 
     @Override
-    public List<Planning> FindPlanningByFilter(String macroMateria, String nome, String zona, String microMateria,
+    public List<Planning> findPlanningByFilter(String macroMateria, String nome, String zona, String microMateria,
                                                String giornoSettimana, String prezzo, String oraInizio, String oraFine) throws PlanningBusinessException {
-        PlanningDaoInterface planningDaoInterface = new PlanningDao();
+        PlanningDaoInterface planningDao = new PlanningDao();
+        BookingDaoInterface bookingDao = new BookingDao();
 
         List<Planning> plannings;
         int macroMateriaRelevant = 0;
@@ -274,7 +274,7 @@ public class PlanningBusiness implements PlanningInterface {
         }
 
         try {
-            plannings = planningDaoInterface.getPlanningByFilter(macroMateriaRelevant, macroMateria, nomeRelevant, nome,
+            plannings = planningDao.getPlanningByFilter(macroMateriaRelevant, macroMateria, nomeRelevant, nome,
                     zonaRelevant, zona, microMateriaRelevant, microMateria, giornoSettimanaRelevant, giornoSettimana,
                     prezzoRelevant, prezzo, oraInizioRelevant, oraInizio, oraFineaRelevant, oraFine);
 
@@ -283,6 +283,27 @@ public class PlanningBusiness implements PlanningInterface {
             e.printStackTrace();
             throw new PlanningBusinessException("Errore nel prendere la lista dei planning");
         }
+
+        List<Booking> bookings = new ArrayList<>();
+        Date utilDate = new Date();
+        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+        try {
+            bookings = bookingDao.getAllBookingBooked(sqlDate);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new PlanningBusinessException("Errore nel prendere la lista dei Booking");
+        }
+        
+        int index = 0;
+        for (Planning planning1 : plannings) {
+            for (Booking booking : bookings) {
+                if (planning1.getIdPlanning().equals(booking.getPlanning().getIdPlanning())) {
+                    plannings.remove(index);
+                }
+            }
+            index++;
+        }
+
         return plannings;
     }
 
