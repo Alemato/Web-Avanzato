@@ -125,7 +125,17 @@ public class PlanningRest {
         return Response.ok(plannings).build();
     }*/
 
-    //TODO Modificare secondo appunti quadernino
+    /**
+     * @param macroMateria
+     * @param nome
+     * @param zona
+     * @param microMateria
+     * @param giornoSettimana
+     * @param prezzo
+     * @param oraInizio
+     * @param oraFine
+     * @return
+     */
     @Path("research")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
@@ -141,7 +151,7 @@ public class PlanningRest {
                                            @QueryParam("ora-fine") String oraFine) {
         List<Planning> plannings;
         try {
-            plannings = planningService.FindPlanningByFilter(macroMateria, nome, zona, microMateria, giornoSettimana, prezzo, oraInizio, oraFine);
+            plannings = planningService.findPlanningByFilter(macroMateria, nome, zona, microMateria, giornoSettimana, prezzo, oraInizio, oraFine);
         } catch (DatabaseException | PlanningBusinessException | BookingBusinessException e) {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
@@ -149,6 +159,12 @@ public class PlanningRest {
         return Response.ok(plannings).build();
     }
 
+    /**
+     * @param idLesson id della lezione in oggetto
+     * @param bookedUp parametro per stabilire se si tratta di un planning di una
+     *                 lezione prenotata
+     * @return lista di planning
+     */
     @Path("{LID}")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)

@@ -87,9 +87,21 @@ public class ChatsRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"STUDENT", "TEACHER"})
-    public Response getChatCount(){
+    public Response getChatCount(@QueryParam("idUser2") String idUser2){
         String username = securityContext.getUserPrincipal().getName();
         List<Message> messageList;
+        if (idUser2 != null && !idUser2.isEmpty() && !idUser2.equals(" ")) {
+            try {
+                if (createsService.getIfExistCreates(username, Integer.parseInt(idUser2))){
+                    return Response.ok(1).build();
+                } else {
+                    return Response.ok(0).build();
+                }
+            } catch (ChatBusinessException e) {
+                e.printStackTrace();
+            }
+        }
+
         try {
             messageList = chatService.findAllChatByUser(username);
             return Response.ok(messageList.size()).build();

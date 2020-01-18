@@ -9,4 +9,6 @@ public interface CreatesInterface {
     void createCreates(Integer idUser1, String chatNames, Integer idUser2) throws ChatBusinessException;
 
     List<Creates> getCreatesByIdUser(int idUser) throws ChatBusinessException;
+
+    boolean getIfExistCreates(String username, Integer idUser2) throws ChatBusinessException;
 }

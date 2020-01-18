@@ -56,6 +56,34 @@ public class CreatesBusiness implements CreatesInterface {
         return creates2;
     }
 
+    @Override
+    public boolean getIfExistCreates(String username, Integer idUser2) throws ChatBusinessException {
+        List<Creates> creates = new ArrayList<>();
+        List<Creates> creates2 = new ArrayList<>();
+        CreatesDaoInterface createsDao = new CreatesDao();
+        UserDaoInterface userDao = new UserDao();
+        User user = new User();
+        boolean ifExist = false;
+        try {
+            user = userDao.getUserByEmail(username);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new ChatBusinessException("Errore nel prendere l'oggetto user");
+        }
+        try {
+
+            creates = createsDao.getCreatesByIdUser(user.getIdUser());
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new ChatBusinessException("Errore nel prendere gli oggetti creates");
+        }
+        for (Creates creates1: creates) {
+            
+        }
+
+        return ifExist;
+    }
+
 
 
     private Creates setUsersCreates (Creates creates) throws ChatBusinessException {

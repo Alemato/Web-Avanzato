@@ -101,6 +101,13 @@ public class BookingDao implements BookingDaoInterface {
             "join Subject s on l.IdSubject = s.IdSubject " +
             "join Student st on b.IdStudent = st.IdStudent " +
             "where (b.IdStudent = ?) and (b.LessonState = 2 or b.LessonState = 3 or b.LessonState = 4)";
+    private static final String GET_ALL_BOOKING_BOOKED_STATEMENT = "select * from Booking b " +
+            "join Planning p on b.IdPlanning = p.IdPlanning " +
+            "join Lesson l on p.IdLesson = l.IdLesson " +
+            "join Teacher t on t.IdTeacher = l.IdTeacher " +
+            "join Subject s on l.IdSubject = s.IdSubject " +
+            "join Student st on b.IdStudent = st.IdStudent " +
+            "where (b.LessonState = 2 or b.LessonState = 3) and p.Date < ?";
 
 
     private void configureBooking(Booking booking, Student student, Planning planning, Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
@@ -233,6 +240,34 @@ public class BookingDao implements BookingDaoInterface {
         } finally {
             DaoFactory.closeDbConnection(conn, rs, prs);
         }
+    }
+
+    @Override
+    public List<Booking> getAllBookingBooked(Date date) throws DatabaseException {
+        List<Booking> bookings = new ArrayList<>();
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(GET_ALL_BOOKING_BOOKED_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            prs.setDate(1, date);
+            rs = prs.executeQuery();
+            configureBookingList(bookings, rs);
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+        return bookings;
     }
 
     @Override
@@ -504,19 +539,6 @@ public class BookingDao implements BookingDaoInterface {
                 throw new DatabaseException("Statement is null");
             }
             prs.setInt(1, teacher.getIdTeacher());
-//            prs.setInt(2, nomeLezioneRevelant);
-//            prs.setString(3, nomeLezione);
-//            prs.setInt(4, macroMateriaRevelant);
-//            prs.setString(5, macroMateria);
-//            prs.setInt(6, microMateriaRevelant);
-//            prs.setString(7, microMateria);
-//            prs.setInt(8, idTeacherRevelant);
-//            prs.setInt(9, idStudent);
-//            prs.setInt(10, dateRevelant);
-//            prs.setDate(11, date);
-//            prs.setInt(12, rifiutataRevelant);
-//            prs.setInt(13, annullataRevelant);
-//            prs.setInt(14, eseguitaRevelant);
             rs = prs.executeQuery();
 
             configureBookingList(bookings, rs);

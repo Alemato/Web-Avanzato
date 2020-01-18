@@ -55,7 +55,6 @@ public class MaterieRest {
      * @param storico parametro che identifica il fatto che si fa la richiesta dalla pagina dello storico
      * @return lista di subject contenenti materie e micromaterie usate per i menu select
      */
-    @Path("all")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

@@ -20,36 +20,38 @@
     GET:    Lista di MessageSerializzer          X
 
 
-- URL: auth/{SID}/prenotazioni-lezioni?{FILTRO}
+- URL: auth/prenotazioni-lezioni
     GET:    Lista di BookingSerializzer         (per Studente)
     GET:    Lista di BookingSerializzer         (per Docente)
 
 
-- URL: auth/{SID}/lezioni
-    GET:    Lista di LessonSerializzer      ????????????????????
-    POST:   LessonDeserializzer
-
-
-- URL: auth/{SID}/lezioni?{FILTRO}
-    GET:    Lista di LessonSerializzer    oppure     PlanningSerializer   ????????????????????
-
-
-- URL: auth/{SID}/lezioni?[numero={n} & sotto={m}]
-    GET:    Lista di LessonSerializzer    oppure     PlanningSerializer   ????????????????????
-
-
-- URL: auth/{SID}/lezioni/{LID}
+- URL: auth/lezioni
+    GET:    Lista di PlanningSerializer   ???????????????????? (o LessonSerializer)
+    POST:   PlanningDeserializzer
     PUT:    Lista di PlanningDeserializer
 
 
-- URL: auth/{SID}/lezioni/{LID}/prenotazioni
+//////////////////////////////////////
+- URL: auth/lezioni
+    GET:    Lista di PlanningSerializer   ???????????????????? (o LessonSerializer)
+
+
+- URL: auth/lezioni
+    GET:    Lista di PlanningSerializer   ???????????????????? (o LessonSerializer)
+
+
+- URL: auth/lezioni/{LID}
+    PUT:    Lista di PlanningDeserializer
+/////////////////////////////////////
+
+- URL: auth/lezioni/{LID}/prenotazioni
     POST:   Lista di BookingDeserializer
 
 
-- URL: auth/{SID}/lezioni/{LID}/prenotazioni/{PID}
+- URL: auth/lezioni/{LID}/prenotazioni/{PID}
     POST:   BookingDeserializer
 
 
-- URL: auth/{SID}/materie
+- URL: auth/materie
     GET:    Lista di SubjectSerializzer
     POST:   SubjectSerializzer              ?????
