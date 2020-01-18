@@ -57,7 +57,7 @@ public class PrenotazioniRest {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
-        return Response.ok(Response.Status.ACCEPTED).entity("prenotazione creata").build();
+        return Response.status(201).entity("prenotazione creata").build();
     }
 
     /**
@@ -65,22 +65,20 @@ public class PrenotazioniRest {
      * concesso ad entrambe le tipologie di utenti
      *
      *
-     * @param pid id booking
-     * @param lessonState stato della lezione
-     * @return Response Status ACCEPTED
+     *
+     * @return Response Status Created
      */
-    @Path("{PID}")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"TEACHER", "STUDENT"})
-    public Response rispostaTheacher(@PathParam("PID") Integer pid, @QueryParam("lesson-state") Integer lessonState){
+    public Response rispostaTheacher(Booking booking){
         try {
-            bookingService.updateBooking(bookingService.findBookingById(pid), lessonState);
+            bookingService.updateBooking(booking);
         } catch (BookingBusinessException e) {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
-        return Response.ok(Response.Status.ACCEPTED).entity("prenotazione aggiornata").build();
+        return Response.status(201).entity("{ \"message\": \"prenotazione aggiornata\" }").build();
     }
 }

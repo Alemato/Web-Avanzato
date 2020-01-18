@@ -216,9 +216,8 @@ public class BookingBusiness implements BookingInterface {
     }
 
     @Override
-    public void updateBooking(Booking booking, Integer lessonState) throws BookingBusinessException {
+    public void updateBooking(Booking booking) throws BookingBusinessException {
         BookingDaoInterface bookingDao = new BookingDao();
-        booking.setLessonState(lessonState);
         try {
             bookingDao.updateBooking(booking);
         } catch (DatabaseException e) {

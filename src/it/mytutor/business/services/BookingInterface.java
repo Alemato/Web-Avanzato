@@ -29,7 +29,7 @@ public interface BookingInterface {
     List<Booking> findAllBookingByTeacher(Teacher teacher) throws DatabaseException, PlanningBusinessException, BookingBusinessException, UserException;
     List<Booking> findAllBookingByLesson(Lesson lesson);
     void crateBookings(List<Booking> bookings) throws PlanningBusinessException;
-    void updateBooking(Booking booking, Integer lessonState) throws BookingBusinessException;
+    void updateBooking(Booking booking) throws BookingBusinessException;
     List<Booking> findHistoricalBookingByStudent(Student student) throws DatabaseException, ParseException, PlanningBusinessException, BookingBusinessException, UserException;
     List<Booking> findHistoricalBookingByTeacher(Teacher teacher) throws Exception;
 
