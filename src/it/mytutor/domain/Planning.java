@@ -17,24 +17,27 @@ public class Planning {
     private Date date;
     private Time startTime;
     private Time endTime;
+    private boolean available;
     private Timestamp createDate;
     private Timestamp updateDate;
     private Lesson lesson;
 
     public Planning() { super(); }
 
-    public Planning(Date date, Time startTime, Time endTime) {
+    public Planning(Date date, Time startTime, Time endTime, boolean available) {
         super();
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.available = available;
     }
 
-    public Planning(Integer idPlanning, Date date, Time startTime, Time endTime, Timestamp createDate, Timestamp updateDate, Lesson lesson) {
+    public Planning(Integer idPlanning, Date date, Time startTime, Time endTime, boolean available, Timestamp createDate, Timestamp updateDate, Lesson lesson) {
         this.idPlanning = idPlanning;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.available = available;
         this.createDate = createDate;
         this.updateDate = updateDate;
 
@@ -60,6 +63,8 @@ public class Planning {
     public Time getEndTime() {
         return endTime;
     }
+
+    public boolean getAvailable() {return available; }
 
     public Timestamp getCreateDate() {
         return createDate;
@@ -95,6 +100,8 @@ public class Planning {
         this.endTime = endTime;
     }
 
+    public void setAvailable(boolean available) { this.available = available; }
+
     public void setCreateDate(Timestamp createDate) {
         this.createDate = createDate;
     }
@@ -116,6 +123,7 @@ public class Planning {
                 ", date=" + date +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
+                ", available=" + available +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
                 "," + this.lesson +
@@ -131,6 +139,7 @@ public class Planning {
                 Objects.equals(date, planning.date) &&
                 Objects.equals(startTime, planning.startTime) &&
                 Objects.equals(endTime, planning.endTime) &&
+                Objects.equals(available, planning.available) &&
                 Objects.equals(createDate, planning.createDate) &&
                 Objects.equals(updateDate, planning.updateDate) &&
                 Objects.equals(lesson, planning.lesson);
@@ -138,6 +147,6 @@ public class Planning {
 
     @Override
     public int hashCode() {
-        return Objects.hash(idPlanning, date, startTime, endTime, createDate, updateDate, lesson);
+        return Objects.hash(idPlanning, date, startTime, endTime, available, createDate, updateDate, lesson);
     }
 }
