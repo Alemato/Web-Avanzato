@@ -3,14 +3,11 @@ package it.mytutor.business.impl;
 import it.mytutor.business.exceptions.ChatBusinessException;
 import it.mytutor.business.services.CreatesInterface;
 import it.mytutor.domain.Creates;
-import it.mytutor.domain.Student;
-import it.mytutor.domain.Teacher;
 import it.mytutor.domain.User;
 import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.implement.*;
 import it.mytutor.domain.dao.interfaces.*;
 
-import javax.ws.rs.QueryParam;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +36,7 @@ public class CreatesBusiness implements CreatesInterface {
 
     @Override
     public List<Creates> getCreatesByIdUser(int idUser) throws ChatBusinessException {
-        List<Creates> creates = new ArrayList<>();
+        List<Creates> creates;
         List<Creates> creates2 = new ArrayList<>();
         CreatesDaoInterface createsDao = new CreatesDao();
         try {
@@ -49,7 +46,7 @@ public class CreatesBusiness implements CreatesInterface {
             e.printStackTrace();
             throw new ChatBusinessException("Errore nel prendere gli oggetti creates");
         }
-        for (Creates creates1: creates) {
+        for (Creates creates1 : creates) {
             creates2.add(setUsersCreates(creates1));
         }
 
@@ -58,11 +55,10 @@ public class CreatesBusiness implements CreatesInterface {
 
     @Override
     public boolean getIfExistCreates(String username, Integer idUser2) throws ChatBusinessException {
-        List<Creates> creates = new ArrayList<>();
-        List<Creates> creates2 = new ArrayList<>();
+        List<Creates> creates;
         CreatesDaoInterface createsDao = new CreatesDao();
         UserDaoInterface userDao = new UserDao();
-        User user = new User();
+        User user;
         boolean ifExist = false;
         try {
             user = userDao.getUserByEmail(username);
@@ -77,16 +73,31 @@ public class CreatesBusiness implements CreatesInterface {
             e.printStackTrace();
             throw new ChatBusinessException("Errore nel prendere gli oggetti creates");
         }
-        for (Creates creates1: creates) {
-            
+        // io student
+        if (user.getRoles() == 1) {
+            for (Creates creates1 : creates) {
+                if (((User) creates1.getUserListser().get(1)).getIdUser().equals(idUser2)){
+                    ifExist = true;
+                    break;
+                }
+            }
+        }
+        // io teacher
+        else {
+            for (Creates creates1 : creates) {
+                if (((User) creates1.getUserListser().get(0)).getIdUser().equals(idUser2)){
+                    ifExist = true;
+                    break;
+                }
+            }
         }
 
         return ifExist;
     }
 
 
-
-    private Creates setUsersCreates (Creates creates) throws ChatBusinessException {
+    private Creates setUsersCreates(Creates creates) throws ChatBusinessException {
+        System.out.println(creates);
         StudentDaoInterface studentDao = new StudentDao();
         TeacherDaoInterface teacherDao = new TeacherDao();
         UserDaoInterface userDao = new UserDao();
@@ -132,7 +143,8 @@ public class CreatesBusiness implements CreatesInterface {
                 throw new ChatBusinessException("Errore nel prendere l'oggetto Student");
             }
         }
-    creates.setUserListser(users);
-    return creates;
+        creates.setUserListser(users);
+        System.out.println(creates);
+        return creates;
     }
 }
