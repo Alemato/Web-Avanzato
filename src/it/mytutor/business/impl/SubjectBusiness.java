@@ -7,7 +7,6 @@ import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.implement.SubjectDao;
 import it.mytutor.domain.dao.interfaces.SubjectDaoInterface;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SubjectBusiness implements SubjectInterface {
@@ -15,7 +14,7 @@ public class SubjectBusiness implements SubjectInterface {
     @Override
     public List<Subject> findAll() throws SubjectBusinessException {
         SubjectDao subjectDao = new SubjectDao();
-        List<Subject> subjects = new ArrayList<Subject>();
+        List<Subject> subjects;
         try {
             subjects = subjectDao.getAllSubject();
         } catch (DatabaseException e) {
@@ -28,7 +27,7 @@ public class SubjectBusiness implements SubjectInterface {
     @Override
     public List<Subject> findAllStoricoStudent(String email) throws SubjectBusinessException {
         SubjectDaoInterface subjectDao = new SubjectDao();
-        List<Subject> subjects = new ArrayList<Subject>();
+        List<Subject> subjects;
         try {
             subjects = subjectDao.getStoricoSubjectStudent(email);
         } catch (DatabaseException e) {
@@ -41,7 +40,7 @@ public class SubjectBusiness implements SubjectInterface {
     @Override
     public List<Subject> findAllStoricoTeacher(String email) throws SubjectBusinessException {
         SubjectDaoInterface subjectDao = new SubjectDao();
-        List<Subject> subjects = new ArrayList<Subject>();
+        List<Subject> subjects;
         try {
             subjects = subjectDao.getStoricoSubjectTeacher(email);
         } catch (DatabaseException e) {
