@@ -47,9 +47,9 @@ public class CreatesSerializer extends StdSerializer<Creates> {
         jsonGenerator.writeNumberField("idStudent", student.getIdStudent());
         jsonGenerator.writeStringField("studyGrade", student.getStudyGrade());
         long createDateStudent = student.getCreateDateStudent().getTime();
-        jsonGenerator.writeNumberField("createDateStudent", createDateStudent);
+        jsonGenerator.writeNumberField("createDate", createDateStudent);
         long updateDateStudent = student.getUpdateDateStudent().getTime();
-        jsonGenerator.writeNumberField("updateDateStudent", updateDateStudent);
+        jsonGenerator.writeNumberField("updateDate", updateDateStudent);
 
         jsonGenerator.writeNumberField("idUser", student.getIdUser());
         jsonGenerator.writeStringField("email", student.getEmail());
@@ -75,9 +75,9 @@ public class CreatesSerializer extends StdSerializer<Creates> {
         jsonGenerator.writeStringField("streetNumber", teacher.getStreetNumber());
         jsonGenerator.writeStringField("byography", teacher.getByography());
         long crateDateTeacherMillis = teacher.getCrateDateTeacher().getTime();
-        jsonGenerator.writeNumberField("crateDateTeacher", crateDateTeacherMillis);
+        jsonGenerator.writeNumberField("crateDate", crateDateTeacherMillis);
         long updateDateTeacherMillis = teacher.getUpdateDateTeacher().getTime();
-        jsonGenerator.writeNumberField("updateDateTeacher", updateDateTeacherMillis);
+        jsonGenerator.writeNumberField("updateDate", updateDateTeacherMillis);
 
         jsonGenerator.writeNumberField("idUser", teacher.getIdUser());
         jsonGenerator.writeStringField("email", teacher.getEmail());
@@ -92,7 +92,6 @@ public class CreatesSerializer extends StdSerializer<Creates> {
         jsonGenerator.writeNumberField("createDate", createDateMillis);
         long updateDateMillis = teacher.getUpdateDate().getTime();
         jsonGenerator.writeNumberField("updateDate", updateDateMillis);
-        jsonGenerator.writeEndObject();
         jsonGenerator.writeEndObject();
         jsonGenerator.writeEndArray();
 
