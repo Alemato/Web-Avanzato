@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import it.mytutor.domain.jackson.PlanningDeserializer;
 import it.mytutor.domain.jackson.PlanningSerializer;
 
+import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.Objects;
 
 @JsonSerialize(using = PlanningSerializer.class)
