@@ -7,24 +7,24 @@ import it.mytutor.business.services.BookingInterface;
 import it.mytutor.domain.*;
 import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.implement.BookingDao;
+import it.mytutor.domain.dao.implement.StudentDao;
+import it.mytutor.domain.dao.implement.TeacherDao;
 import it.mytutor.domain.dao.implement.UserDao;
 import it.mytutor.domain.dao.interfaces.BookingDaoInterface;
 
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class BookingBusiness implements BookingInterface {
 
 
     //TODO da testare
-    public List<Booking> findBookingByFilter(String macroMateria, String nome, String zona, String microMateria,
-                                             String giornoSettimana, String prezzo, String oraInizio, String oraFine) throws PlanningBusinessException, UserException, BookingBusinessException {
+    public List<Booking> findBookingByFilter(String macroMateria, String nome, String zona, String microMateria, String dom, String lun, String mar, String mer, String gio, String ven, String sab, String prezzo, String oraInizio, String oraFine) throws PlanningBusinessException, UserException, BookingBusinessException {
         UserDao userDao = new UserDao();
         BookingDaoInterface bookingDao = new BookingDao();
-        List<Booking> bookings;
+        List<Booking> bookings = new ArrayList<>();
         int macroMateriaRelevant = 0;
         if (macroMateria != null && !macroMateria.isEmpty()) {
             macroMateriaRelevant = 1;
@@ -41,10 +41,7 @@ public class BookingBusiness implements BookingInterface {
         if (microMateria != null && !microMateria.isEmpty()) {
             microMateriaRelevant = 1;
         }
-        int giornoSettimanaRelevant = 0;
-        if (giornoSettimana != null && !giornoSettimana.isEmpty()) {
-            giornoSettimanaRelevant = 1;
-        }
+
         int prezzoRelevant = 0;
         if (prezzo != null && !prezzo.isEmpty()) {
             prezzoRelevant = 1;
@@ -60,36 +57,51 @@ public class BookingBusiness implements BookingInterface {
 
         try {
             bookings = bookingDao.getBookingByFilter(macroMateriaRelevant, macroMateria, nomeRelevant, nome,
-                    zonaRelevant, zona, microMateriaRelevant, microMateria, giornoSettimanaRelevant, giornoSettimana,
-                    prezzoRelevant, prezzo, oraInizioRelevant, oraInizio, oraFineaRelevant, oraFine);
+                    zonaRelevant, zona, microMateriaRelevant, microMateria, prezzoRelevant, prezzo, oraInizioRelevant,
+                    oraInizio, oraFineaRelevant, oraFine);
         } catch (DatabaseException e) {
             e.printStackTrace();
             throw new PlanningBusinessException("Errore nel prendere gli oggetti booking");
         }
+        System.out.println(bookings);
 
         int i = 0;
         for (Booking booking : bookings) {
             try {
-                bookings.set(i, addUsersInBookingList(booking, userDao));
+                bookings.set(i, addUsersInBookingList(booking));
                 i++;
             } catch (BookingBusinessException e) {
                 e.printStackTrace();
                 throw new UserException("Errore nel'aggiunta degli user");
             }
         }
-        int j = 0;
+
         List<Lesson> lessons = new ArrayList<>();
         for (Booking booking : bookings){
-            if (j == 0){
-                lessons.add(booking.getPlanning().getLesson());
-            }
-            for (Lesson lesson: lessons){
-                if (!lesson.getIdLesson().equals(booking.getPlanning().getLesson().getIdLesson())) {
-                    lessons.add(booking.getPlanning().getLesson());
-                    j++;
-                }
-            }
+            System.out.println(booking);
+            lessons.add(booking.getPlanning().getLesson());
         }
+        System.out.println(lessons);
+        Set<Lesson> s = new HashSet<Lesson>(lessons);
+        lessons = new ArrayList<>(s);
+        System.out.println(lessons);
+
+//        int j = 0;
+//        List<Lesson> lessons = new ArrayList<>();
+//        for (Booking booking : bookings){
+//            if (j == 0){
+//                lessons.add(booking.getPlanning().getLesson());
+//            }
+//
+//
+//            for (Lesson lesson: lessons){
+//                if (!lesson.getIdLesson().equals(booking.getPlanning().getLesson().getIdLesson())) {
+//                    lessons.add(booking.getPlanning().getLesson());
+//                    j++;
+//                }
+//            }
+//        }
+
 
         List<Booking> bookings1 = new ArrayList<>();
         for (Lesson lesson: lessons) {
@@ -100,6 +112,19 @@ public class BookingBusiness implements BookingInterface {
                 throw new BookingBusinessException("Errore nel prendere gli oggetti booking");
             }
         }
+
+        int x = 0;
+        for (Booking booking : bookings1) {
+            try {
+                bookings1.set(x, addUsersInBookingList(booking));
+                x++;
+            } catch (BookingBusinessException e) {
+                e.printStackTrace();
+                throw new UserException("Errore nel'aggiunta degli user");
+            }
+        }
+
+        bookings1 = dayOfWeek(bookings1, dom, lun, mar, mer, gio, ven, sab);
 
         return bookings1;
     }
@@ -160,7 +185,7 @@ public class BookingBusiness implements BookingInterface {
         int i = 0;
         for (Booking booking : bookings) {
             try {
-                bookings.set(i, addUsersInBookingList(booking, userDao));
+                bookings.set(i, addUsersInBookingList(booking));
                 i++;
             } catch (BookingBusinessException e) {
                 e.printStackTrace();
@@ -188,7 +213,7 @@ public class BookingBusiness implements BookingInterface {
         int i = 0;
         for (Booking booking : bookings) {
             try {
-                bookings.set(i, addUsersInBookingList(booking, userDao));
+                bookings.set(i, addUsersInBookingList(booking));
                 i++;
             }catch (BookingBusinessException e) {
                 e.printStackTrace();
@@ -243,7 +268,7 @@ public class BookingBusiness implements BookingInterface {
         int i = 0;
         for (Booking booking : bookings) {
             try {
-                bookings.set(i, addUsersInBookingList(booking, userDao));
+                bookings.set(i, addUsersInBookingList(booking));
                 i++;
             } catch (BookingBusinessException e) {
                 e.printStackTrace();
@@ -273,7 +298,7 @@ public class BookingBusiness implements BookingInterface {
         int i = 0;
         for (Booking booking : bookings) {
             try {
-                bookings.set(i, addUsersInBookingList(booking, userDao));
+                bookings.set(i, addUsersInBookingList(booking));
                 i++;
             } catch (UserException e) {
                 e.printStackTrace();
@@ -339,7 +364,7 @@ public class BookingBusiness implements BookingInterface {
         int i = 0;
         for (Booking booking : bookings) {
             try {
-                bookings.set(i, addUsersInBookingList(booking, userDao));
+                bookings.set(i, addUsersInBookingList(booking));
                 i++;
             } catch (BookingBusinessException e) {
                 e.printStackTrace();
@@ -406,7 +431,7 @@ public class BookingBusiness implements BookingInterface {
         int i = 0;
         for (Booking booking : bookings) {
             try {
-                bookings.set(i, addUsersInBookingList(booking, userDao));
+                bookings.set(i, addUsersInBookingList(booking));
                 i++;
             } catch (BookingBusinessException e) {
                 e.printStackTrace();
@@ -420,58 +445,113 @@ public class BookingBusiness implements BookingInterface {
     }
 
 
-    private Booking addUsersInBookingList(Booking booking, UserDao userDao) throws BookingBusinessException, UserException {
-        Planning planning = booking.getPlanning();
-        Lesson lesson = planning.getLesson();
-        Teacher teacher = lesson.getTeacher();
-        User user;
+    private Booking addUsersInBookingList(Booking booking) throws BookingBusinessException, UserException {
+        Booking booking1 = new Booking();
+        booking1 = booking;
+        Planning planning = new Planning();
+        Lesson lesson = new Lesson();
+        Teacher teacher = new Teacher();
+        Student student = new Student();
+
+        StudentDao studentDao = new StudentDao();
         try {
-            user = userDao.getUserById(teacher.getIdUser());
+            student = studentDao.getStudentByIdUser(booking.getStudent().getIdUser());
+            System.out.println("student appena preso");
+            System.out.println(student);
         } catch (DatabaseException e) {
             e.printStackTrace();
-            throw new UserException("Errore nel prendere l'user");
         }
+        booking1.setStudent(student);
 
-        teacher.setIdUser(user.getIdUser());
-        teacher.setEmail(user.getEmail());
-        teacher.setRoles(user.getRoles());
-        teacher.setPassword(user.getPassword());
-        teacher.setName(user.getName());
-        teacher.setSurname(user.getSurname());
-        teacher.setBirthday(user.getBirthday());
-        teacher.setLanguage(user.getLanguage());
-        teacher.setImage(user.getImage());
-        teacher.setCreateDate(user.getCreateDate());
-        teacher.setUpdateDate(user.getUpdateDate());
-
+        TeacherDao teacherDao = new TeacherDao();
+        try {
+            teacher = teacherDao.getTeacherByUserID(booking.getPlanning().getLesson().getTeacher().getIdUser());
+            System.out.println("teacher appena preso");
+            System.out.println(teacher);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+        planning = booking.getPlanning();
+        lesson = planning.getLesson();
         lesson.setTeacher(teacher);
         planning.setLesson(lesson);
-        booking.setPlanning(planning);
-
-        Student student = booking.getStudent();
-        try {
-            user = userDao.getUserById(student.getIdUser());
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-            throw new BookingBusinessException("Errore nel prendere l'user");
-        }
-
-        student.setIdUser(user.getIdUser());
-        student.setEmail(user.getEmail());
-        student.setRoles(user.getRoles());
-        student.setPassword(user.getPassword());
-        student.setName(user.getName());
-        student.setSurname(user.getSurname());
-        student.setBirthday(user.getBirthday());
-        student.setLanguage(user.getLanguage());
-        student.setImage(user.getImage());
-        student.setCreateDate(user.getCreateDate());
-        student.setUpdateDate(user.getUpdateDate());
-
-        booking.setStudent(student);
-
-        return booking;
+        booking1.setPlanning(planning);
+        System.out.println("booking1");
+        System.out.println(booking1);
+        return booking1;
     }
+
+    private ArrayList<Booking> dayOfWeek(List<Booking> bookings, String dom, String lun, String mar, String mer, String gio, String ven, String sab) {
+        Calendar c = Calendar.getInstance();
+        ArrayList<Booking> bookings1 = new ArrayList<>();
+        if (dom != null && !dom.equals("") && dom.equals("1")) {
+            for (Booking booking: bookings) {
+                c.setTime(booking.getPlanning().getDate());
+                if (c.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+                    bookings1.add(new Booking(booking.getIdBooking(), booking.getDate(), booking.getLessonState(),
+                            booking.getCreateDate(), booking.getUpdateDate(), booking.getStudent(), booking.getPlanning()));
+                }
+            }
+        }
+        if (lun != null && !lun.equals("") && lun.equals("1")) {
+            for (Booking booking: bookings) {
+                c.setTime(booking.getPlanning().getDate());
+                if (c.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+                    bookings1.add(new Booking(booking.getIdBooking(), booking.getDate(), booking.getLessonState(),
+                            booking.getCreateDate(), booking.getUpdateDate(), booking.getStudent(), booking.getPlanning()));
+                }
+            }
+        }
+        if (mar != null && !mar.equals("") && mar.equals("1")) {
+            System.out.println("mar");
+            for (Booking booking: bookings) {
+                c.setTime(booking.getPlanning().getDate());
+                System.out.println(c.get(Calendar.DAY_OF_WEEK));
+                if (c.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY) {
+                    bookings1.add(new Booking(booking.getIdBooking(), booking.getDate(), booking.getLessonState(),
+                            booking.getCreateDate(), booking.getUpdateDate(), booking.getStudent(), booking.getPlanning()));
+                }
+            }
+        }
+        if (mer != null && !mer.equals("") && mer.equals("1")) {
+            for (Booking booking: bookings) {
+                c.setTime(booking.getPlanning().getDate());
+                if (c.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY) {
+                    bookings1.add(new Booking(booking.getIdBooking(), booking.getDate(), booking.getLessonState(),
+                            booking.getCreateDate(), booking.getUpdateDate(), booking.getStudent(), booking.getPlanning()));
+                }
+            }
+        }
+        if (gio != null && !gio.equals("") && gio.equals("1")) {
+            for (Booking booking: bookings) {
+                c.setTime(booking.getPlanning().getDate());
+                if (c.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) {
+                    bookings1.add(new Booking(booking.getIdBooking(), booking.getDate(), booking.getLessonState(),
+                            booking.getCreateDate(), booking.getUpdateDate(), booking.getStudent(), booking.getPlanning()));
+                }
+            }
+        }
+        if (ven != null && !ven.equals("") && ven.equals("1")) {
+            for (Booking booking: bookings) {
+                c.setTime(booking.getPlanning().getDate());
+                if (c.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
+                    bookings1.add(new Booking(booking.getIdBooking(), booking.getDate(), booking.getLessonState(),
+                            booking.getCreateDate(), booking.getUpdateDate(), booking.getStudent(), booking.getPlanning()));
+                }
+            }
+        }
+        if (sab != null && !sab.equals("") && sab.equals("1")) {
+            for (Booking booking: bookings) {
+                c.setTime(booking.getPlanning().getDate());
+                if (c.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
+                    bookings1.add(new Booking(booking.getIdBooking(), booking.getDate(), booking.getLessonState(),
+                            booking.getCreateDate(), booking.getUpdateDate(), booking.getStudent(), booking.getPlanning()));
+                }
+            }
+        }
+        return bookings1;
+    }
+
 
     @Override
     public List<Booking> findAllBookingByDate(Date date) {

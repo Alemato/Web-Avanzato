@@ -24,8 +24,7 @@ public interface BookingDaoInterface {
 
     List<Booking> getBookingByFilter(int macroMateriaRelevant, String macroMateria, int nomeRelevant,
                                      String nome, int zonaRelevant, String zona, int microMateriaRelevant,
-                                     String microMateria, int giornoSettimanaRelevant, String giornoSettimana,
-                                     int prezzoRelevant, String prezzo, int oraInizioRelevant,
+                                     String microMateria, int prezzoRelevant, String prezzo, int oraInizioRelevant,
                                      String oraInizio, int oraFineaRelevant, String oraFine)throws DatabaseException;
 
     Booking getBookingById(int id)throws DatabaseException;

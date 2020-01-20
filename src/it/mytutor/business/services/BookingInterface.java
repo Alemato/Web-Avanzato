@@ -15,8 +15,7 @@ import java.util.List;
 
 public interface BookingInterface {
     List<Booking> findAllBooking();
-    List<Booking> findBookingByFilter(String macroMateria, String nome, String zona, String microMateria,
-                                      String giornoSettimana, String prezzo, String oraInizio, String oraFine) throws DatabaseException, PlanningBusinessException, BookingBusinessException, UserException;
+    List<Booking> findBookingByFilter(String macroMateria, String nome, String zona, String microMateria, String dom, String lun, String mar, String mer, String gio, String ven, String sab, String prezzo, String oraInizio, String oraFine) throws DatabaseException, PlanningBusinessException, BookingBusinessException, UserException;
 
     List<Booking> findAllbookedUpByStudent(Student student) throws BookingBusinessException;
 
