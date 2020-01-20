@@ -6,11 +6,10 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import it.mytutor.domain.Chat;
-import it.mytutor.domain.Creates;
-import it.mytutor.domain.User;
+import it.mytutor.domain.*;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,19 +28,68 @@ public class CreatesDeserializer extends StdDeserializer<Creates> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Creates creates = new Creates();
-
+        if (node.get("idCreates") != null) {
+            creates.setIdCreates(node.get("idCreates").asInt());
+        }
         List<Object> userList = new ArrayList<>();
-        ArrayNode users = (ArrayNode) node.get("users");
+        ArrayNode users = (ArrayNode) node.get("userListser");
         Iterator<JsonNode> usersIterator = users.elements();
         while (usersIterator.hasNext()) {
             JsonNode userNode = usersIterator.next();
-            User user = new User();
-            user.setIdUser(userNode.findPath("idUser").asInt());
-            userList.add(user);
+
+            if (userNode.get("roles").asInt() == 1) {
+
+                Student student = new Student();
+                if (node.get("idStudent")!=  null) {
+                    student.setIdStudent(node.get("idStudent").asInt());
+                }
+                student.setStudyGrade(userNode.get("studyGrade").asText());
+                student.setIdUser(userNode.get("idUser").asInt());
+                student.setEmail(userNode.get("email").asText());
+                student.setRoles(userNode.get("roles").asInt());
+                student.setPassword(userNode.get("password").asText());
+                student.setName(userNode.get("name").asText());
+                student.setSurname(userNode.get("surname").asText());
+                Date bDateStudent = new Date(userNode.get("birthday").asLong());
+                student.setBirthday(bDateStudent);
+                student.setLanguage(Boolean.getBoolean(userNode.get("language").asText()));
+                if(userNode.get("image").asText().equals("null") || userNode.get("image").asText().equals("")){
+                    student.setImage(null);
+                } else student.setImage(userNode.get("image").asText());
+                userList.add(0, student);
+
+            } else if (userNode.get("roles").asInt() == 2) {
+
+                Teacher teacher = new Teacher();
+                if (node.get("idTeacher") != null) {
+                    teacher.setIdTeacher(userNode.get("idTeacher").asInt());
+                }
+                teacher.setPostCode(userNode.get("postCode").asInt());
+                teacher.setCity(userNode.get("city").asText());
+                teacher.setRegion(userNode.get("region").asText());
+                teacher.setStreet(userNode.get("street").asText());
+                teacher.setStreetNumber(userNode.get("streetNumber").asText());
+                teacher.setByography(userNode.get("byography").asText());
+                teacher.setIdUser(userNode.get("idUser").asInt());
+                teacher.setEmail(userNode.get("email").asText());
+                teacher.setPassword(userNode.get("password").asText());
+                teacher.setName(userNode.get("name").asText());
+                teacher.setSurname(userNode.get("surname").asText());
+                Date bDateTeacher = new Date(userNode.get("birthday").asLong());
+                teacher.setBirthday(bDateTeacher);
+                teacher.setLanguage(Boolean.getBoolean(userNode.get("language").asText()));
+                if(userNode.get("image").asText().equals("null") || userNode.get("image").asText().equals("")){
+                    teacher.setImage(null);
+                } else teacher.setImage(userNode.get("image").asText());
+                userList.add(1, teacher);
+            }
         }
         creates.setUserListser(userList);
 
         Chat chat = new Chat();
+        if (node.findPath("chat").findPath("idChat") != null) {
+            chat.setIdChat(node.findPath("chat").findPath("idChat").asInt());
+        }
         chat.setName(node.findPath("chat").findPath("name").asText());
         creates.setChat(chat);
 
