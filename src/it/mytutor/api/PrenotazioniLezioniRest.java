@@ -119,7 +119,6 @@ public class PrenotazioniLezioniRest {
      * @param nome            nome Materia
      * @param zona            citta
      * @param microMateria    micro Materia
-     * @param giornoSettimana giorno della Settimana
      * @param prezzo          costo lezione
      * @param oraInizio       ora Inizio slot
      * @param oraFine         ora Fine slot
@@ -134,14 +133,21 @@ public class PrenotazioniLezioniRest {
                                            @QueryParam("nome-lezione") String nome,
                                            @QueryParam("zona") String zona,
                                            @QueryParam("micro-materia") String microMateria,
-                                           @QueryParam("giorno-settimana") String giornoSettimana,
+                                           @QueryParam("dom") String dom,
+                                           @QueryParam("lun") String lun,
+                                           @QueryParam("mar") String mar,
+                                           @QueryParam("mer") String mer,
+                                           @QueryParam("gio") String gio,
+                                           @QueryParam("ven") String ven,
+                                           @QueryParam("sab") String sab,
                                            @QueryParam("prezzo") String prezzo,
                                            @QueryParam("ora-inizio") String oraInizio,
                                            @QueryParam("ora-fine") String oraFine) {
+        System.out.println("permettimi");
 
         List<Booking> bookings;
         try {
-            bookings = bookingService.findBookingByFilter(macroMateria, nome, zona, microMateria, giornoSettimana, prezzo, oraInizio, oraFine);
+            bookings = bookingService.findBookingByFilter(macroMateria, nome, zona, microMateria, dom, lun, mar, mer, gio, ven, sab, prezzo, oraInizio, oraFine);
         } catch (DatabaseException | PlanningBusinessException | BookingBusinessException | UserException e) {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
