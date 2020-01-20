@@ -4,13 +4,14 @@ import it.mytutor.business.exceptions.LessonBusinessException;
 import it.mytutor.business.exceptions.PlanningBusinessException;
 import it.mytutor.business.exceptions.SubjectBusinessException;
 import it.mytutor.business.services.PlanningInterface;
-import it.mytutor.domain.*;
+import it.mytutor.domain.Lesson;
+import it.mytutor.domain.Planning;
+import it.mytutor.domain.Subject;
+import it.mytutor.domain.Teacher;
 import it.mytutor.domain.dao.exception.DatabaseException;
-import it.mytutor.domain.dao.implement.BookingDao;
 import it.mytutor.domain.dao.implement.LessonDao;
 import it.mytutor.domain.dao.implement.PlanningDao;
 import it.mytutor.domain.dao.implement.SubjectDao;
-import it.mytutor.domain.dao.interfaces.BookingDaoInterface;
 import it.mytutor.domain.dao.interfaces.LessonDaoInterface;
 import it.mytutor.domain.dao.interfaces.PlanningDaoInterface;
 import it.mytutor.domain.dao.interfaces.SubjectDaoInterface;
@@ -80,7 +81,7 @@ public class PlanningBusiness implements PlanningInterface {
             while (dateAddWeek.before(addYearToJavaUtilDate(dateAppo))){
                 dateAddWeek = addWeekToJavaUtilDate(dateAddWeek);
                 planningList.add(new Planning(planning.getIdPlanning(), new java.sql.Date(dateAddWeek.getTime()),
-                        planning.getStartTime(), planning.getEndTime(), planning.getCreateDate(),
+                        planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(),
                         planning.getUpdateDate(), planning.getLesson()));
             }
         }
@@ -99,11 +100,13 @@ public class PlanningBusiness implements PlanningInterface {
                     dateZero = addHoursToJavaUtilDate(dateZero);
                     check = true;
                     planningsOrari.add(new Planning(planning.getIdPlanning(), planning.getDate(),
-                            Time.valueOf(localDateFormat.format(startDate)), Time.valueOf(localDateFormat.format(addHoursToJavaUtilDate(new Date(dateStart)))),
-                            planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
+                            Time.valueOf(localDateFormat.format(startDate)),
+                            Time.valueOf(localDateFormat.format(addHoursToJavaUtilDate(new Date(dateStart)))),
+                            planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(),
+                            planning.getLesson()));
                     if (dateStart > 82800000) {
                         planningsOrari.set(planningsOrari.size() - 1, new Planning(planning.getIdPlanning(), planning.getDate(),
-                                Time.valueOf("23:00:00"), Time.valueOf("23:59:59"),
+                                Time.valueOf("23:00:00"), Time.valueOf("23:59:59"), planning.getAvailable(),
                                 planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
                     }
                 }
@@ -177,7 +180,7 @@ public class PlanningBusiness implements PlanningInterface {
             while (dateAddWeek.before(addYearToJavaUtilDate(dateAppo))){
                 dateAddWeek = addWeekToJavaUtilDate(dateAddWeek);
                 planningList.add(new Planning(planning.getIdPlanning(), new java.sql.Date(dateAddWeek.getTime()), planning.getStartTime(),
-                        planning.getEndTime(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
+                        planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
             }
         }
 
@@ -195,11 +198,12 @@ public class PlanningBusiness implements PlanningInterface {
                     dateZero = addHoursToJavaUtilDate(dateZero);
                     check = true;
                     planningsOrari.add(new Planning(planning.getIdPlanning(), planning.getDate(),
-                            Time.valueOf(localDateFormat.format(startDate)), Time.valueOf(localDateFormat.format(addHoursToJavaUtilDate(new Date(dateStart)))),
-                            planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
+                            Time.valueOf(localDateFormat.format(startDate)),
+                            Time.valueOf(localDateFormat.format(addHoursToJavaUtilDate(new Date(dateStart)))),
+                            planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
                     if (dateStart > 82800000) {
                         planningsOrari.set(planningsOrari.size() - 1, new Planning(planning.getIdPlanning(), planning.getDate(),
-                                Time.valueOf("23:00:00"), Time.valueOf("23:59:59"),
+                                Time.valueOf("23:00:00"), Time.valueOf("23:59:59"), planning.getAvailable(),
                                 planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
                     }
                 }
@@ -237,8 +241,6 @@ public class PlanningBusiness implements PlanningInterface {
     public List<Planning> findPlanningByFilter(String macroMateria, String nome, String zona, String microMateria,
                                                String giornoSettimana, String prezzo, String oraInizio, String oraFine) throws PlanningBusinessException {
         PlanningDaoInterface planningDao = new PlanningDao();
-        BookingDaoInterface bookingDao = new BookingDao();
-
         List<Planning> plannings;
         int macroMateriaRelevant = 0;
         if (macroMateria != null && !macroMateria.isEmpty()) {
@@ -284,26 +286,6 @@ public class PlanningBusiness implements PlanningInterface {
             throw new PlanningBusinessException("Errore nel prendere la lista dei planning");
         }
 
-        List<Booking> bookings = new ArrayList<>();
-        Date utilDate = new Date();
-        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-        try {
-            bookings = bookingDao.getAllBookingBooked(sqlDate);
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-            throw new PlanningBusinessException("Errore nel prendere la lista dei Booking");
-        }
-        
-        int index = 0;
-        for (Planning planning1 : plannings) {
-            for (Booking booking : bookings) {
-                if (planning1.getIdPlanning().equals(booking.getPlanning().getIdPlanning())) {
-                    plannings.remove(index);
-                }
-            }
-            index++;
-        }
-
         return plannings;
     }
 
@@ -334,44 +316,3 @@ public class PlanningBusiness implements PlanningInterface {
     }
 
 }
-
-/*    long cost = 3600000;
-    Time unOra = Time.valueOf("01:00:00");
-    Date date = new Date(unOra.getTime());
-    List<Planning> planningsOrari = new ArrayList<>();
-        for (Planning planning: plannings) {
-                System.out.println((planning.getEndTime().getTime() + cost) / (60 * 60 * 1000));
-                System.out.println((planning.getStartTime().getTime() + cost) / (60 * 60 * 1000));
-                System.out.println(((planning.getEndTime().getTime()+ cost) - (planning.getStartTime().getTime()+ cost))/ (60 * 60 * 1000));
-                if ((planning.getEndTime().getTime() + cost) - (planning.getStartTime().getTime() + cost) >= 0) {
-                if ((((planning.getEndTime().getTime() + cost) - (planning.getStartTime().getTime()) + cost) / (60 * 60 * 1000)) > 1) {
-                Time timeAppo = Time.valueOf("02:00:00");
-                System.out.println("TimeAppo 01:00:00");
-                System.out.println(timeAppo.getTime());
-                Time timeAppo1 = Time.valueOf("01:00:00");
-                System.out.println("TimeAppo1 00:00:00");
-                System.out.println(timeAppo1.getTime());
-
-                while (((planning.getStartTime().getTime()) + timeAppo.getTime()) < (planning.getEndTime().getTime())){
-        System.out.println("setStartTime");
-        System.out.println(new Time((planning.getStartTime().getTime() + cost) + timeAppo1.getTime() + cost));
-        planning.setStartTime(new Time((planning.getStartTime().getTime() + cost) + (timeAppo1.getTime() + cost)));
-        timeAppo1 = new Time((timeAppo1.getTime() + cost) + (unOra.getTime() + cost));
-        System.out.println("setEndTime");
-        System.out.println(new Time((planning.getStartTime().getTime() + cost) + (unOra.getTime() + cost)));
-        planning.setEndTime(new Time((planning.getStartTime().getTime() + cost) + (unOra.getTime() + cost)));
-        planningsOrari.add(planning);
-        timeAppo = new Time((timeAppo.getTime() + cost) + (unOra.getTime() + cost));
-
-        }
-        planning.setStartTime(new Time((timeAppo1.getTime())));
-
-        planningsOrari.add(planning);
-        } else {
-        planningsOrari.add(planning);
-        }
-
-        } else {
-        throw new PlanningBusinessException("Errore nell'inserimento delle date");
-        }
-        }*/
