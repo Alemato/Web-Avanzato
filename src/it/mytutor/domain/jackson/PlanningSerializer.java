@@ -26,6 +26,7 @@ public class PlanningSerializer extends StdSerializer<Planning> {
         jsonGenerator.writeNumberField("date", dateMillis);
         jsonGenerator.writeStringField("startTime", planning.getStartTime().toString());
         jsonGenerator.writeStringField("endTime", planning.getEndTime().toString());
+        jsonGenerator.writeBooleanField("available", planning.getAvailable());
         long createDate = planning.getCreateDate().getTime();
         jsonGenerator.writeNumberField("createDate", createDate);
         long updateDate = planning.getUpdateDate().getTime();
