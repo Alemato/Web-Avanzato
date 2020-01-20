@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlanningDao implements PlanningDaoInterface {
-    private static final String CREATE_PLANNING_STATEMENT = "insert into Planning (Date, StartTime, EndTime, IdLesson) values (?,?,?,?)";
-    private static final String ADD_PLANNING_STATEMENT = "insert into Planning (Date, StartTime, EndTime, IdLesson) values (?,?,?,?)";
+    private static final String CREATE_PLANNING_STATEMENT = "insert into Planning (Date, StartTime, EndTime, Available, IdLesson) values (?,?,?,?,?)";
+    private static final String ADD_PLANNING_STATEMENT = "insert into Planning (Date, StartTime, EndTime, Available, IdLesson) values (?,?,?,?,?)";
     private static final String DELETE_PLANNING_STATEMENT = "delete from Planning where IdPlanning = ?";
-    private static final String UPDATE_PLANNING_STATEMENT = "update Planning set Date=?, StartTime=?, EndTime=?, IdLesson=? where IdPlanning=?";
+    private static final String UPDATE_PLANNING_STATEMENT = "update Planning set Date=?, StartTime=?, EndTime=?, Available=?, IdLesson=? where IdPlanning=?";
     private static final String GET_PLANNING_BY_FILTER_STATEMENT = "SELECT * from Planning p " +
             "join Lesson l on p.IdLesson = l.IdLesson " +
             "join Subject s on l.IdSubject = s.IdSubject " +
@@ -25,7 +25,7 @@ public class PlanningDao implements PlanningDaoInterface {
             "and (0 = ? or s.MacroSubject =?)\n" +
             "and (0 = ? or l.Name = ?) and (0 = ? or t.City = ?) and (0 = ? or s.MicroSubject = ?) " +
             "and (0 = ? or DAYOFWEEK(p.Date) =? ) and (0 = ? or l.Price =? ) and (0 = ? or p.StartTime >= ? ) " +
-            "and (0 = ? or p.EndTime <=? )";
+            "and (0 = ? or p.EndTime <=? ) and (p.Available = 1)";
     private static final String GET_PLANNING_BY_LESSON_ID_STATEMENT = "select * from Planning p " +
             "join Lesson l on p.IdLesson = l.IdLesson " +
             "join Subject s on l.IdSubject = s.IdSubject " +
@@ -53,6 +53,7 @@ public class PlanningDao implements PlanningDaoInterface {
             planning.setDate(resultSet.getDate("p.Date"));
             planning.setStartTime(resultSet.getTime("p.StartTime"));
             planning.setEndTime(resultSet.getTime("p.EndTime"));
+            planning.setAvailable(resultSet.getBoolean("p.Available"));
             planning.setCreateDate(resultSet.getTimestamp("p.CreateDate"));
             planning.setUpdateDate(resultSet.getTimestamp("p.UpdateDate"));
 
@@ -137,7 +138,8 @@ public class PlanningDao implements PlanningDaoInterface {
             prs.setString(1, planning.getDate().toString());
             prs.setString(2, planning.getStartTime().toString());
             prs.setString(3, planning.getEndTime().toString());
-            prs.setInt(4, planning.getLesson().getIdLesson());
+            prs.setBoolean(4, planning.getAvailable());
+            prs.setInt(5, planning.getLesson().getIdLesson());
             prs.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -164,7 +166,8 @@ public class PlanningDao implements PlanningDaoInterface {
             prs.setString(1, planning.getDate().toString());
             prs.setString(2, planning.getStartTime().toString());
             prs.setString(3, planning.getEndTime().toString());
-            prs.setInt(4, planning.getLesson().getIdLesson());
+            prs.setBoolean(4, planning.getAvailable());
+            prs.setInt(5, planning.getLesson().getIdLesson());
             prs.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -336,8 +339,9 @@ public class PlanningDao implements PlanningDaoInterface {
             prs.setString(1, planning.getDate().toString());
             prs.setString(2, planning.getStartTime().toString());
             prs.setString(3, planning.getEndTime().toString());
-            prs.setInt(4, planning.getLesson().getIdLesson());
-            prs.setInt(5, planning.getIdPlanning());
+            prs.setBoolean(4, planning.getAvailable());
+            prs.setInt(5, planning.getLesson().getIdLesson());
+            prs.setInt(6, planning.getIdPlanning());
 
             prs.executeUpdate();
 
