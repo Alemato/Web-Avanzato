@@ -83,7 +83,7 @@ private static final String GET_ALL_CHAT_BY_ID_USER = "select * from Chat c " +
 
     @Override
     public List<Chat> getAllChatByIdUser(int idUser) throws DatabaseException {
-        List<Chat> chatList = new ArrayList<Chat>();
+        List<Chat> chatList = new ArrayList<>();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
