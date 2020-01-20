@@ -23,6 +23,9 @@ public class SubjectDeserializer extends StdDeserializer<Subject> {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         Subject subject = new Subject();
+        if (node.get("idSubject") != null) {
+            subject.setIdSubject(node.get("idSubject").asInt());
+        }
         subject.setMacroSubject(node.get("macroSubject").asText());
         subject.setMicroSubject(node.get("microSubject").asText());
         return subject;
