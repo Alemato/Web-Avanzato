@@ -5,11 +5,9 @@ import it.mytutor.business.exceptions.ChatBusinessException;
 import it.mytutor.business.exceptions.UserException;
 import it.mytutor.business.impl.ChatBusiness;
 import it.mytutor.business.impl.CreatesBusiness;
-import it.mytutor.business.impl.MessageBusiness;
 import it.mytutor.business.impl.UserBusiness;
 import it.mytutor.business.services.ChatInterface;
 import it.mytutor.business.services.CreatesInterface;
-import it.mytutor.business.services.MessageInterface;
 import it.mytutor.business.services.UserInterface;
 import it.mytutor.domain.Creates;
 import it.mytutor.domain.Message;
@@ -32,7 +30,6 @@ public class ChatsRest {
     private SecurityContext securityContext;
 
     private ChatInterface chatService = new ChatBusiness();
-    private MessageInterface messageService = new MessageBusiness();
     private CreatesInterface createsService = new CreatesBusiness();
     private UserInterface userService = new UserBusiness();
 
@@ -54,9 +51,9 @@ public class ChatsRest {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
-        List<Object> list = new ArrayList<Object>();
-        List<Creates> creates = new ArrayList<>();
-        List<Message> messages = new ArrayList<>();
+        List<Object> list = new ArrayList<>();
+        List<Creates> creates;
+        List<Message> messages;
         try {
             messages = chatService.findAllChatByUser(email);
         }catch (DatabaseException e){
