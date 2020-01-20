@@ -122,6 +122,7 @@ public class BookingDao implements BookingDaoInterface {
             planning.setDate(resultSet.getDate("p.Date"));
             planning.setStartTime(resultSet.getTime("p.StartTime"));
             planning.setEndTime(resultSet.getTime("p.EndTime"));
+            planning.setAvailable(resultSet.getBoolean("p.Available"));
             planning.setCreateDate(resultSet.getTimestamp("p.CreateDate"));
             planning.setUpdateDate(resultSet.getTimestamp("p.UpdateDate"));
 
