@@ -97,7 +97,7 @@ public class TestBusinness {
         planning.setIdPlanning(i);
         SimpleDateFormat sdfP = new SimpleDateFormat("yyyy-MM-dd");
         String[] stringaDate = new String[]{"2019-06-18", "2019-05-22", "2019-06-13", "2019-06-16"};
-        planning.setDate(sdfP.parse(stringaDate[(i * 3) % 4]));
+//        planning.setDate(sdfP.parse(stringaDate[(i * 3) % 4]));
         String[] stringStartTime = new String[]{"8:00:00", "9:00:00", "10:00:00", "11:00:00", "12:00:00", "14:00:00", "15:00:00", "16:00:00", "17:00:00", "18:00:00"};
         Time startTimes = Time.valueOf(stringStartTime[(i * 3) % 10]);
         String[] stringEndTime = new String[]{"9:00:00", "10:00:00", "11:00:00", "12:00:00", "14:00:00", "15:00:00", "16:00:00", "17:00:00", "18:00:00", "19:00:00"};
