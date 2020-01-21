@@ -62,7 +62,6 @@ public class BookingBusiness implements BookingInterface {
             e.printStackTrace();
             throw new PlanningBusinessException("Errore nel prendere gli oggetti booking");
         }
-        System.out.println(bookings);
 
         int i = 0;
         for (Booking booking : bookings) {
@@ -77,13 +76,10 @@ public class BookingBusiness implements BookingInterface {
 
         List<Lesson> lessons = new ArrayList<>();
         for (Booking booking : bookings){
-            System.out.println(booking);
             lessons.add(booking.getPlanning().getLesson());
         }
-        System.out.println(lessons);
         Set<Lesson> s = new HashSet<Lesson>(lessons);
         lessons = new ArrayList<>(s);
-        System.out.println(lessons);
 
 //        int j = 0;
 //        List<Lesson> lessons = new ArrayList<>();
@@ -455,8 +451,6 @@ public class BookingBusiness implements BookingInterface {
         StudentDao studentDao = new StudentDao();
         try {
             student = studentDao.getStudentByIdUser(booking.getStudent().getIdUser());
-            System.out.println("student appena preso");
-            System.out.println(student);
         } catch (DatabaseException e) {
             e.printStackTrace();
         }
@@ -465,8 +459,6 @@ public class BookingBusiness implements BookingInterface {
         TeacherDao teacherDao = new TeacherDao();
         try {
             teacher = teacherDao.getTeacherByUserID(booking.getPlanning().getLesson().getTeacher().getIdUser());
-            System.out.println("teacher appena preso");
-            System.out.println(teacher);
         } catch (DatabaseException e) {
             e.printStackTrace();
         }
@@ -475,8 +467,6 @@ public class BookingBusiness implements BookingInterface {
         lesson.setTeacher(teacher);
         planning.setLesson(lesson);
         booking1.setPlanning(planning);
-        System.out.println("booking1");
-        System.out.println(booking1);
         return booking1;
     }
 
@@ -502,10 +492,8 @@ public class BookingBusiness implements BookingInterface {
             }
         }
         if (mar != null && !mar.equals("") && mar.equals("1")) {
-            System.out.println("mar");
             for (Booking booking: bookings) {
                 c.setTime(booking.getPlanning().getDate());
-                System.out.println(c.get(Calendar.DAY_OF_WEEK));
                 if (c.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY) {
                     bookings1.add(new Booking(booking.getIdBooking(), booking.getDate(), booking.getLessonState(),
                             booking.getCreateDate(), booking.getUpdateDate(), booking.getStudent(), booking.getPlanning()));
