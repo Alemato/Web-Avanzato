@@ -125,12 +125,19 @@ public class PlanningRest {
         return Response.ok(plannings).build();
     }*/
 
+
     /**
      * @param macroMateria
      * @param nome
      * @param zona
      * @param microMateria
-     * @param giornoSettimana
+     * @param dom
+     * @param lun
+     * @param mar
+     * @param mer
+     * @param gio
+     * @param ven
+     * @param sab
      * @param prezzo
      * @param oraInizio
      * @param oraFine
@@ -145,13 +152,19 @@ public class PlanningRest {
                                            @QueryParam("nome") String nome,
                                            @QueryParam("zona") String zona,
                                            @QueryParam("micro-materia") String microMateria,
-                                           @QueryParam("giorno-settimana") String giornoSettimana,
+                                           @QueryParam("dom") String dom,
+                                           @QueryParam("lun") String lun,
+                                           @QueryParam("mar") String mar,
+                                           @QueryParam("mer") String mer,
+                                           @QueryParam("gio") String gio,
+                                           @QueryParam("ven") String ven,
+                                           @QueryParam("sab") String sab,
                                            @QueryParam("prezzo") String prezzo,
                                            @QueryParam("ora-inizio") String oraInizio,
                                            @QueryParam("ora-fine") String oraFine) {
         List<Planning> plannings;
         try {
-            plannings = planningService.findPlanningByFilter(macroMateria, nome, zona, microMateria, giornoSettimana, prezzo, oraInizio, oraFine);
+            plannings = planningService.findPlanningByFilter(macroMateria, nome, zona, microMateria, dom, lun, mar, mer, gio, ven, sab, prezzo, oraInizio, oraFine);
         } catch (DatabaseException | PlanningBusinessException | BookingBusinessException e) {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
