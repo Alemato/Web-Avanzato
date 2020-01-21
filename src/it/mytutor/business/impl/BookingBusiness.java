@@ -6,11 +6,9 @@ import it.mytutor.business.exceptions.UserException;
 import it.mytutor.business.services.BookingInterface;
 import it.mytutor.domain.*;
 import it.mytutor.domain.dao.exception.DatabaseException;
-import it.mytutor.domain.dao.implement.BookingDao;
-import it.mytutor.domain.dao.implement.StudentDao;
-import it.mytutor.domain.dao.implement.TeacherDao;
-import it.mytutor.domain.dao.implement.UserDao;
+import it.mytutor.domain.dao.implement.*;
 import it.mytutor.domain.dao.interfaces.BookingDaoInterface;
+import it.mytutor.domain.dao.interfaces.PlanningDaoInterface;
 
 import java.sql.Date;
 import java.text.ParseException;
@@ -118,9 +116,16 @@ public class BookingBusiness implements BookingInterface {
                 throw new UserException("Errore nel'aggiunta degli user");
             }
         }
-
-        bookings1 = dayOfWeek(bookings1, dom, lun, mar, mer, gio, ven, sab);
-
+        System.out.println(bookings1.size());
+        System.out.println(bookings1);
+        if (dom != null && !dom.isEmpty() && !dom.equals("0") || lun != null && !lun.isEmpty() && !lun.equals("0") ||
+                mar != null && !mar.isEmpty() && !mar.equals("0") || mer != null && !mer.isEmpty() && !mer.equals("0") ||
+                gio != null && !gio.isEmpty() && !gio.equals("0") || ven != null && !ven.isEmpty() && !ven.equals("0") ||
+                sab != null && !sab.isEmpty() && !sab.equals("0") ) {
+            bookings1 = dayOfWeek(bookings1, dom, lun, mar, mer, gio, ven, sab);
+        }
+        System.out.println(bookings1.size());
+        System.out.println(bookings1);
         return bookings1;
     }
 
@@ -222,27 +227,51 @@ public class BookingBusiness implements BookingInterface {
     }
 
     @Override
-    public void crateBookings(List<Booking> bookings) throws PlanningBusinessException {
+    public void crateBookings(List<Booking> bookings) throws BookingBusinessException {
         BookingDaoInterface bookingDao = new BookingDao();
+        PlanningDaoInterface planningDao = new PlanningDao();
+        Planning planning = new Planning();
 
         for (Booking booking : bookings) {
             try {
                 bookingDao.createBooking(booking);
             } catch (DatabaseException e) {
                 e.printStackTrace();
-                throw new PlanningBusinessException("Errore nel prendere l'oggetto booking");
+                throw new BookingBusinessException("Errore nel prendere l'oggetto booking");
+            }
+            planning = booking.getPlanning();
+            planning.setAvailable(false);
+            try {
+                planningDao.updatePlanning(planning);
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new BookingBusinessException("Errore nel modificare l'oggetto planning");
             }
         }
+
     }
 
     @Override
     public void updateBooking(Booking booking) throws BookingBusinessException {
         BookingDaoInterface bookingDao = new BookingDao();
+        PlanningDaoInterface planningDao = new PlanningDao();
+        Planning planning = new Planning();
         try {
             bookingDao.updateBooking(booking);
         } catch (DatabaseException e) {
             e.printStackTrace();
             throw new BookingBusinessException("Errore nel modificare l'oggetto booking");
+        }
+
+        if (booking.getLessonState().equals(2) || booking.getLessonState().equals(3)) {
+            planning = booking.getPlanning();
+            planning.setAvailable(true);
+            try {
+                planningDao.updatePlanning(planning);
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new BookingBusinessException("Errore nel modificare l'oggetto planning");
+            }
         }
     }
 
@@ -503,7 +532,7 @@ public class BookingBusiness implements BookingInterface {
         if (mer != null && !mer.equals("") && mer.equals("1")) {
             for (Booking booking: bookings) {
                 c.setTime(booking.getPlanning().getDate());
-                if (c.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY) {
+                if (c.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) {
                     bookings1.add(new Booking(booking.getIdBooking(), booking.getDate(), booking.getLessonState(),
                             booking.getCreateDate(), booking.getUpdateDate(), booking.getStudent(), booking.getPlanning()));
                 }
@@ -512,7 +541,7 @@ public class BookingBusiness implements BookingInterface {
         if (gio != null && !gio.equals("") && gio.equals("1")) {
             for (Booking booking: bookings) {
                 c.setTime(booking.getPlanning().getDate());
-                if (c.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) {
+                if (c.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY) {
                     bookings1.add(new Booking(booking.getIdBooking(), booking.getDate(), booking.getLessonState(),
                             booking.getCreateDate(), booking.getUpdateDate(), booking.getStudent(), booking.getPlanning()));
                 }
