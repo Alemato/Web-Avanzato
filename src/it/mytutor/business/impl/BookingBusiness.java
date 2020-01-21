@@ -20,7 +20,6 @@ import java.util.*;
 public class BookingBusiness implements BookingInterface {
 
 
-    //TODO da testare
     public List<Booking> findBookingByFilter(String macroMateria, String nome, String zona, String microMateria, String dom, String lun, String mar, String mer, String gio, String ven, String sab, String prezzo, String oraInizio, String oraFine) throws PlanningBusinessException, UserException, BookingBusinessException {
         UserDao userDao = new UserDao();
         BookingDaoInterface bookingDao = new BookingDao();
