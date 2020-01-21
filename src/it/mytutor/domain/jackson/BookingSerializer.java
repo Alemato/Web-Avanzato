@@ -39,6 +39,7 @@ public class BookingSerializer extends StdSerializer<Booking> {
         jsonGenerator.writeStringField("email", booking.getStudent().getEmail());
         jsonGenerator.writeStringField("name", booking.getStudent().getName());
         jsonGenerator.writeStringField("surname", booking.getStudent().getSurname());
+        System.out.println(booking.getStudent());
         long bMillis = booking.getStudent().getBirthday().getTime();
         jsonGenerator.writeNumberField("birthday", bMillis);
         jsonGenerator.writeBooleanField("language", booking.getStudent().getLanguage());
