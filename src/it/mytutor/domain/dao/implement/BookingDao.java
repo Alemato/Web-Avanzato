@@ -54,14 +54,14 @@ public class BookingDao implements BookingDaoInterface {
             "join Teacher t on t.IdTeacher = l.IdTeacher " +
             "join Subject s on l.IdSubject = s.IdSubject " +
             "join Student st on b.IdStudent = st.IdStudent " +
-            "where (b.IdStudent = ?) and (0 = ? or s.MacroSubject = ?) and (0 = ? or match(l.Name) AGAINST(?)) and (0 = ? or s.MicroSubject = ?) and (0 = ? or b.Date = ?) and (0 = ? or l.IdTeacher = ?) and (0 = ? or b.LessonState = ?) and (b.LessonState != 0) and (b.LessonState != 1) ";
+            "where (b.IdStudent = ?) and (0 = ? or s.MacroSubject = ?) and (0 = ? or match(l.Name) AGAINST(?)) and (0 = ? or s.MicroSubject = ?) and (0 = ? or b.Date = ?) and (0 = ? or l.IdTeacher = ?) and (0 = ? or b.LessonState = ?)";
     private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_TEACHER_AND_FILTER_STATEMENT = "select * from Booking b " +
             "join Planning p on b.IdPlanning = p.IdPlanning " +
             "join Lesson l on p.IdLesson = l.IdLesson " +
             "join Teacher t on t.IdTeacher = l.IdTeacher " +
             "join Subject s on l.IdSubject = s.IdSubject " +
             "join Student st on b.IdStudent = st.IdStudent " +
-            "where (l.IdTeacher = ?) and (0 = ? or s.MacroSubject = ?) and (0 = ? or l.Name = ?) and (0 = ? or s.MicroSubject = ?) and (0 = ? or b.Date = ?) and (0 = ? or b.IdStudent = ?) and (0 = ? or b.LessonState = ?) and (b.LessonState != 0) and (b.LessonState != 1) ";
+            "where (l.IdTeacher = ?) and (0 = ? or s.MacroSubject = ?) and (0 = ? or l.Name = ?) and (0 = ? or s.MicroSubject = ?) and (0 = ? or b.Date = ?) and (0 = ? or b.IdStudent = ?) and (0 = ? or b.LessonState = ?)";
     private static final String GET_ALL_BOOOKING_OF_A_TEACHER_STATEMENT = "select * from Booking b " +
             "join Planning p on p.IdPlanning = b.IdPlanning " +
             "join Lesson l on l.IdLesson = p.IdLesson " +
