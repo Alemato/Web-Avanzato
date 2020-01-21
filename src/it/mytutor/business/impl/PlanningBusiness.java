@@ -72,13 +72,12 @@ public class PlanningBusiness implements PlanningInterface {
         long cost = 3600000;
 
 
-
-        for (Planning planning: plannings) {
+        for (Planning planning : plannings) {
             Date dateAppo = new Date(planning.getDate().getTime());
             Date dateAddWeek = new Date(planning.getDate().getTime());
             planningList.add(planning);
 
-            while (dateAddWeek.before(addYearToJavaUtilDate(dateAppo))){
+            while (dateAddWeek.before(addYearToJavaUtilDate(dateAppo))) {
                 dateAddWeek = addWeekToJavaUtilDate(dateAddWeek);
                 planningList.add(new Planning(planning.getIdPlanning(), new java.sql.Date(dateAddWeek.getTime()),
                         planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(),
@@ -162,7 +161,6 @@ public class PlanningBusiness implements PlanningInterface {
     }
 
 
-
     @Override
     public void addPlannings(List<Planning> plannings) throws PlanningBusinessException {
         List<Planning> planningsOrari = new ArrayList<>();
@@ -172,12 +170,12 @@ public class PlanningBusiness implements PlanningInterface {
         boolean check = false;
         long cost = 3600000;
 
-        for (Planning planning: plannings) {
+        for (Planning planning : plannings) {
             Date dateAppo = new Date(planning.getDate().getTime());
             Date dateAddWeek = new Date(planning.getDate().getTime());
             planningList.add(planning);
 
-            while (dateAddWeek.before(addYearToJavaUtilDate(dateAppo))){
+            while (dateAddWeek.before(addYearToJavaUtilDate(dateAppo))) {
                 dateAddWeek = addWeekToJavaUtilDate(dateAddWeek);
                 planningList.add(new Planning(planning.getIdPlanning(), new java.sql.Date(dateAddWeek.getTime()), planning.getStartTime(),
                         planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
@@ -239,7 +237,7 @@ public class PlanningBusiness implements PlanningInterface {
 
     @Override
     public List<Planning> findPlanningByFilter(String macroMateria, String nome, String zona, String microMateria,
-                                               String dom, String lun, String mar, String mer, String gio, String ven, String sab,  String prezzo, String oraInizio, String oraFine) throws PlanningBusinessException {
+                                               String dom, String lun, String mar, String mer, String gio, String ven, String sab, String prezzo, String oraInizio, String oraFine) throws PlanningBusinessException {
         PlanningDaoInterface planningDao = new PlanningDao();
         List<Planning> plannings;
         int macroMateriaRelevant = 0;
@@ -279,7 +277,13 @@ public class PlanningBusiness implements PlanningInterface {
             e.printStackTrace();
             throw new PlanningBusinessException("Errore nel prendere la lista dei planning");
         }
-        plannings = dayOfWeek(plannings, dom, lun, mar, mer, gio, ven, sab);
+        if (dom != null && !dom.isEmpty() && !dom.equals("0") || lun != null && !lun.isEmpty() && !lun.equals("0") ||
+                mar != null && !mar.isEmpty() && !mar.equals("0") || mer != null && !mer.isEmpty() && !mer.equals("0") ||
+                gio != null && !gio.isEmpty() && !gio.equals("0") || ven != null && !ven.isEmpty() && !ven.equals("0") ||
+                sab != null && !sab.isEmpty() && !sab.equals("0") ) {
+            plannings = dayOfWeek(plannings, dom, lun, mar, mer, gio, ven, sab);
+        }
+        System.out.println(plannings.size());
         return plannings;
     }
 
@@ -313,7 +317,7 @@ public class PlanningBusiness implements PlanningInterface {
         Calendar c = Calendar.getInstance();
         ArrayList<Planning> plannings1 = new ArrayList<>();
         if (dom != null && !dom.equals("") && dom.equals("1")) {
-            for (Planning planning: plannings) {
+            for (Planning planning : plannings) {
                 c.setTime(planning.getDate());
                 if (c.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
                     plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
@@ -321,7 +325,7 @@ public class PlanningBusiness implements PlanningInterface {
             }
         }
         if (lun != null && !lun.equals("") && lun.equals("1")) {
-            for (Planning planning: plannings) {
+            for (Planning planning : plannings) {
                 c.setTime(planning.getDate());
                 if (c.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
                     plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
@@ -330,7 +334,7 @@ public class PlanningBusiness implements PlanningInterface {
         }
         if (mar != null && !mar.equals("") && mar.equals("1")) {
             System.out.println("mar");
-            for (Planning planning: plannings) {
+            for (Planning planning : plannings) {
                 c.setTime(planning.getDate());
                 System.out.println(c.get(Calendar.DAY_OF_WEEK));
                 if (c.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY) {
@@ -339,23 +343,23 @@ public class PlanningBusiness implements PlanningInterface {
             }
         }
         if (mer != null && !mer.equals("") && mer.equals("1")) {
-            for (Planning planning: plannings) {
-                c.setTime(planning.getDate());
-                if (c.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY) {
-                    plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
-                }
-            }
-        }
-        if (gio != null && !gio.equals("") && gio.equals("1")) {
-            for (Planning planning: plannings) {
+            for (Planning planning : plannings) {
                 c.setTime(planning.getDate());
                 if (c.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) {
                     plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
                 }
             }
         }
+        if (gio != null && !gio.equals("") && gio.equals("1")) {
+            for (Planning planning : plannings) {
+                c.setTime(planning.getDate());
+                if (c.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY) {
+                    plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
+                }
+            }
+        }
         if (ven != null && !ven.equals("") && ven.equals("1")) {
-            for (Planning planning: plannings) {
+            for (Planning planning : plannings) {
                 c.setTime(planning.getDate());
                 if (c.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
                     plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
@@ -363,7 +367,7 @@ public class PlanningBusiness implements PlanningInterface {
             }
         }
         if (sab != null && !sab.equals("") && sab.equals("1")) {
-            for (Planning planning: plannings) {
+            for (Planning planning : plannings) {
                 c.setTime(planning.getDate());
                 if (c.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
                     plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
