@@ -20,7 +20,7 @@ public interface PlanningInterface {
     void updatePlanning(List<Planning> plannings) throws PlanningBusinessException;
 
     List<Planning> findPlanningByFilter(String macroMateria, String nome, String zona, String microMateria,
-                                        String giornoSettimana, String prezzo, String oraInizio, String oraFine) throws DatabaseException, BookingBusinessException, PlanningBusinessException;
+                                        String dom, String lun, String mar, String mer, String gio, String ven, String sab,  String prezzo, String oraInizio, String oraFine) throws DatabaseException, BookingBusinessException, PlanningBusinessException;
 
     List<Planning> findAllPlanningByLessonId(Integer idLesson) throws PlanningBusinessException;
 
