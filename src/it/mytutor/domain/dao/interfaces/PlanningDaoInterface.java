@@ -8,8 +8,7 @@ import java.util.List;
 
 public interface PlanningDaoInterface {
     List<Planning> getPlanningByFilter(int macroMateriaRelevant, String macroMateria, int nomeRelevant, String nome,
-                                       int zonaRelevant, String zona, int microMateriaRelevant, String microMateria,
-                                       int giornoSettimanaRelevant, String giornoSettimana, int prezzoRelevant,
+                                       int zonaRelevant, String zona, int microMateriaRelevant, String microMateria, int prezzoRelevant,
                                        String prezzo, int oraInizioRelevant, String oraInizio,
                                        int oraFineaRelevant, String oraFine) throws DatabaseException;
 

@@ -24,7 +24,7 @@ public class PlanningDao implements PlanningDaoInterface {
             "join User u on t.IdUser = u.IdUser " +
             "and (0 = ? or s.MacroSubject =?)\n" +
             "and (0 = ? or l.Name = ?) and (0 = ? or t.City = ?) and (0 = ? or s.MicroSubject = ?) " +
-            "and (0 = ? or DAYOFWEEK(p.Date) =? ) and (0 = ? or l.Price =? ) and (0 = ? or p.StartTime >= ? ) " +
+            "and (0 = ? or l.Price =? ) and (0 = ? or p.StartTime >= ? ) " +
             "and (0 = ? or p.EndTime <=? ) and (p.Available = 1)";
     private static final String GET_PLANNING_BY_LESSON_ID_STATEMENT = "select * from Planning p " +
             "join Lesson l on p.IdLesson = l.IdLesson " +
@@ -219,8 +219,7 @@ public class PlanningDao implements PlanningDaoInterface {
     @Override
     public List<Planning> getPlanningByFilter(int macroMateriaRelevant, String macroMateria, int nomeRelevant, String nome,
                                               int zonaRelevant, String zona, int microMateriaRelevant, String microMateria,
-                                              int giornoSettimanaRelevant, String giornoSettimana, int prezzoRelevant,
-                                              String prezzo, int oraInizioRelevant, String oraInizio,
+                                              int prezzoRelevant, String prezzo, int oraInizioRelevant, String oraInizio,
                                               int oraFineaRelevant, String oraFine) throws DatabaseException {
         List<Planning> plannings = new ArrayList<>();
         Connection connection = DaoFactory.getConnection();
@@ -242,14 +241,12 @@ public class PlanningDao implements PlanningDaoInterface {
             prs.setString(6, zona);
             prs.setInt(7, microMateriaRelevant);
             prs.setString(8, microMateria);
-            prs.setInt(9, giornoSettimanaRelevant);
-            prs.setString(10, giornoSettimana);
-            prs.setInt(11, prezzoRelevant);
-            prs.setString(12, prezzo);
-            prs.setInt(13, oraInizioRelevant);
-            prs.setString(14, oraInizio);
-            prs.setInt(15, oraFineaRelevant);
-            prs.setString(16, oraFine);
+            prs.setInt(9, prezzoRelevant);
+            prs.setString(10, prezzo);
+            prs.setInt(11, oraInizioRelevant);
+            prs.setString(12, oraInizio);
+            prs.setInt(13, oraFineaRelevant);
+            prs.setString(14, oraFine);
 
             rs = prs.executeQuery();
             configurelanningList(plannings, rs);
