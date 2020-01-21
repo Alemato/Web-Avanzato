@@ -22,14 +22,16 @@ public class SubjectDao implements SubjectDaoInterface {
             "join Booking b on p.IdPlanning = b.IdPlanning " +
             "join Student st on b.IdStudent = st.IdStudent " +
             "join User u on st.IdStudent = u.IdUser " +
-            "where u.Email = ?";
+            "where u.Email = ? " +
+            "group by s.IdSubject ";
     private static final String GET_STORICO_SUBJECT_TEACHER_STATEMENT = "select * from Subject s " +
             "join Lesson l on l.IdSubject = s.IdSubject " +
             "join Planning p on l.IdLesson = p.IdLesson " +
             "join Booking b on p.IdPlanning = b.IdPlanning " +
             "join Teacher t on l.IdTeacher = t.IdTeacher " +
             "join User u on t.IdUser = u.IdUser " +
-            "where u.Email = ?";
+            "where u.Email = ? " +
+            "group by s.IdSubject ";
     private static final String CREATE_SUBJECT_STATEMENT = "insert into Subject(macroSubject,microSubject) values(?,?)";
     private static final String GET_ALL_SUBJECT_STATEMENT = "select * from Subject";
 
