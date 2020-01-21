@@ -36,7 +36,7 @@ public class PrenotazioniRest {
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"STUDENT"})
     public Response creaPrenotazione(List<Booking> bookings){
 
@@ -53,7 +53,7 @@ public class PrenotazioniRest {
         }
         try {
             bookingService.crateBookings(bookings);
-        } catch (PlanningBusinessException e) {
+        } catch (PlanningBusinessException | BookingBusinessException e) {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
