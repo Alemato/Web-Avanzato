@@ -283,7 +283,6 @@ public class PlanningBusiness implements PlanningInterface {
                 sab != null && !sab.isEmpty() && !sab.equals("0") ) {
             plannings = dayOfWeek(plannings, dom, lun, mar, mer, gio, ven, sab);
         }
-        System.out.println(plannings.size());
         return plannings;
     }
 
