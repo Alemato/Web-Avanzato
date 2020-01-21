@@ -25,7 +25,7 @@ public class PlanningDao implements PlanningDaoInterface {
             "and (0 = ? or s.MacroSubject =?)\n" +
             "and (0 = ? or l.Name = ?) and (0 = ? or t.City = ?) and (0 = ? or s.MicroSubject = ?) " +
             "and (0 = ? or l.Price =? ) and (0 = ? or p.StartTime >= ? ) " +
-            "and (0 = ? or p.EndTime <=? ) and (p.Available = 1)";
+            "and (0 = ? or p.StartTime <=? ) and (p.Available = 1)";
     private static final String GET_PLANNING_BY_LESSON_ID_STATEMENT = "select * from Planning p " +
             "join Lesson l on p.IdLesson = l.IdLesson " +
             "join Subject s on l.IdSubject = s.IdSubject " +
