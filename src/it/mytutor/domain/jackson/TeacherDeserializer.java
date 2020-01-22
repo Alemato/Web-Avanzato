@@ -36,7 +36,7 @@ public class TeacherDeserializer extends StdDeserializer<Teacher> {
         teacher.setSurname(node.get("surname").asText());
         Date bDate = new Date(node.get("birthday").asLong());
         teacher.setBirthday(bDate);
-        teacher.setLanguage(Boolean.getBoolean(node.get("language").asText()));
+        teacher.setLanguage(node.get("language").asBoolean());
         if(node.get("image").asText().equals("null") || node.get("image").asText().equals("")){
             teacher.setImage(null);
         } else teacher.setImage(node.get("image").asText());
