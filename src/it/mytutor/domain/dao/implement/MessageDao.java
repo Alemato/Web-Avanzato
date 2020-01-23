@@ -17,9 +17,9 @@ import java.util.List;
 public class MessageDao implements MessageDaoInterface {
     private static final String CREATE_MESSAGE_STATEMENT = "insert into Message(text,sendDate,IdChat,IdUser) values (?,?,?,?)";
     private static final String GET_MESSAGE_BY_ID_STATEMENT = "select * from Message m, Chat c, User u where m.IdChat = c.IdChat AND m.IdUser = u.IdUser AND IdMessage = ?";
-    private static final String GET_ALL_MESSAGE_OF_CHAT_STATEMENT = "select * from Message m , Chat c, User u where m.IdChat = c.IdChat AND m.IdUser = u.IdUser AND m.IdChat = ? ORDER BY m.SendDate DESC";
-    private static final String GET_ALL_MESSAGE_OF_CHAT_STATEMENT_LIMIT_5 = "select * from Message m , Chat c, User u where m.IdChat = c.IdChat AND m.IdUser = u.IdUser AND m.IdChat = ? ORDER BY m.SendDate DESC LIMIT 5";
-    private static final String GET_A_MESSAGE_OF_CHAT_STATEMEN = "select * from Message m, Chat c, User u where m.IdChat = c.IdChat AND m.IdUser = u.IdUser AND m.IdChat = ? ORDER BY m.SendDate DESC LIMIT 1";
+    private static final String GET_ALL_MESSAGE_OF_CHAT_STATEMENT = "select * from Message m , Chat c, User u where m.IdChat = c.IdChat AND m.IdUser = u.IdUser AND m.IdChat = ? ORDER BY m.SendDate DESC, m.IdMessage DESC";
+    private static final String GET_ALL_MESSAGE_OF_CHAT_STATEMENT_LIMIT_5 = "select * from Message m , Chat c, User u where m.IdChat = c.IdChat AND m.IdUser = u.IdUser AND m.IdChat = ? ORDER BY m.SendDate DESC, m.IdMessage DESC LIMIT 5";
+    private static final String GET_A_MESSAGE_OF_CHAT_STATEMEN = "select * from Message m, Chat c, User u where m.IdChat = c.IdChat AND m.IdUser = u.IdUser AND m.IdChat = ? ORDER BY m.SendDate DESC, m.IdMessage DESC LIMIT 1";
 
     private void configureMessage(Message message, Chat chat, User user, ResultSet resultSet) throws DatabaseException {
         try {
