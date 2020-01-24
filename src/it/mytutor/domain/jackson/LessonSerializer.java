@@ -46,7 +46,7 @@ public class LessonSerializer extends StdSerializer<Lesson> {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idTeacher", lesson.getTeacher().getIdTeacher());
         jsonGenerator.writeNumberField("postCode", lesson.getTeacher().getPostCode());
-        jsonGenerator.writeStringField("City", lesson.getTeacher().getCity());
+        jsonGenerator.writeStringField("city", lesson.getTeacher().getCity());
         jsonGenerator.writeStringField("region", lesson.getTeacher().getRegion());
         jsonGenerator.writeStringField("street", lesson.getTeacher().getStreet());
         jsonGenerator.writeStringField("streetNumber", lesson.getTeacher().getStreetNumber());

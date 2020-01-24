@@ -90,7 +90,7 @@ public class BookingSerializer extends StdSerializer<Booking> {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idTeacher", booking.getPlanning().getLesson().getTeacher().getIdTeacher());
         jsonGenerator.writeNumberField("postCode", booking.getPlanning().getLesson().getTeacher().getPostCode());
-        jsonGenerator.writeStringField("City", booking.getPlanning().getLesson().getTeacher().getCity());
+        jsonGenerator.writeStringField("city", booking.getPlanning().getLesson().getTeacher().getCity());
         jsonGenerator.writeStringField("region", booking.getPlanning().getLesson().getTeacher().getRegion());
         jsonGenerator.writeStringField("street", booking.getPlanning().getLesson().getTeacher().getStreet());
         jsonGenerator.writeStringField("streetNumber", booking.getPlanning().getLesson().getTeacher().getStreetNumber());

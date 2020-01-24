@@ -59,7 +59,7 @@ public class PlanningSerializer extends StdSerializer<Planning> {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idTeacher", planning.getLesson().getTeacher().getIdTeacher());
         jsonGenerator.writeNumberField("postCode", planning.getLesson().getTeacher().getPostCode());
-        jsonGenerator.writeStringField("City", planning.getLesson().getTeacher().getCity());
+        jsonGenerator.writeStringField("city", planning.getLesson().getTeacher().getCity());
         jsonGenerator.writeStringField("region", planning.getLesson().getTeacher().getRegion());
         jsonGenerator.writeStringField("street", planning.getLesson().getTeacher().getStreet());
         jsonGenerator.writeStringField("streetNumber", planning.getLesson().getTeacher().getStreetNumber());
