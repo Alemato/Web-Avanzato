@@ -133,7 +133,8 @@ public class PlanningRest {
     @Path("delete")
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"TEACHER", "STUDENT"})
     public Response deletePlannings(List<Planning> plannings) {
         try {
             planningService.deletePlannings(plannings);
@@ -211,7 +212,7 @@ public class PlanningRest {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"STUDENT, TEACHER"})
+    @RolesAllowed({"TEACHER", "STUDENT"})
     public Response getPlanningsForALesson(@PathParam("LID") Integer idLesson, @QueryParam("booked-up") String bookedUp) {
         List<Planning> plannings;
         String userEmail = securityContext.getUserPrincipal().getName();
