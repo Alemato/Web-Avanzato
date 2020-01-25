@@ -1,5 +1,6 @@
 package it.mytutor.domain.dao.interfaces;
 
+import it.mytutor.domain.Lesson;
 import it.mytutor.domain.Planning;
 import it.mytutor.domain.Student;
 import it.mytutor.domain.dao.exception.DatabaseException;
@@ -20,6 +21,8 @@ public interface PlanningDaoInterface {
     void createPlanning(Planning planning) throws DatabaseException;
 
     void addPlanning(Planning planning) throws DatabaseException;
+
+    void deletePlanningsByLesson(Lesson lesson) throws DatabaseException;
 
     void deletePlanning(Planning planning) throws DatabaseException;
 
