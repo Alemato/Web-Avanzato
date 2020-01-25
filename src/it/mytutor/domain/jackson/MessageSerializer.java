@@ -32,7 +32,7 @@ public class MessageSerializer extends StdSerializer<Message> {
         jsonGenerator.writeFieldName("chat");
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("idChat", message.getChat().getIdChat());
-        jsonGenerator.writeStringField("chatName", message.getChat().getName());
+        jsonGenerator.writeStringField("name", message.getChat().getName());
         long chatCreateDate = message.getChat().getCreateDate().getTime();
         jsonGenerator.writeNumberField("chatCreateDate", chatCreateDate);
         long chatUpdateDate = message.getChat().getUpdateDate().getTime();

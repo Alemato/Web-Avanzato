@@ -37,7 +37,7 @@ public class MessageDeserializer extends StdDeserializer<Message> {
         if (chatNode.get("idChat") != null) {
             chat.setIdChat(chatNode.get("idChat").asInt());
         }
-        chat.setName(chatNode.get("chatName").asText());
+        chat.setName(chatNode.get("name").asText());
         message.setChat(chat);
 
         User user = new User();

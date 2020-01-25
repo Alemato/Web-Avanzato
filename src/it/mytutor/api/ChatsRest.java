@@ -154,7 +154,7 @@ public class ChatsRest {
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
 
-        if (user.getRoles().equals(1)) {
+        if (user.getRoles().equals(2)) {
             try {
                 createsService.createCreates(addressee, chatName, user.getIdUser());
             } catch (ChatBusinessException e) {
