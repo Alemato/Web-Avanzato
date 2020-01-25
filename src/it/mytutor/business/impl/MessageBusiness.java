@@ -36,20 +36,18 @@ public class MessageBusiness implements MessageInterface {
         List<Message> messages;
         List<Message> messages1 = new ArrayList<>();
         MessageDaoInterface messageDao = new MessageDao();
-        boolean i = false;
         try {
             messages = messageDao.getAllMessagesOfChat(idChat);
         } catch (DatabaseException e) {
             e.printStackTrace();
             throw new MessageBusinessException("Errore nel prendere i messaggi");
         }
+        System.out.println(messages);
         for (Message message : messages) {
-            if (message.getIdMessage().equals(idLastMessage) || i) {
-                if (i) {
-                    messages1.add(message);
-                }
-                i = true;
+            if (message.getIdMessage().equals(idLastMessage)) {
+                break;
             }
+            messages1.add(message);
         }
         return messages1;
     }

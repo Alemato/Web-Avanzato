@@ -172,31 +172,36 @@ public class ChatsRest {
         return Response.ok().build();
     }
 
-/*    @Path("creates")
+    /***
+     *  ritorna una creates, serve per id chat esistente per la pagina lesson
+     * @param idUser2
+     * @return
+     */
+    @Path("creates")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"STUDENT", "TEACHER"})
-    public Response getCreates() {
-
-        User user;
-        String email = securityContext.getUserPrincipal().getName();
-        try {
-            user = (User) userService.findUserByUsername(email);
-        } catch (UserException | DatabaseException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-        }
-
-        try {
-            creates = createsService.getCreatesbyId(user.getIdUser())
-
-        }catch (DatabaseException e){
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
-        }
-        return Response.ok(creates).build();
-    }*/
+    public Response getCreates(@QueryParam("idUser2") String idUser2) {
+        if (idUser2 != null && !idUser2.isEmpty() && !idUser2.equals(" ")) {
+            User user;
+            List<Creates> creates = new ArrayList<Creates>();
+            String email = securityContext.getUserPrincipal().getName();
+            try {
+                user = (User) userService.findUserByUsername(email);
+            } catch (UserException | DatabaseException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+            try {
+                creates = createsService.getCreatesByIdUser(Integer.parseInt(idUser2));
+            } catch (ChatBusinessException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
+            return Response.ok(creates).build();
+        } else throw new ApiWebApplicationException("Errore interno al server: non è stato inserito idUser2");
+    }
 
 
 
