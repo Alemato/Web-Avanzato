@@ -31,30 +31,51 @@ public class PlanningBusiness implements PlanningInterface {
         LessonDaoInterface lessonDao = new LessonDao();
         SubjectDaoInterface subjectDao = new SubjectDao();
         List<Planning> planningList = new ArrayList<>();
+        List<Subject> subjectList = new ArrayList<>();
+        Subject subject = new Subject();
+        boolean existSubject = false;
         int i;
 
         try {
-            subjectDao.createSubject(plannings.get(0).getLesson().getSubject());
+            subjectList = subjectDao.getAllSubject();
         } catch (DatabaseException e) {
             e.printStackTrace();
-            throw new SubjectBusinessException("Errore nel'aggiunta del subject nel database");
+            throw new SubjectBusinessException("Errore nel prendere i Subject dal database");
+        }
+
+        for (Subject subject1 : subjectList) {
+            if (plannings.get(0).getLesson().getSubject().getMicroSubject().equals(subject1.getMicroSubject())) {
+                subject = subject1;
+                existSubject = true;
+                break;
+            }
+        }
+        if (!existSubject) {
+            try {
+                subjectDao.createSubject(plannings.get(0).getLesson().getSubject());
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new SubjectBusinessException("Errore nel'aggiunta del subject nel database");
+            }
         }
         Lesson lesson = plannings.get(0).getLesson();
         lesson.setTeacher(teacher);
+        if (!existSubject) {
+            subject = plannings.get(0).getLesson().getSubject();
 
-        Subject subject = plannings.get(0).getLesson().getSubject();
-        List<Subject> subjects;
+            List<Subject> subjects;
 
-        try {
-            subjects = subjectDao.getSubjectsByName(plannings.get(0).getLesson().getSubject().getMacroSubject());
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-            throw new SubjectBusinessException("Errore nel prendere gli oggetti subject dal database");
-        }
-        for (Subject subject1 : subjects) {
-            if (subject1.getMicroSubject().equals(plannings.get(0).getLesson().getSubject().getMicroSubject())) {
-                subject.setIdSubject(subject1.getIdSubject());
-                break;
+            try {
+                subjects = subjectDao.getSubjectsByName(plannings.get(0).getLesson().getSubject().getMacroSubject());
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new SubjectBusinessException("Errore nel prendere gli oggetti subject dal database");
+            }
+            for (Subject subject1 : subjects) {
+                if (subject1.getMicroSubject().equals(plannings.get(0).getLesson().getSubject().getMicroSubject())) {
+                    subject.setIdSubject(subject1.getIdSubject());
+                    break;
+                }
             }
         }
         lesson.setSubject(subject);
@@ -116,6 +137,7 @@ public class PlanningBusiness implements PlanningInterface {
         }
 
         for (Planning planning : planningsOrari) {
+            planning.setAvailable(true);
             planning.setLesson(lesson);
             try {
                 planningDao.createPlanning(planning);
@@ -123,6 +145,17 @@ public class PlanningBusiness implements PlanningInterface {
                 e.printStackTrace();
                 throw new PlanningBusinessException("Errore nel'aggiunta del planning nel database");
             }
+        }
+    }
+
+    @Override
+    public void deletePlanningsByLesson(Lesson lesson) throws PlanningBusinessException {
+        PlanningDaoInterface planningDao = new PlanningDao();
+        try {
+            planningDao.deletePlanningsByLesson(lesson);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new PlanningBusinessException("Errore nell'aggiunta dei plannings");
         }
     }
 
@@ -212,7 +245,7 @@ public class PlanningBusiness implements PlanningInterface {
         }
 
         for (Planning planning : planningsOrari) {
-
+            planning.setAvailable(true);
             try {
                 planningDao.addPlanning(planning);
             } catch (DatabaseException e) {
@@ -226,6 +259,8 @@ public class PlanningBusiness implements PlanningInterface {
     public void updatePlanning(List<Planning> plannings) throws PlanningBusinessException {
         PlanningDaoInterface planningDao = new PlanningDao();
         for (Planning planning : plannings) {
+
+
             try {
                 planningDao.updatePlanning(planning);
             } catch (DatabaseException e) {
@@ -280,7 +315,7 @@ public class PlanningBusiness implements PlanningInterface {
         if (dom != null && !dom.isEmpty() && !dom.equals("0") || lun != null && !lun.isEmpty() && !lun.equals("0") ||
                 mar != null && !mar.isEmpty() && !mar.equals("0") || mer != null && !mer.isEmpty() && !mer.equals("0") ||
                 gio != null && !gio.isEmpty() && !gio.equals("0") || ven != null && !ven.isEmpty() && !ven.equals("0") ||
-                sab != null && !sab.isEmpty() && !sab.equals("0") ) {
+                sab != null && !sab.isEmpty() && !sab.equals("0")) {
             plannings = dayOfWeek(plannings, dom, lun, mar, mer, gio, ven, sab);
         }
         return plannings;
