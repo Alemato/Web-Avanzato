@@ -13,6 +13,7 @@ import it.mytutor.domain.dao.implement.SubjectDao;
 import it.mytutor.domain.dao.interfaces.LessonDaoInterface;
 import it.mytutor.domain.dao.interfaces.SubjectDaoInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LessonBusiness implements LessonInterface {
@@ -46,13 +47,54 @@ public class LessonBusiness implements LessonInterface {
     public void updateLessson(Lesson lesson) throws SubjectBusinessException, LessonBusinessException {
         LessonDaoInterface lessonDao = new LessonDao();
         SubjectDaoInterface subjectDao = new SubjectDao();
+        List<Subject> subjectList = new ArrayList<>();
+
+        Subject subject = new Subject();
+
+        boolean existSubject = false;
+
 
         try {
-            subjectDao.modifySubjectByID(lesson.getSubject());
+            subjectList = subjectDao.getAllSubject();
         } catch (DatabaseException e) {
             e.printStackTrace();
-            throw new SubjectBusinessException("Errore nella modifica della materia nella modifica lezione");
+            throw new SubjectBusinessException("Errore nel prendere i Subject dal database");
         }
+
+        for (Subject subject1 : subjectList) {
+            if (lesson.getSubject().getMicroSubject().equals(subject1.getMicroSubject()) &&
+                    lesson.getSubject().getMacroSubject().equals(subject1.getMacroSubject())) {
+                subject = subject1;
+                existSubject = true;
+                break;
+            }
+        }
+        if (!existSubject) {
+            try {
+                subjectDao.createSubject(lesson.getSubject());
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new SubjectBusinessException("Errore nel'aggiunta del subject nel database");
+            }
+            subject = lesson.getSubject();
+
+            List<Subject> subjects;
+
+            try {
+                subjects = subjectDao.getSubjectsByName(lesson.getSubject().getMacroSubject());
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new SubjectBusinessException("Errore nel prendere gli oggetti subject dal database");
+            }
+            for (Subject subject1 : subjects) {
+                if (subject1.getMicroSubject().equals(lesson.getSubject().getMicroSubject())) {
+                    subject.setIdSubject(subject1.getIdSubject());
+                    break;
+                }
+            }
+        }
+        lesson.setSubject(subject);
+
 
         try {
             lessonDao.modifyLesson(lesson);
