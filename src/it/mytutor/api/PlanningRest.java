@@ -2,14 +2,13 @@ package it.mytutor.api;
 
 import it.mytutor.api.test.ApiWebApplicationException;
 import it.mytutor.business.exceptions.*;
+import it.mytutor.business.impl.LessonBusiness;
 import it.mytutor.business.impl.PlanningBusiness;
 import it.mytutor.business.impl.UserBusiness;
+import it.mytutor.business.services.LessonInterface;
 import it.mytutor.business.services.PlanningInterface;
 import it.mytutor.business.services.UserInterface;
-import it.mytutor.domain.Planning;
-import it.mytutor.domain.Student;
-import it.mytutor.domain.Teacher;
-import it.mytutor.domain.User;
+import it.mytutor.domain.*;
 import it.mytutor.domain.dao.exception.DatabaseException;
 
 import javax.annotation.security.RolesAllowed;
@@ -29,6 +28,7 @@ public class PlanningRest {
 
     private PlanningInterface planningService = new PlanningBusiness();
     private UserInterface userService = new UserBusiness();
+    private LessonInterface lessonInterface = new LessonBusiness();
 
     /**
      * Rest Creazione del planning concesa solamente al professore
@@ -57,14 +57,13 @@ public class PlanningRest {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
-        return Response.ok(Response.Status.ACCEPTED).entity("Lezione pianificata").build();
+        return Response.ok().build();
     }
 
+
     /**
-     * modifica dei planning
-     *
-     * @param plannings lista di planning
-     * @return Response Status ACCEPTED
+     * @param plannings
+     * @return
      */
     @Path("modify")
     @PUT
@@ -73,11 +72,41 @@ public class PlanningRest {
     @RolesAllowed({"TEACHER"})
     public Response updateLesson(List<Planning> plannings) {
         try {
-            planningService.updatePlanning(plannings);
+            planningService.deletePlanningsByLesson(plannings.get(0).getLesson());
         } catch (PlanningBusinessException e) {
             e.printStackTrace();
         }
-        return Response.ok(Response.Status.ACCEPTED).entity("Pianificazione modificata").build();
+
+        try {
+            planningService.addPlannings(plannings);
+        } catch (PlanningBusinessException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        }
+
+        try {
+            lessonInterface.updateLessson(plannings.get(0).getLesson());
+        } catch (LessonBusinessException | SubjectBusinessException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        }
+
+//        String teacherEmail = securityContext.getUserPrincipal().getName();
+//        Teacher teacher;
+//        try {
+//            teacher = (Teacher) userService.findUserByUsername(teacherEmail);
+//        } catch (UserException | DatabaseException e) {
+//            e.printStackTrace();
+//            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+//        }
+//        try {
+//            planningService.creaPlanning(plannings, teacher);
+//        } catch (PlanningBusinessException | SubjectBusinessException | LessonBusinessException e) {
+//            e.printStackTrace();
+//            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+//        }
+
+        return Response.ok().entity("Pianificazione modificata").build();
     }
 
     /**
