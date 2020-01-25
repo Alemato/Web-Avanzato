@@ -15,6 +15,7 @@ import java.util.List;
 public class PlanningDao implements PlanningDaoInterface {
     private static final String CREATE_PLANNING_STATEMENT = "insert into Planning (Date, StartTime, EndTime, Available, IdLesson) values (?,?,?,?,?)";
     private static final String ADD_PLANNING_STATEMENT = "insert into Planning (Date, StartTime, EndTime, Available, IdLesson) values (?,?,?,?,?)";
+    private static final String DELETE_PLANNING_BY_ID_LESSON_STATEMENT = "delete from Planning where IdLesson = ? and Available = true";
     private static final String DELETE_PLANNING_STATEMENT = "delete from Planning where IdPlanning = ?";
     private static final String UPDATE_PLANNING_STATEMENT = "update Planning set Date=?, StartTime=?, EndTime=?, Available=?, IdLesson=? where IdPlanning=?";
     private static final String GET_PLANNING_BY_FILTER_STATEMENT = "SELECT * from Planning p " +
@@ -22,10 +23,10 @@ public class PlanningDao implements PlanningDaoInterface {
             "join Subject s on l.IdSubject = s.IdSubject " +
             "join Teacher t on l.IdTeacher = t.IdTeacher " +
             "join User u on t.IdUser = u.IdUser " +
-            "and (0 = ? or s.MacroSubject =?)\n" +
-            "and (0 = ? or l.Name = ?) and (0 = ? or t.City = ?) and (0 = ? or s.MicroSubject = ?) " +
+            "where (0 = ? or s.MacroSubject = ?) " +
+            "and (0 = ? or match(l.Name) AGAINST (?)) and (0 = ? or t.City = ?) and (0 = ? or s.MicroSubject = ?) " +
             "and (0 = ? or l.Price =? ) and (0 = ? or p.StartTime >= ? ) " +
-            "and (0 = ? or p.StartTime <=? ) and (p.Available = 1)";
+            "and (0 = ? or p.StartTime <= ? ) and (p.Available = 1)";
     private static final String GET_PLANNING_BY_LESSON_ID_STATEMENT = "select * from Planning p " +
             "join Lesson l on p.IdLesson = l.IdLesson " +
             "join Subject s on l.IdSubject = s.IdSubject " +
@@ -166,7 +167,7 @@ public class PlanningDao implements PlanningDaoInterface {
             prs.setString(1, planning.getDate().toString());
             prs.setString(2, planning.getStartTime().toString());
             prs.setString(3, planning.getEndTime().toString());
-            prs.setBoolean(4, planning.getAvailable());
+            prs.setBoolean(4, true);
             prs.setInt(5, planning.getLesson().getIdLesson());
             prs.executeUpdate();
         } catch (SQLException e) {
@@ -176,6 +177,31 @@ public class PlanningDao implements PlanningDaoInterface {
             DaoFactory.closeDbConnection(conn, rs, prs);
         }
     }
+
+    @Override
+    public void deletePlanningsByLesson(Lesson lesson) throws DatabaseException  {
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(DELETE_PLANNING_BY_ID_LESSON_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+
+            prs.setInt(1, lesson.getIdLesson());
+            prs.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+    }
+
 
     @Override
     public void deletePlanning(Planning planning) throws DatabaseException  {
