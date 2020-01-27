@@ -32,7 +32,7 @@ public class PlanningDao implements PlanningDaoInterface {
             "join Subject s on l.IdSubject = s.IdSubject " +
             "join Teacher t on l.IdTeacher = t.IdTeacher " +
             "join User u on t.IdUser = u.IdUser " +
-            "where p.IdLesson = ? order by p.CreateDate";
+            "where p.IdLesson = ? and p.Available = true order by p.Date asc, p.StartTime asc";
     private static final String GET_PLANNING_BOOKED_UP_BY_LESSONID_STATEMENT = "select * from Planning p " +
             "join Booking b on p.IdPlanning = b.IdPlanning " +
             "join Lesson l on p.IdLesson = l.IdLesson " +
