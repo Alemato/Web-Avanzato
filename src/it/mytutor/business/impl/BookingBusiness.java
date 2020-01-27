@@ -22,6 +22,7 @@ public class BookingBusiness implements BookingInterface {
         UserDao userDao = new UserDao();
         BookingDaoInterface bookingDao = new BookingDao();
         List<Booking> bookings = new ArrayList<>();
+        List<Booking> bFinali = new ArrayList<>();
         int macroMateriaRelevant = 0;
         if (macroMateria != null && !macroMateria.isEmpty()) {
             macroMateriaRelevant = 1;
@@ -126,7 +127,22 @@ public class BookingBusiness implements BookingInterface {
         }
         System.out.println(bookings1.size());
         System.out.println(bookings1);
-        return bookings1;
+
+        for (Booking b: bookings1) {
+            if (b.getPlanning().getDate().getTime() > new Date(System.currentTimeMillis()).getTime()) {
+                bFinali.add(b);
+            } else {
+                PlanningDaoInterface planningDao = new PlanningDao();
+                b.getPlanning().setAvailable(false);
+                try {
+                    planningDao.updatePlanning(b.getPlanning());
+                } catch (DatabaseException e) {
+                    e.printStackTrace();
+                    throw new BookingBusinessException("Errore nel'aggiornare l'oggetto plenning");
+                }
+            }
+        }
+        return bFinali;
     }
 
     @Override
