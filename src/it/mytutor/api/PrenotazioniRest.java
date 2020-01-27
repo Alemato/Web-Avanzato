@@ -57,7 +57,7 @@ public class PrenotazioniRest {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
-        return Response.status(201).entity("prenotazione creata").build();
+        return Response.status(Response.Status.CREATED).build();
     }
 
     /**
