@@ -106,7 +106,7 @@ public class PlanningRest {
 //            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
 //        }
 
-        return Response.ok().entity("Pianificazione modificata").build();
+        return Response.status(Response.Status.CREATED).build();
     }
 
     /**
