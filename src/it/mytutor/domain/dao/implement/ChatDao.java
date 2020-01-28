@@ -99,9 +99,9 @@ private static final String GET_ALL_CHAT_BY_ID_USER = "select * from Chat c " +
             prs.setInt(2, idUser);
             rs = prs.executeQuery();
             configureChatList(chatList, rs);
-            if (chatList.isEmpty()) {
-                 throw new DatabaseException("rs is empty");
-            }
+//            if (chatList.isEmpty()) {
+//                 throw new DatabaseException("rs is empty");
+//            }
 
         } catch (SQLException e) {
             e.printStackTrace();

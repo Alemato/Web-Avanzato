@@ -59,10 +59,12 @@ public class ChatBusiness implements ChatInterface {
         List<Message> messageList = new ArrayList<Message>();
         ChatDao chatDao = new ChatDao();
         List<Chat> chatList = chatDao.getAllChatByIdUser(user.getIdUser());;
-        for (Chat chat: chatList) {
-            System.out.println(chat.getIdChat());
-            MessageDao messageDao = new MessageDao();
-            messageList.add(messageDao.getAMessageOfChat(chat.getIdChat()));
+        if (!chatList.isEmpty()) {
+            for (Chat chat : chatList) {
+                System.out.println(chat.getIdChat());
+                MessageDao messageDao = new MessageDao();
+                messageList.add(messageDao.getAMessageOfChat(chat.getIdChat()));
+            }
         }
         return messageList;
     }
