@@ -80,7 +80,7 @@ public class LezioniRest {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
         }
-        return Response.ok(Response.Status.ACCEPTED).entity("Lezione modificata").build();
+        return Response.status(Response.Status.CREATED).build();
     }
 
 }
