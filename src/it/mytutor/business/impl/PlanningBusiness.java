@@ -276,31 +276,31 @@ public class PlanningBusiness implements PlanningInterface {
         PlanningDaoInterface planningDao = new PlanningDao();
         List<Planning> plannings;
         int macroMateriaRelevant = 0;
-        if (macroMateria != null && !macroMateria.isEmpty()) {
+        if (macroMateria != null && !macroMateria.equals("null") && !macroMateria.isEmpty()  && !macroMateria.equals(" ")) {
             macroMateriaRelevant = 1;
         }
         int nomeRelevant = 0;
-        if (nome != null && !nome.isEmpty()) {
+        if (nome != null && !nome.equals("null") && !nome.isEmpty() && !nome.equals(" ")) {
             nomeRelevant = 1;
         }
         int zonaRelevant = 0;
-        if (zona != null && !zona.isEmpty()) {
+        if (zona != null && !zona.equals("null") && !zona.isEmpty() && !zona.equals(" ")) {
             zonaRelevant = 1;
         }
         int microMateriaRelevant = 0;
-        if (microMateria != null && !microMateria.isEmpty()) {
+        if (microMateria != null && !microMateria.equals("null") && !microMateria.isEmpty() && !microMateria.equals(" ")) {
             microMateriaRelevant = 1;
         }
         int prezzoRelevant = 0;
-        if (prezzo != null && !prezzo.isEmpty()) {
+        if (prezzo != null && !prezzo.equals("null") && !prezzo.isEmpty()&& !prezzo.equals(" ")) {
             prezzoRelevant = 1;
         }
         int oraInizioRelevant = 0;
-        if (oraInizio != null && !oraInizio.isEmpty()) {
+        if (oraInizio != null && !oraInizio.equals("null") && !oraInizio.isEmpty()  && !oraInizio.equals(" ")) {
             oraInizioRelevant = 1;
         }
         int oraFineaRelevant = 0;
-        if (oraFine != null && !oraFine.isEmpty()) {
+        if (oraFine != null && !oraFine.equals("null") && !oraFine.isEmpty() && !oraFine.equals(" ")) {
             oraFineaRelevant = 1;
         }
 
