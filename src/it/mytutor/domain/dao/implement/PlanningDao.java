@@ -179,7 +179,7 @@ public class PlanningDao implements PlanningDaoInterface {
     }
 
     @Override
-    public void deletePlanningsByLesson(Lesson lesson) throws DatabaseException  {
+    public void deletePlanningsByLesson(Integer idLesson) throws DatabaseException  {
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -192,7 +192,7 @@ public class PlanningDao implements PlanningDaoInterface {
                 throw new DatabaseException("Statement is null");
             }
 
-            prs.setInt(1, lesson.getIdLesson());
+            prs.setInt(1, idLesson);
             prs.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

@@ -22,7 +22,7 @@ public interface PlanningDaoInterface {
 
     void addPlanning(Planning planning) throws DatabaseException;
 
-    void deletePlanningsByLesson(Lesson lesson) throws DatabaseException;
+    void deletePlanningsByLesson(Integer idLesson) throws DatabaseException;
 
     void deletePlanning(Planning planning) throws DatabaseException;
 
