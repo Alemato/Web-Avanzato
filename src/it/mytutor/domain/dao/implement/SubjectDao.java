@@ -21,7 +21,7 @@ public class SubjectDao implements SubjectDaoInterface {
             "join Planning p on l.IdLesson = p.IdLesson " +
             "join Booking b on p.IdPlanning = b.IdPlanning " +
             "join Student st on b.IdStudent = st.IdStudent " +
-            "join User u on st.IdStudent = u.IdUser " +
+            "join User u on st.IdUser = u.IdUser " +
             "where u.Email = ? " +
             "group by s.IdSubject ";
     private static final String GET_STORICO_SUBJECT_TEACHER_STATEMENT = "select * from Subject s " +
