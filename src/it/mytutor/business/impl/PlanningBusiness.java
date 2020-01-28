@@ -1,13 +1,11 @@
 package it.mytutor.business.impl;
 
+import it.mytutor.business.exceptions.BookingBusinessException;
 import it.mytutor.business.exceptions.LessonBusinessException;
 import it.mytutor.business.exceptions.PlanningBusinessException;
 import it.mytutor.business.exceptions.SubjectBusinessException;
 import it.mytutor.business.services.PlanningInterface;
-import it.mytutor.domain.Lesson;
-import it.mytutor.domain.Planning;
-import it.mytutor.domain.Subject;
-import it.mytutor.domain.Teacher;
+import it.mytutor.domain.*;
 import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.implement.LessonDao;
 import it.mytutor.domain.dao.implement.PlanningDao;
@@ -275,6 +273,7 @@ public class PlanningBusiness implements PlanningInterface {
                                                String dom, String lun, String mar, String mer, String gio, String ven, String sab, String prezzo, String oraInizio, String oraFine) throws PlanningBusinessException {
         PlanningDaoInterface planningDao = new PlanningDao();
         List<Planning> plannings;
+        List<Planning> pFinali = new ArrayList<>();
         int macroMateriaRelevant = 0;
         if (macroMateria != null && !macroMateria.equals("null") && !macroMateria.isEmpty()  && !macroMateria.equals(" ")) {
             macroMateriaRelevant = 1;
@@ -318,7 +317,22 @@ public class PlanningBusiness implements PlanningInterface {
                 sab != null && !sab.isEmpty() && !sab.equals("0")) {
             plannings = dayOfWeek(plannings, dom, lun, mar, mer, gio, ven, sab);
         }
-        return plannings;
+
+        for (Planning p: plannings) {
+            if (p.getDate().getTime() > new java.sql.Date(System.currentTimeMillis()).getTime()) {
+                pFinali.add(p);
+            } else {
+                PlanningDaoInterface planningDaoRep = new PlanningDao();
+                p.setAvailable(false);
+                try {
+                    planningDaoRep.updatePlanning(p);
+                } catch (DatabaseException e) {
+                    e.printStackTrace();
+                    throw new PlanningBusinessException("Errore nel'aggiornare l'oggetto plenning");
+                }
+            }
+        }
+        return pFinali;
     }
 
     @Override

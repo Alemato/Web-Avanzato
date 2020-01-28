@@ -33,7 +33,7 @@ public class SubjectDao implements SubjectDaoInterface {
             "where u.Email = ? " +
             "group by s.IdSubject ";
     private static final String CREATE_SUBJECT_STATEMENT = "insert into Subject(macroSubject,microSubject) values(?,?)";
-    private static final String GET_ALL_SUBJECT_STATEMENT = "select * from Subject";
+    private static final String GET_ALL_SUBJECT_STATEMENT = "select * from Subject order by MacroSubject";
 
 
     private void configureSubject(Subject subject, ResultSet resultSet) throws DatabaseException {
