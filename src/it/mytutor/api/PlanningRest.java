@@ -70,18 +70,19 @@ public class PlanningRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     @RolesAllowed({"TEACHER"})
-    public Response updateLesson(List<Planning> plannings) {
+    public Response updateLesson(List<Planning> plannings, @QueryParam("id-lesson") Integer idLesson) {
         try {
-            planningService.deletePlanningsByLesson(plannings.get(0).getLesson());
+            planningService.deletePlanningsByLesson(idLesson);
         } catch (PlanningBusinessException e) {
             e.printStackTrace();
         }
-
-        try {
-            planningService.addPlannings(plannings);
-        } catch (PlanningBusinessException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        if (plannings.size() > 0) {
+            try {
+                planningService.addPlannings(plannings);
+            } catch (PlanningBusinessException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
         }
 
         try {

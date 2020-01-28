@@ -58,7 +58,6 @@ public class LessonDeserializer extends StdDeserializer<Lesson> {
         teacher.setByography(teacherNode.get("byography").asText());
         teacher.setIdUser(teacherNode.get("idUser").asInt());
         teacher.setEmail(teacherNode.get("email").asText());
-        teacher.setPassword(teacherNode.get("password").asText());
         teacher.setName(teacherNode.get("name").asText());
         teacher.setSurname(teacherNode.get("surname").asText());
         Date bDate = new Date(teacherNode.get("birthday").asLong());
