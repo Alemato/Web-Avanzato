@@ -149,10 +149,10 @@ public class PlanningBusiness implements PlanningInterface {
     }
 
     @Override
-    public void deletePlanningsByLesson(Lesson lesson) throws PlanningBusinessException {
+    public void deletePlanningsByLesson(Integer idLesson) throws PlanningBusinessException {
         PlanningDaoInterface planningDao = new PlanningDao();
         try {
-            planningDao.deletePlanningsByLesson(lesson);
+            planningDao.deletePlanningsByLesson(idLesson);
         } catch (DatabaseException e) {
             e.printStackTrace();
             throw new PlanningBusinessException("Errore nell'aggiunta dei plannings");

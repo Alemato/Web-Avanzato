@@ -14,7 +14,7 @@ import java.util.List;
 public interface PlanningInterface {
     void creaPlanning(List<Planning> plannings, Teacher teacher) throws PlanningBusinessException, LessonBusinessException, SubjectBusinessException;
 
-    void deletePlanningsByLesson(Lesson lesson) throws PlanningBusinessException;
+    void deletePlanningsByLesson(Integer idLesson) throws PlanningBusinessException;
 
     void deletePlannings(List<Planning> plannings) throws PlanningBusinessException;
 
