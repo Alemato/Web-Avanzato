@@ -21,7 +21,7 @@ import java.util.List;
 
 
 @Path("lessons/plannings")
-public class PlanningRest {
+public class PianificazioniRest {
 
     @Context
     private SecurityContext securityContext;
