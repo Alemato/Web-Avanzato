@@ -177,7 +177,7 @@ public class ChatsRest {
      * @param idUser2
      * @return
      */
-    @Path("creates")
+    /*@Path("creates")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -202,7 +202,7 @@ public class ChatsRest {
             return Response.ok(creates).build();
         } else throw new ApiWebApplicationException("Errore interno al server: non è stato inserito idUser2");
     }
-
+*/
 
 
 }
