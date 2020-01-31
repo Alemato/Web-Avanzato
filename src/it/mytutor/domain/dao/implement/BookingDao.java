@@ -1,11 +1,9 @@
 package it.mytutor.domain.dao.implement;
 
 import it.mytutor.domain.*;
-
 import it.mytutor.domain.dao.daofactory.DaoFactory;
 import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.interfaces.BookingDaoInterface;
-
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -30,7 +28,7 @@ public class BookingDao implements BookingDaoInterface {
             "join Teacher t on t.IdTeacher = l.IdTeacher " +
             "join Subject s on l.IdSubject = s.IdSubject " +
             "join Student st on b.IdStudent = st.IdStudent " +
-            "where st.IdStudent = ?";
+            "where st.IdStudent = ? ORDER BY p.Date ASC ";
 
     private static final String GET_BOOKED_UP_BY_STUDENT_STATEMENT = "select * from Booking b " +
             "join Planning p on b.IdPlanning = p.IdPlanning " +
@@ -70,14 +68,8 @@ public class BookingDao implements BookingDaoInterface {
             "join Teacher t on l.IdTeacher = t.IdTeacher " +
             "join Subject s on l.IdSubject = s.IdSubject " +
             "join Student st on b.IdStudent = st.IdStudent " +
-            "where t.IdTeacher = ?";
-    private static final String GET_BOOKING_BY_ID_STATEMENT = "select * from Booking b " +
-            "join Planning p on p.IdPlanning = b.IdPlanning " +
-            "join Lesson l on p.IdLesson = l.idLesson " +
-            "join Subject s on s.idSubject = l.idSubject " +
-            "join Teacher t on t.IdTeacher = l.IdTeacher " +
-            "join Student st on b.IdStudent = st.IdStudent " +
-            "where IdBooking=?";
+            "where t.IdTeacher = ? ORDER BY p.Date ASC";
+    private static final String GET_BOOKING_BY_ID_STATEMENT = "select * from Booking b, Student st, User u1, Planning p, Lesson l, Subject s, Teacher t, User u2 where b.IdBooking = ? and b.IdStudent = st.IdStudent and st.IdUser = u1.IdUser and b.IdPlanning = p.IdPlanning and p.IdLesson = l.IdLesson and  l.IdSubject = s.IdSubject and l.IdTeacher = t.IdTeacher and  t.IdUser = u2.IdUser";
 
     private static final String GET_BOOKING_BY_FILTER_STATEMENT = "select * from Booking b " +
             "join Planning p on p.IdPlanning = b.IdPlanning " +
@@ -191,8 +183,8 @@ public class BookingDao implements BookingDaoInterface {
 
 
     @Override
-    public void createBooking(Booking booking) throws DatabaseException {
-
+    public int createBooking(Booking booking) throws DatabaseException {
+        int id = -1;
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -200,7 +192,7 @@ public class BookingDao implements BookingDaoInterface {
         ResultSet rs = null;
         PreparedStatement prs = null;
         try {
-            prs = conn.prepareStatement(CREATE_BOOKING_STATEMENT);
+            prs = conn.prepareStatement(CREATE_BOOKING_STATEMENT, Statement.RETURN_GENERATED_KEYS);
             if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
@@ -210,12 +202,18 @@ public class BookingDao implements BookingDaoInterface {
             prs.setInt(4, booking.getPlanning().getIdPlanning());
             prs.executeUpdate();
 
+            rs = prs.getGeneratedKeys();
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DatabaseException(e.getMessage());
         } finally {
             DaoFactory.closeDbConnection(conn, rs, prs);
         }
+        return id;
     }
 
     @Override

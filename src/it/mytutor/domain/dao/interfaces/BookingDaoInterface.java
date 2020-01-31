@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface BookingDaoInterface {
 
-    void createBooking(Booking booking)throws DatabaseException;
+    int createBooking(Booking booking)throws DatabaseException;
 
     void updateBooking(Booking booking)throws DatabaseException;
 

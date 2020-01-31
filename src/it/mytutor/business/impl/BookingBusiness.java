@@ -243,28 +243,26 @@ public class BookingBusiness implements BookingInterface {
     }
 
     @Override
-    public void crateBookings(List<Booking> bookings) throws BookingBusinessException {
+    public int crateBooking(Booking booking) throws BookingBusinessException {
         BookingDaoInterface bookingDao = new BookingDao();
         PlanningDaoInterface planningDao = new PlanningDao();
         Planning planning = new Planning();
-
-        for (Booking booking : bookings) {
-            try {
-                bookingDao.createBooking(booking);
-            } catch (DatabaseException e) {
-                e.printStackTrace();
-                throw new BookingBusinessException("Errore nel prendere l'oggetto booking");
-            }
-            planning = booking.getPlanning();
-            planning.setAvailable(false);
-            try {
-                planningDao.updatePlanning(planning);
-            } catch (DatabaseException e) {
-                e.printStackTrace();
-                throw new BookingBusinessException("Errore nel modificare l'oggetto planning");
-            }
+        int idBoking = -1;
+        try {
+            idBoking = bookingDao.createBooking(booking);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new BookingBusinessException("Errore nel prendere l'oggetto booking");
         }
-
+        planning = booking.getPlanning();
+        planning.setAvailable(false);
+        try {
+            planningDao.updatePlanning(planning);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new BookingBusinessException("Errore nel modificare l'oggetto planning");
+        }
+        return idBoking;
     }
 
     @Override
