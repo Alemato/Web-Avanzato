@@ -222,7 +222,7 @@ public class UserDao implements UserDaoInterface {
 
     @Override
     public List<User> getAllUser() throws DatabaseException {
-        List<User> users = new ArrayList<User>();
+        List<User> users = new ArrayList<>();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
