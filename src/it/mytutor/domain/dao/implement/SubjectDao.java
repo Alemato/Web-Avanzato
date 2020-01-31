@@ -14,25 +14,17 @@ import java.util.List;
 
 public class SubjectDao implements SubjectDaoInterface {
     private static final String GET_SUBJECT_BY_ID_STATEMENT = "select * from Subject where IdSubject=?";
+
     private static final String GET_SUBJECTS_BY_NAME_STATEMENT = "select * from Subject where macroSubject=?";
+
     private static final String UPDATE_SUBJECT_STATEMENT = "update Subject set macroSubject=?, microSubject=? where idSubject=?";
-    private static final String GET_STORICO_SUBJECT_STUDENT_STATEMENT = "select * from Subject s " +
-            "join Lesson l on l.IdSubject = s.IdSubject " +
-            "join Planning p on l.IdLesson = p.IdLesson " +
-            "join Booking b on p.IdPlanning = b.IdPlanning " +
-            "join Student st on b.IdStudent = st.IdStudent " +
-            "join User u on st.IdUser = u.IdUser " +
-            "where u.Email = ? " +
-            "group by s.IdSubject ";
-    private static final String GET_STORICO_SUBJECT_TEACHER_STATEMENT = "select * from Subject s " +
-            "join Lesson l on l.IdSubject = s.IdSubject " +
-            "join Planning p on l.IdLesson = p.IdLesson " +
-            "join Booking b on p.IdPlanning = b.IdPlanning " +
-            "join Teacher t on l.IdTeacher = t.IdTeacher " +
-            "join User u on t.IdUser = u.IdUser " +
-            "where u.Email = ? " +
-            "group by s.IdSubject ";
+
+    private static final String GET_STORICO_SUBJECT_STUDENT_STATEMENT = "select * from Subject s, Lesson l, Planning p, Booking b, Student st, User u where l.IdSubject = s.IdSubject and p.IdLesson = l.IdLesson and b.IdPlanning = p.IdPlanning and b.IdStudent = st.IdStudent and st.IdUser = u.IdUser and u.Email = ? group by s.IdSubject";
+
+    private static final String GET_STORICO_SUBJECT_TEACHER_STATEMENT = "select * from Subject s, Lesson l, Planning p, Booking b, Teacher t, User u where l.IdSubject = s.IdSubject and p.IdLesson = l.IdLesson and b.IdPlanning = p.IdPlanning and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and u.Email = ? group by s.IdSubject";
+
     private static final String CREATE_SUBJECT_STATEMENT = "insert into Subject(macroSubject,microSubject) values(?,?)";
+
     private static final String GET_ALL_SUBJECT_STATEMENT = "select * from Subject order by MacroSubject";
 
 
