@@ -8,13 +8,15 @@ import it.mytutor.domain.jackson.ChatSerializer;
 //import it.mytutor.domain.jackson.ChatSerializer;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @JsonSerialize(using = ChatSerializer.class)
 @JsonDeserialize(using = ChatDeserializer.class)
 public class Chat {
     private Integer idChat;
-    private String name;
+    private List<Object> userListser = new ArrayList<>();   // lista contenente i due user coinvolti nella chat
     private Timestamp createDate;
     private Timestamp updateDate;
 
@@ -25,15 +27,15 @@ public class Chat {
         super();
     }
 
-    public Chat(String name) {
+    public Chat(List<Object> userListser) {
         super();
-        this.name = name;
+        this.userListser = userListser;
     }
 
-    public Chat(Integer idChat, String name, Timestamp createDate, Timestamp updateDate) {
+    public Chat(Integer idChat, List<Object> userListser, Timestamp createDate, Timestamp updateDate) {
         super();
         this.idChat = idChat;
-        this.name = name;
+        this.userListser = userListser;
         this.createDate = createDate;
         this.updateDate = updateDate;
     }
@@ -45,8 +47,8 @@ public class Chat {
         return idChat;
     }
 
-    public String getName() {
-        return name;
+    public List<Object> getUserListser() {
+        return userListser;
     }
 
     public Timestamp getCreateDate() {
@@ -64,8 +66,8 @@ public class Chat {
         this.idChat = idChat;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserListser(List<Object> userListser) {
+        this.userListser = userListser;
     }
 
     public void setCreateDate(Timestamp createDate) {
@@ -85,7 +87,7 @@ public class Chat {
         if (!(o instanceof Chat)) return false;
         Chat chat = (Chat) o;
         return getIdChat().equals(chat.getIdChat()) &&
-                getName().equals(chat.getName()) &&
+                getUserListser().equals(chat.getUserListser()) &&
                 getCreateDate().equals(chat.getCreateDate()) &&
                 getUpdateDate().equals(chat.getUpdateDate());
     }
@@ -94,7 +96,7 @@ public class Chat {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getIdChat(), getName(), getCreateDate(), getUpdateDate());
+        return Objects.hash(getIdChat(), getUserListser(), getCreateDate(), getUpdateDate());
     }
 
 
@@ -104,7 +106,8 @@ public class Chat {
     public String toString() {
         return "Chat{" +
                 "idChat=" + idChat +
-                ", name='" + name + '\'' +
+                ", userListser=[" + this.userListser.get(0).toString() +
+                ", " + this.userListser.get(1).toString() +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
                 '}';
