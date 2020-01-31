@@ -18,29 +18,31 @@ public class Planning {
     private Time startTime;
     private Time endTime;
     private boolean available;
+    private boolean repeatPlanning;
     private Timestamp createDate;
     private Timestamp updateDate;
     private Lesson lesson;
 
     public Planning() { super(); }
 
-    public Planning(Date date, Time startTime, Time endTime, boolean available) {
+    public Planning(Date date, Time startTime, Time endTime, boolean available, boolean repeatPlanning) {
         super();
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
         this.available = available;
+        this.repeatPlanning = repeatPlanning;
     }
 
-    public Planning(Integer idPlanning, Date date, Time startTime, Time endTime, boolean available, Timestamp createDate, Timestamp updateDate, Lesson lesson) {
+    public Planning(Integer idPlanning, Date date, Time startTime, Time endTime, boolean available, boolean repeatPlanning, Timestamp createDate, Timestamp updateDate, Lesson lesson) {
         this.idPlanning = idPlanning;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
         this.available = available;
+        this.repeatPlanning = repeatPlanning;
         this.createDate = createDate;
         this.updateDate = updateDate;
-
         this.lesson = lesson;
     }
 
@@ -65,6 +67,10 @@ public class Planning {
     }
 
     public boolean getAvailable() {return available; }
+
+    public boolean getRepeatPlanning() {
+        return repeatPlanning;
+    }
 
     public Timestamp getCreateDate() {
         return createDate;
@@ -102,6 +108,10 @@ public class Planning {
 
     public void setAvailable(boolean available) { this.available = available; }
 
+    public void setRepeatPlanning(boolean repeatPlanning) {
+        this.repeatPlanning = repeatPlanning;
+    }
+
     public void setCreateDate(Timestamp createDate) {
         this.createDate = createDate;
     }
@@ -124,6 +134,7 @@ public class Planning {
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
                 ", available=" + available +
+                ", repeatPlanning" + repeatPlanning +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
                 "," + this.lesson +
@@ -133,20 +144,21 @@ public class Planning {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Planning)) return false;
         Planning planning = (Planning) o;
-        return Objects.equals(idPlanning, planning.idPlanning) &&
-                Objects.equals(date, planning.date) &&
-                Objects.equals(startTime, planning.startTime) &&
-                Objects.equals(endTime, planning.endTime) &&
-                Objects.equals(available, planning.available) &&
-                Objects.equals(createDate, planning.createDate) &&
-                Objects.equals(updateDate, planning.updateDate) &&
-                Objects.equals(lesson, planning.lesson);
+        return getAvailable() == planning.getAvailable() &&
+                getRepeatPlanning() == planning.getRepeatPlanning() &&
+                Objects.equals(getIdPlanning(), planning.getIdPlanning()) &&
+                getDate().equals(planning.getDate()) &&
+                getStartTime().equals(planning.getStartTime()) &&
+                getEndTime().equals(planning.getEndTime()) &&
+                Objects.equals(getCreateDate(), planning.getCreateDate()) &&
+                Objects.equals(getUpdateDate(), planning.getUpdateDate()) &&
+                Objects.equals(getLesson(), planning.getLesson());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idPlanning, date, startTime, endTime, available, createDate, updateDate, lesson);
+        return Objects.hash(getIdPlanning(), getDate(), getStartTime(), getEndTime(), getAvailable(), getRepeatPlanning(), getCreateDate(), getUpdateDate(), getLesson());
     }
 }

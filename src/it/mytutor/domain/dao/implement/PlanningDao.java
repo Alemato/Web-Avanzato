@@ -55,6 +55,7 @@ public class PlanningDao implements PlanningDaoInterface {
             planning.setStartTime(resultSet.getTime("p.StartTime"));
             planning.setEndTime(resultSet.getTime("p.EndTime"));
             planning.setAvailable(resultSet.getBoolean("p.Available"));
+            planning.setRepeatPlanning(resultSet.getBoolean("p.RepeatPlanning"));
             planning.setCreateDate(resultSet.getTimestamp("p.CreateDate"));
             planning.setUpdateDate(resultSet.getTimestamp("p.UpdateDate"));
 
