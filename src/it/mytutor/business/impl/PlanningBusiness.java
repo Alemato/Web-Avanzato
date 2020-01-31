@@ -1,11 +1,13 @@
 package it.mytutor.business.impl;
 
-import it.mytutor.business.exceptions.BookingBusinessException;
 import it.mytutor.business.exceptions.LessonBusinessException;
 import it.mytutor.business.exceptions.PlanningBusinessException;
 import it.mytutor.business.exceptions.SubjectBusinessException;
 import it.mytutor.business.services.PlanningInterface;
-import it.mytutor.domain.*;
+import it.mytutor.domain.Lesson;
+import it.mytutor.domain.Planning;
+import it.mytutor.domain.Subject;
+import it.mytutor.domain.Teacher;
 import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.implement.LessonDao;
 import it.mytutor.domain.dao.implement.PlanningDao;
@@ -29,7 +31,7 @@ public class PlanningBusiness implements PlanningInterface {
         LessonDaoInterface lessonDao = new LessonDao();
         SubjectDaoInterface subjectDao = new SubjectDao();
         List<Planning> planningList = new ArrayList<>();
-        List<Subject> subjectList = new ArrayList<>();
+        List<Subject> subjectList;
         Subject subject = new Subject();
         boolean existSubject = false;
         int i;
@@ -92,15 +94,19 @@ public class PlanningBusiness implements PlanningInterface {
 
 
         for (Planning planning : plannings) {
-            Date dateAppo = new Date(planning.getDate().getTime());
-            Date dateAddWeek = new Date(planning.getDate().getTime());
-            planningList.add(planning);
+            if (planning.getRepeatPlanning()) {
+                Date dateAppo = new Date(planning.getDate().getTime());
+                Date dateAddWeek = new Date(planning.getDate().getTime());
+                planningList.add(planning);
 
-            while (dateAddWeek.before(addYearToJavaUtilDate(dateAppo))) {
-                dateAddWeek = addWeekToJavaUtilDate(dateAddWeek);
-                planningList.add(new Planning(planning.getIdPlanning(), new java.sql.Date(dateAddWeek.getTime()),
-                        planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(),
-                        planning.getUpdateDate(), planning.getLesson()));
+                while (dateAddWeek.before(addYearToJavaUtilDate(dateAppo))) {
+                    dateAddWeek = addWeekToJavaUtilDate(dateAddWeek);
+                    planningList.add(new Planning(planning.getIdPlanning(), new java.sql.Date(dateAddWeek.getTime()),
+                            planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(),
+                            planning.getUpdateDate(), planning.getLesson()));
+                }
+            } else {
+                planningList.add(planning);
             }
         }
 
@@ -202,14 +208,18 @@ public class PlanningBusiness implements PlanningInterface {
         long cost = 3600000;
 
         for (Planning planning : plannings) {
-            Date dateAppo = new Date(planning.getDate().getTime());
-            Date dateAddWeek = new Date(planning.getDate().getTime());
-            planningList.add(planning);
+            if (planning.getRepeatPlanning()) {
+                Date dateAppo = new Date(planning.getDate().getTime());
+                Date dateAddWeek = new Date(planning.getDate().getTime());
+                planningList.add(planning);
 
-            while (dateAddWeek.before(addYearToJavaUtilDate(dateAppo))) {
-                dateAddWeek = addWeekToJavaUtilDate(dateAddWeek);
-                planningList.add(new Planning(planning.getIdPlanning(), new java.sql.Date(dateAddWeek.getTime()), planning.getStartTime(),
-                        planning.getEndTime(), planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
+                while (dateAddWeek.before(addYearToJavaUtilDate(dateAppo))) {
+                    dateAddWeek = addWeekToJavaUtilDate(dateAddWeek);
+                    planningList.add(new Planning(planning.getIdPlanning(), new java.sql.Date(dateAddWeek.getTime()), planning.getStartTime(),
+                            planning.getEndTime(), planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
+                }
+            } else {
+                planningList.add(planning);
             }
         }
 
@@ -311,10 +321,10 @@ public class PlanningBusiness implements PlanningInterface {
             e.printStackTrace();
             throw new PlanningBusinessException("Errore nel prendere la lista dei planning");
         }
-        if (dom != null && !dom.isEmpty() && !dom.equals("0") || lun != null && !lun.isEmpty() && !lun.equals("0") ||
-                mar != null && !mar.isEmpty() && !mar.equals("0") || mer != null && !mer.isEmpty() && !mer.equals("0") ||
-                gio != null && !gio.isEmpty() && !gio.equals("0") || ven != null && !ven.isEmpty() && !ven.equals("0") ||
-                sab != null && !sab.isEmpty() && !sab.equals("0")) {
+        if (dom != null && !dom.isEmpty() && !dom.equals(" ") && !dom.equals("0") || lun != null && !lun.isEmpty() && !lun.equals(" ") && !lun.equals("0") ||
+                mar != null && !mar.isEmpty() && !mar.equals(" ") && !mar.equals("0") || mer != null && !mer.isEmpty() && !mer.equals(" ") && !mer.equals("0") ||
+                gio != null && !gio.isEmpty() && !gio.equals(" ") && !gio.equals("0") || ven != null && !ven.isEmpty() && !ven.equals(" ") && !ven.equals("0") ||
+                sab != null && !sab.isEmpty() && !sab.equals(" ") && !sab.equals("0")) {
             plannings = dayOfWeek(plannings, dom, lun, mar, mer, gio, ven, sab);
         }
 
