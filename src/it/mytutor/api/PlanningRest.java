@@ -36,10 +36,9 @@ public class PlanningRest {
      * @param plannings Lista di Pianificazioni della prenotazione della lezione
      * @return Response Status ACCEPTED
      */
-    @Path("create")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"TEACHER"})
     public Response creaPlanning(List<Planning> plannings) {
 
@@ -57,18 +56,18 @@ public class PlanningRest {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
-        return Response.ok().build();
+        return Response.status(Response.Status.CREATED).build();
     }
 
-
     /**
-     * @param plannings
-     * @return
+     *  Rest per la modifica dele pianificazioni di una lezione concesa solamente al professore
+     *
+     * @param plannings lista di oggetti pianificazione
+     * @return 201 CREATED
      */
-    @Path("modify")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"TEACHER"})
     public Response updateLesson(List<Planning> plannings, @QueryParam("id-lesson") Integer idLesson) {
         try {
@@ -91,88 +90,28 @@ public class PlanningRest {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
-
-//        String teacherEmail = securityContext.getUserPrincipal().getName();
-//        Teacher teacher;
-//        try {
-//            teacher = (Teacher) userService.findUserByUsername(teacherEmail);
-//        } catch (UserException | DatabaseException e) {
-//            e.printStackTrace();
-//            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-//        }
-//        try {
-//            planningService.creaPlanning(plannings, teacher);
-//        } catch (PlanningBusinessException | SubjectBusinessException | LessonBusinessException e) {
-//            e.printStackTrace();
-//            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-//        }
-
         return Response.status(Response.Status.CREATED).build();
     }
 
+
     /**
-     * aggiunta dei planning
+     * rest ricerca lezioni con possibilità  di filtro concesa solamente allo studente
      *
-     * @param plannings lista di planning
-     * @return Response Status ACCEPTED
-     */
-    @Path("add")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
-    @RolesAllowed({"TEACHER"})
-    public Response addPlannings(List<Planning> plannings) {
-        try {
-            planningService.addPlannings(plannings);
-        } catch (PlanningBusinessException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-        }
-        return Response.ok(Response.Status.ACCEPTED).entity("Pianificazione pianificata").build();
-    }
-
-    @Path("delete")
-    @DELETE
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"TEACHER", "STUDENT"})
-    public Response deletePlannings(List<Planning> plannings) {
-        try {
-            planningService.deletePlannings(plannings);
-        } catch (PlanningBusinessException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-        }
-        return Response.ok(Response.Status.ACCEPTED).entity("Pianificazione eliminata").build();
-    }
-
-    /*@Path("{PID}")
-    @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getPlanning(@PathParam("PID") Integer pid){
-        List<Planning> plannings = new ArrayList<>();
-        plannings = planningService.findPlanningsById(pid);
-        return Response.ok(plannings).build();
-    }*/
-
-
-    /**
-     * @param macroMateria
-     * @param nome
-     * @param zona
-     * @param microMateria
-     * @param dom
-     * @param lun
-     * @param mar
-     * @param mer
-     * @param gio
-     * @param ven
-     * @param sab
-     * @param prezzo
-     * @param oraInizio
-     * @param oraFine
-     * @return
+     * @param macroMateria query string filtro marcro materia
+     * @param nome query string filtro nome
+     * @param zona query string filtro città
+     * @param microMateria query string filtro  micro materia
+     * @param dom query string filtro giorno settimana domenica
+     * @param lun query string filtro giorno settimana lunedì
+     * @param mar query string filtro giorno settimana marteì
+     * @param mer query string filtro giorno settimana mercoledì
+     * @param gio query string filtro giorno settimana giovedì
+     * @param ven query string filtro giorno settimana venerdì
+     * @param sab query string filtro giorno settimana sabato
+     * @param prezzo query string filtro prezzo
+     * @param oraInizio query string filtro ora inizio
+     * @param oraFine query string filtro ora fine
+     * @return lista di oggetti planning
      */
     @Path("research")
     @GET
@@ -204,70 +143,25 @@ public class PlanningRest {
     }
 
     /**
+     * Rest per tutte le pianificazioni collegate ad una lezione
+     *
      * @param idLesson id della lezione in oggetto
-     * @param bookedUp parametro per stabilire se si tratta di un planning di una
-     *                 lezione prenotata
      * @return lista di planning
      */
     @Path("{LID}")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"TEACHER", "STUDENT"})
-    public Response getPlanningsForALesson(@PathParam("LID") Integer idLesson, @QueryParam("booked-up") String bookedUp) {
+    @RolesAllowed({"TEACHER"})
+    public Response getPlanningsForALesson(@PathParam("LID") Integer idLesson) {
         List<Planning> plannings;
-        String userEmail = securityContext.getUserPrincipal().getName();
-        User user;
-        try {
-            user = (User) userService.findUserByUsername(userEmail);
-        } catch (UserException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-        }
-        if (user instanceof Student && bookedUp != null && !bookedUp.isEmpty()) {
-            String studentEmail = securityContext.getUserPrincipal().getName();
-            Student student;
-            try {
-                student = (Student) userService.findUserByUsername(studentEmail);
-            } catch (UserException e) {
-                e.printStackTrace();
-                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-
-            } catch (DatabaseException e) {
-                e.printStackTrace();
-                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-            }
-            try {
-                plannings = planningService.findAllPlanningBookedUpByLessonId(idLesson, student.getIdStudent());
-            } catch (PlanningBusinessException e) {
-                e.printStackTrace();
-                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-            }
-        } else {
             try {
                 plannings = planningService.findAllPlanningByLessonId(idLesson);
             } catch (PlanningBusinessException e) {
                 e.printStackTrace();
                 throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
             }
-        }
         return Response.ok(plannings).build();
     }
-
-/*    @Path("{LID}")
-    @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"STUDENT, TEACHER"})
-    public Response getPlanningsBookedForALesson(@PathParam("LID") Integer idLesson, @) {
-        List<Planning> plannings = new ArrayList<>();
-        plannings = planningService.findAllPlanningByLessonId();
-    }*/
-
-
-    //TODO rest per liste dei campi in storico lezione per professore e per studente per Booking LessonState 2,3,4
 
 }
