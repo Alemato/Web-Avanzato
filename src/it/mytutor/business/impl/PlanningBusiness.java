@@ -99,7 +99,7 @@ public class PlanningBusiness implements PlanningInterface {
             while (dateAddWeek.before(addYearToJavaUtilDate(dateAppo))) {
                 dateAddWeek = addWeekToJavaUtilDate(dateAddWeek);
                 planningList.add(new Planning(planning.getIdPlanning(), new java.sql.Date(dateAddWeek.getTime()),
-                        planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(),
+                        planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(),
                         planning.getUpdateDate(), planning.getLesson()));
             }
         }
@@ -120,12 +120,12 @@ public class PlanningBusiness implements PlanningInterface {
                     planningsOrari.add(new Planning(planning.getIdPlanning(), planning.getDate(),
                             Time.valueOf(localDateFormat.format(startDate)),
                             Time.valueOf(localDateFormat.format(addHoursToJavaUtilDate(new Date(dateStart)))),
-                            planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(),
+                            planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(), planning.getUpdateDate(),
                             planning.getLesson()));
                     if (dateStart > 82800000) {
                         planningsOrari.set(planningsOrari.size() - 1, new Planning(planning.getIdPlanning(), planning.getDate(),
-                                Time.valueOf("23:00:00"), Time.valueOf("23:59:59"), planning.getAvailable(),
-                                planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
+                                Time.valueOf("23:00:00"), Time.valueOf("23:59:59"), planning.getAvailable(), planning.getRepeatPlanning(),
+                                planning.getCreateDate(),  planning.getUpdateDate(), planning.getLesson()));
                     }
                 }
                 if (!check) {
@@ -209,7 +209,7 @@ public class PlanningBusiness implements PlanningInterface {
             while (dateAddWeek.before(addYearToJavaUtilDate(dateAppo))) {
                 dateAddWeek = addWeekToJavaUtilDate(dateAddWeek);
                 planningList.add(new Planning(planning.getIdPlanning(), new java.sql.Date(dateAddWeek.getTime()), planning.getStartTime(),
-                        planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
+                        planning.getEndTime(), planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
             }
         }
 
@@ -229,10 +229,10 @@ public class PlanningBusiness implements PlanningInterface {
                     planningsOrari.add(new Planning(planning.getIdPlanning(), planning.getDate(),
                             Time.valueOf(localDateFormat.format(startDate)),
                             Time.valueOf(localDateFormat.format(addHoursToJavaUtilDate(new Date(dateStart)))),
-                            planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
+                            planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
                     if (dateStart > 82800000) {
                         planningsOrari.set(planningsOrari.size() - 1, new Planning(planning.getIdPlanning(), planning.getDate(),
-                                Time.valueOf("23:00:00"), Time.valueOf("23:59:59"), planning.getAvailable(),
+                                Time.valueOf("23:00:00"), Time.valueOf("23:59:59"), planning.getAvailable(), planning.getRepeatPlanning(),
                                 planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
                     }
                 }
@@ -368,7 +368,7 @@ public class PlanningBusiness implements PlanningInterface {
             for (Planning planning : plannings) {
                 c.setTime(planning.getDate());
                 if (c.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-                    plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
+                    plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
                 }
             }
         }
@@ -376,7 +376,7 @@ public class PlanningBusiness implements PlanningInterface {
             for (Planning planning : plannings) {
                 c.setTime(planning.getDate());
                 if (c.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
-                    plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
+                    plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
                 }
             }
         }
@@ -386,7 +386,7 @@ public class PlanningBusiness implements PlanningInterface {
                 c.setTime(planning.getDate());
                 System.out.println(c.get(Calendar.DAY_OF_WEEK));
                 if (c.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY) {
-                    plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
+                    plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
                 }
             }
         }
@@ -394,7 +394,7 @@ public class PlanningBusiness implements PlanningInterface {
             for (Planning planning : plannings) {
                 c.setTime(planning.getDate());
                 if (c.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) {
-                    plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
+                    plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(),planning.getRepeatPlanning(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
                 }
             }
         }
@@ -402,7 +402,7 @@ public class PlanningBusiness implements PlanningInterface {
             for (Planning planning : plannings) {
                 c.setTime(planning.getDate());
                 if (c.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY) {
-                    plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
+                    plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
                 }
             }
         }
@@ -410,7 +410,7 @@ public class PlanningBusiness implements PlanningInterface {
             for (Planning planning : plannings) {
                 c.setTime(planning.getDate());
                 if (c.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
-                    plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
+                    plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
                 }
             }
         }
@@ -418,7 +418,7 @@ public class PlanningBusiness implements PlanningInterface {
             for (Planning planning : plannings) {
                 c.setTime(planning.getDate());
                 if (c.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
-                    plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
+                    plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
                 }
             }
         }
