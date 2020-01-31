@@ -3,7 +3,6 @@ package it.mytutor.business.impl;
 import it.mytutor.business.exceptions.MessageBusinessException;
 import it.mytutor.business.services.MessageInterface;
 import it.mytutor.domain.Message;
-import it.mytutor.domain.User;
 import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.implement.MessageDao;
 import it.mytutor.domain.dao.interfaces.MessageDaoInterface;
@@ -26,11 +25,6 @@ public class MessageBusiness implements MessageInterface {
         return  messages;
     }
 
-
-
-    @Override
-    public Message getMessageById(int id){ return null; }
-
     @Override
     public List<Message> getNewMessagesByIdLast(Integer idChat, Integer idLastMessage) throws MessageBusinessException {
         List<Message> messages;
@@ -50,11 +44,6 @@ public class MessageBusiness implements MessageInterface {
             messages1.add(message);
         }
         return messages1;
-    }
-
-    @Override
-    public List<Message> findAllMessageByUser(User user) {
-        return null;
     }
 
     @Override
