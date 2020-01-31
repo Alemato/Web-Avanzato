@@ -13,24 +13,9 @@ import it.mytutor.domain.dao.implement.SubjectDao;
 import it.mytutor.domain.dao.interfaces.LessonDaoInterface;
 import it.mytutor.domain.dao.interfaces.SubjectDaoInterface;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class LessonBusiness implements LessonInterface {
-
-    /*@Override
-    public List<Lesson> findAllLesson() throws LessonBusinessException {
-
-        List<Lesson> lessons = new ArrayList<Lesson>();
-        try {
-            lessons = new ArrayList<>(simulateFindAllLesson());
-        } catch (ParseException e) {
-            e.printStackTrace();
-            throw new LessonBusinessException("Errore nel prendere la lista di lezioni");
-        }
-        return lessons;
-
-    }*/
 
     @Override
     public List<Lesson> findAllLessonByTeacher(Teacher teacher) throws LessonBusinessException {
@@ -47,12 +32,11 @@ public class LessonBusiness implements LessonInterface {
     public void updateLessson(Lesson lesson) throws SubjectBusinessException, LessonBusinessException {
         LessonDaoInterface lessonDao = new LessonDao();
         SubjectDaoInterface subjectDao = new SubjectDao();
-        List<Subject> subjectList = new ArrayList<>();
+        List<Subject> subjectList;
 
         Subject subject = new Subject();
 
         boolean existSubject = false;
-
 
         try {
             subjectList = subjectDao.getAllSubject();
