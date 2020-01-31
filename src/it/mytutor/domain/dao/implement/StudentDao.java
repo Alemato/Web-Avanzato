@@ -111,7 +111,7 @@ public class StudentDao implements StudentDaoInterface {
 
     @Override
     public List<Student> getAllStudent() throws DatabaseException {
-        List<Student> students = new ArrayList<Student>();
+        List<Student> students = new ArrayList<>();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
