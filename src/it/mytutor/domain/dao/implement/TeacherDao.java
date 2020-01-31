@@ -125,7 +125,7 @@ public class TeacherDao implements TeacherDaoInterface {
 
     @Override
     public List<Teacher> getAllTeacher() throws DatabaseException {
-        List<Teacher> teachers = new ArrayList<Teacher>();
+        List<Teacher> teachers = new ArrayList<>();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
