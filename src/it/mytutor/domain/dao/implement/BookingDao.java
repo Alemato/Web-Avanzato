@@ -12,96 +12,33 @@ import java.util.List;
 
 public class BookingDao implements BookingDaoInterface {
     private static final String CREATE_BOOKING_STATEMENT = "insert into Booking (Date, LessonState ,Idstudent, IdPlanning) values(?,?,?,?)";
-    private static final String UPDATE_BOOKING_STATEMENT = "update Booking set Date=?,LessonState=?,IdStudent=?,IdPlanning=? where IdBooking=?";
 
-    private static final String GET_BOOKING_BY_ID_LESSON_STATEMENT = "select * from Booking b " +
-            "join Planning p on b.IdPlanning = p.IdPlanning " +
-            "join Lesson l on p.IdLesson = l.IdLesson " +
-            "join Teacher t on t.IdTeacher = l.IdTeacher " +
-            "join Subject s on l.IdSubject = s.IdSubject " +
-            "join Student st on b.IdStudent = st.IdStudent " +
-            "where l.IdLesson = ?";
+    private static final String UPDATE_BOOKING_STATEMENT = "update Booking set Date = ?, LessonState = ?, IdStudent = ?, IdPlanning = ? where IdBooking = ?";
 
-    private static final String GET_ALL_BOOOKING_OF_A_STUDENT_STATEMENT = "select * from Booking b " +
-            "join Planning p on b.IdPlanning = p.IdPlanning " +
-            "join Lesson l on p.IdLesson = l.IdLesson " +
-            "join Teacher t on t.IdTeacher = l.IdTeacher " +
-            "join Subject s on l.IdSubject = s.IdSubject " +
-            "join Student st on b.IdStudent = st.IdStudent " +
-            "where st.IdStudent = ? ORDER BY p.Date ASC ";
+    private static final String GET_BOOKING_BY_ID_LESSON_STATEMENT = "select * from Booking b, User u1, Student st, Planning p, Lesson l, User u2, Teacher t, Subject s where b.IdStudent = st.IdStudent and st.IdUser = u1.IdUser and b.IdPlanning = p.IdPlanning and p.IdLesson = l.IdLesson and l.IdTeacher = t.IdTeacher and t.IdUser = u2.IdUser and l.IdSubject = s.IdSubject and l.IdLesson = ?";
 
-    private static final String GET_BOOKED_UP_BY_STUDENT_STATEMENT = "select * from Booking b " +
-            "join Planning p on b.IdPlanning = p.IdPlanning " +
-            "join Lesson l on p.IdLesson = l.IdLesson " +
-            "join Teacher t on t.IdTeacher = l.IdTeacher " +
-            "join Subject s on l.IdSubject = s.IdSubject " +
-            "join Student st on b.IdStudent = st.IdStudent " +
-            "where st.IdStudent = ? and (b.LessonState = 0)";
+    private static final String GET_ALL_BOOOKING_OF_A_STUDENT_STATEMENT = "select * from Booking b, User u1, Student st, Planning p, Lesson l, User u2, Teacher t, Subject s where b.IdStudent = st.IdStudent and st.IdUser = u1.IdUser and b.IdPlanning = p.IdPlanning and p.IdLesson = l.IdLesson and l.IdTeacher = t.IdTeacher and t.IdUser = u2.IdUser and l.IdSubject = s.IdSubject and st.IdStudent = ? ORDER BY p.Date ASC";
 
-    private static final String GET_BOOKED_UP_BY_TEACHER_STATEMENT = "select * from Booking b " +
-            "join Planning p on b.IdPlanning = p.IdPlanning " +
-            "join Lesson l on p.IdLesson = l.IdLesson " +
-            "join Teacher t on t.IdTeacher = l.IdTeacher " +
-            "join Subject s on l.IdSubject = s.IdSubject " +
-            "join Student st on b.IdStudent = st.IdStudent " +
-            "where t.IdTeacher = ? and (b.LessonState = 0)";
+    private static final String GET_BOOKED_UP_BY_STUDENT_STATEMENT = "select * from Booking b, User u1, Student st, Planning p, Lesson l, User u2, Teacher t, Subject s where b.IdStudent = st.IdStudent and st.IdUser = u1.IdUser and b.IdPlanning = p.IdPlanning and p.IdLesson = l.IdLesson and l.IdTeacher = t.IdTeacher and t.IdUser = u2.IdUser and l.IdSubject = s.IdSubject and st.IdStudent = ? and (b.LessonState = 0)";
 
-    private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_STUDENT_AND_FILTER_STATEMENT = "select * from Booking b " +
-            "join Planning p on b.IdPlanning = p.IdPlanning " +
-            "join Lesson l on p.IdLesson = l.IdLesson " +
-            "join Teacher t on t.IdTeacher = l.IdTeacher " +
-            "join User ut on t.IdUser = ut.IdUser " +
-            "join Subject s on l.IdSubject = s.IdSubject " +
-            "join Student st on b.IdStudent = st.IdStudent " +
-            "where (b.IdStudent = ?) and (0 = ? or s.MacroSubject = ?) and (0 = ? or match(l.Name) AGAINST(?)) and (0 = ? or s.MicroSubject = ?) and (0 = ? or b.Date = ?) and (0 = ? or ut.IdUser = ?) and (0 = ? or b.LessonState = ?)";
-    private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_TEACHER_AND_FILTER_STATEMENT = "select * from Booking b " +
-            "join Planning p on b.IdPlanning = p.IdPlanning " +
-            "join Lesson l on p.IdLesson = l.IdLesson " +
-            "join Teacher t on t.IdTeacher = l.IdTeacher " +
-            "join Subject s on l.IdSubject = s.IdSubject " +
-            "join Student st on b.IdStudent = st.IdStudent " +
-            "join User us on st.IdUser = us.IdUser " +
-            "where (l.IdTeacher = ?) and (0 = ? or s.MacroSubject = ?) and (0 = ? or l.Name = ?) and (0 = ? or s.MicroSubject = ?) and (0 = ? or b.Date = ?) and (0 = ? or us.IdUser = ?) and (0 = ? or b.LessonState = ?)";
-    private static final String GET_ALL_BOOOKING_OF_A_TEACHER_STATEMENT = "select * from Booking b " +
-            "join Planning p on p.IdPlanning = b.IdPlanning " +
-            "join Lesson l on l.IdLesson = p.IdLesson " +
-            "join Teacher t on l.IdTeacher = t.IdTeacher " +
-            "join Subject s on l.IdSubject = s.IdSubject " +
-            "join Student st on b.IdStudent = st.IdStudent " +
-            "where t.IdTeacher = ? ORDER BY p.Date ASC";
+    private static final String GET_BOOKED_UP_BY_TEACHER_STATEMENT = "select * from Booking b, User u1, Student st, Planning p, Lesson l, User u2, Teacher t, Subject s where b.IdStudent = st.IdStudent and st.IdUser = u1.IdUser and b.IdPlanning = p.IdPlanning and p.IdLesson = l.IdLesson and l.IdTeacher = t.IdTeacher and t.IdUser = u2.IdUser and l.IdSubject = s.IdSubject and t.IdTeacher = ? and (b.LessonState = 0)";
+
+    private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_STUDENT_AND_FILTER_STATEMENT = "select * from Booking b, User u1, Student st, Planning p, Lesson l, User u2, Teacher t, Subject s where b.IdStudent = st.IdStudent and st.IdUser = u1.IdUser and b.IdPlanning = p.IdPlanning and p.IdLesson = l.IdLesson and l.IdTeacher = t.IdTeacher and t.IdUser = u2.IdUser and l.IdSubject = s.IdSubject and (b.IdStudent = ?) and (0 = ? or s.MacroSubject = ?) and (0 = ? or match(l.Name) AGAINST(?)) and (0 = ? or s.MicroSubject = ?) and (0 = ? or b.Date = ?) and (0 = ? or t.IdUser = ?) and (0 = ? or b.LessonState = ?)";
+
+    private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_TEACHER_AND_FILTER_STATEMENT = "select * from Booking b, User u1, Student st, Planning p, Lesson l, User u2, Teacher t, Subject s where b.IdStudent = st.IdStudent and st.IdUser = u1.IdUser and b.IdPlanning = p.IdPlanning and p.IdLesson = l.IdLesson and l.IdTeacher = t.IdTeacher and t.IdUser = u2.IdUser and l.IdSubject = s.IdSubject and (l.IdTeacher = ?) and (0 = ? or s.MacroSubject = ?) and (0 = ? or match(l.Name) AGAINST(?)) and (0 = ? or s.MicroSubject = ?) and (0 = ? or b.Date = ?) and (0 = ? or st.IdUser = ?) and (0 = ? or b.LessonState = ?)";
+
+    private static final String GET_ALL_BOOOKING_OF_A_TEACHER_STATEMENT = "select * from Booking b, User u1, Student st, Planning p, Lesson l, User u2, Teacher t, Subject s where b.IdStudent = st.IdStudent and st.IdUser = u1.IdUser and b.IdPlanning = p.IdPlanning and p.IdLesson = l.IdLesson and l.IdTeacher = t.IdTeacher and t.IdUser = u2.IdUser and l.IdSubject = s.IdSubject and t.IdTeacher = ? ORDER BY p.Date ASC";
+
     private static final String GET_BOOKING_BY_ID_STATEMENT = "select * from Booking b, Student st, User u1, Planning p, Lesson l, Subject s, Teacher t, User u2 where b.IdBooking = ? and b.IdStudent = st.IdStudent and st.IdUser = u1.IdUser and b.IdPlanning = p.IdPlanning and p.IdLesson = l.IdLesson and  l.IdSubject = s.IdSubject and l.IdTeacher = t.IdTeacher and  t.IdUser = u2.IdUser";
 
-    private static final String GET_BOOKING_BY_FILTER_STATEMENT = "select * from Booking b " +
-            "join Planning p on p.IdPlanning = b.IdPlanning " +
-            "join Lesson l on p.IdLesson = l.idLesson " +
-            "join Subject s on s.idSubject = l.idSubject " +
-            "join Teacher t on t.IdTeacher = l.IdTeacher " +
-            "join Student st on b.IdStudent = st.IdStudent where (0 = ? or s.MacroSubject = ?) " +
+    private static final String GET_BOOKING_BY_FILTER_STATEMENT = "select * from Booking b, User u1, Student st, Planning p, Lesson l, User u2, Teacher t, Subject s where b.IdStudent = st.IdStudent and st.IdUser = u1.IdUser and b.IdPlanning = p.IdPlanning and p.IdLesson = l.IdLesson and l.IdTeacher = t.IdTeacher and t.IdUser = u2.IdUser and l.IdSubject = s.IdSubject and (0 = ? or s.MacroSubject = ?) " +
             "and (0 = ? or l.Name = ?) and (0 = ? or t.City = ?) and (0 = ? or s.MicroSubject = ?) " +
             "and (0 = ? or l.Price = ?) and (0 = ? or p.StartTime >= ?) " +
             "and (0 = ? or p.EndTime <= ?)";
-    private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_STUDENT_STATEMENT = "select * from Booking b " +
-            "join Planning p on b.IdPlanning = p.IdPlanning " +
-            "join Lesson l on p.IdLesson = l.IdLesson " +
-            "join Teacher t on t.IdTeacher = l.IdTeacher " +
-            "join Subject s on l.IdSubject = s.IdSubject " +
-            "join Student st on b.IdStudent = st.IdStudent " +
-            "where (b.IdStudent = ?) and (b.LessonState = 2 or b.LessonState = 3 or b.LessonState = 4)";
+    private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_STUDENT_STATEMENT = "select * from Booking b, User u1, Student st, Planning p, Lesson l, User u2, Teacher t, Subject s where b.IdStudent = st.IdStudent and st.IdUser = u1.IdUser and b.IdPlanning = p.IdPlanning and p.IdLesson = l.IdLesson and l.IdTeacher = t.IdTeacher and t.IdUser = u2.IdUser and l.IdSubject = s.IdSubject and (b.IdStudent = ?) and (b.LessonState = 2 or b.LessonState = 3 or b.LessonState = 4)";
 
-    private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_TEACHER_STATEMENT = "select * from Booking b " +
-            "join Planning p on b.IdPlanning = p.IdPlanning " +
-            "join Lesson l on p.IdLesson = l.IdLesson " +
-            "join Teacher t on t.IdTeacher = l.IdTeacher " +
-            "join Subject s on l.IdSubject = s.IdSubject " +
-            "join Student st on b.IdStudent = st.IdStudent " +
-            "where (b.IdStudent = ?) and (b.LessonState = 2 or b.LessonState = 3 or b.LessonState = 4)";
-    private static final String GET_ALL_BOOKING_BOOKED_STATEMENT = "select * from Booking b " +
-            "join Planning p on b.IdPlanning = p.IdPlanning " +
-            "join Lesson l on p.IdLesson = l.IdLesson " +
-            "join Teacher t on t.IdTeacher = l.IdTeacher " +
-            "join Subject s on l.IdSubject = s.IdSubject " +
-            "join Student st on b.IdStudent = st.IdStudent " +
-            "where (b.LessonState = 2 or b.LessonState = 3) and p.Date < ?";
+    private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_TEACHER_STATEMENT = "select * from Booking b, User u1, Student st, Planning p, Lesson l, User u2, Teacher t, Subject s where b.IdStudent = st.IdStudent and st.IdUser = u1.IdUser and b.IdPlanning = p.IdPlanning and p.IdLesson = l.IdLesson and l.IdTeacher = t.IdTeacher and t.IdUser = u2.IdUser and l.IdSubject = s.IdSubject and (b.IdStudent = ?) and (b.LessonState = 2 or b.LessonState = 3 or b.LessonState = 4)";
+    private static final String GET_ALL_BOOKING_BOOKED_STATEMENT = "select * from Booking b, User u1, Student st, Planning p, Lesson l, User u2, Teacher t, Subject s where b.IdStudent = st.IdStudent and st.IdUser = u1.IdUser and b.IdPlanning = p.IdPlanning and p.IdLesson = l.IdLesson and l.IdTeacher = t.IdTeacher and t.IdUser = u2.IdUser and l.IdSubject = s.IdSubject and (b.LessonState = 2 or b.LessonState = 3) and p.Date < ?";
 
 
     private void configureBooking(Booking booking, Student student, Planning planning, Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
@@ -117,6 +54,7 @@ public class BookingDao implements BookingDaoInterface {
             planning.setStartTime(resultSet.getTime("p.StartTime"));
             planning.setEndTime(resultSet.getTime("p.EndTime"));
             planning.setAvailable(resultSet.getBoolean("p.Available"));
+            planning.setRepeatPlanning(resultSet.getBoolean("RepeatPlanning"));
             planning.setCreateDate(resultSet.getTimestamp("p.CreateDate"));
             planning.setUpdateDate(resultSet.getTimestamp("p.UpdateDate"));
 
@@ -136,7 +74,7 @@ public class BookingDao implements BookingDaoInterface {
             lesson.setSubject(subject);
 
             teacher.setIdTeacher(resultSet.getInt("t.IdTeacher"));
-            teacher.setPostCode(resultSet.getInt("t.Postcode"));
+            teacher.setPostCode(resultSet.getInt("t.PostCode"));
             teacher.setCity(resultSet.getString("t.City"));
             teacher.setRegion(resultSet.getString("t.Region"));
             teacher.setStreet(resultSet.getString("t.Street"));
@@ -145,15 +83,36 @@ public class BookingDao implements BookingDaoInterface {
             teacher.setCrateDateTeacher(resultSet.getTimestamp("t.CreateDate"));
             teacher.setUpdateDateTeacher(resultSet.getTimestamp("t.UpdateDate"));
             teacher.setIdUser(resultSet.getInt("t.IdUser"));
+            teacher.setEmail(resultSet.getString("u2.Email"));
+            teacher.setRoles(resultSet.getInt("u2.Roles"));
+            teacher.setPassword(resultSet.getString("u2.Password"));
+            teacher.setName(resultSet.getString("u2.Name"));
+            teacher.setSurname(resultSet.getString("u2.Surname"));
+            teacher.setBirthday(resultSet.getDate("u2.Birthday"));
+            teacher.setLanguage(resultSet.getBoolean("u2.Language"));
+            teacher.setImage(resultSet.getString("u2.Image"));
+            teacher.setCreateDate(resultSet.getTimestamp("u2.CreateDate"));
+            teacher.setUpdateDate(resultSet.getTimestamp("u2.UpdateDate"));
 
             lesson.setTeacher(teacher);
             planning.setLesson(lesson);
             booking.setPlanning(planning);
+
             student.setIdStudent(resultSet.getInt("st.IdStudent"));
             student.setStudyGrade(resultSet.getString("st.StudyGrade"));
             student.setCreateDateStudent(resultSet.getTimestamp("st.CreateDate"));
             student.setUpdateDateStudent(resultSet.getTimestamp("st.UpdateDate"));
             student.setIdUser(resultSet.getInt("st.IdUser"));
+            student.setEmail(resultSet.getString("u1.Email"));
+            student.setRoles(resultSet.getInt("u1.Roles"));
+            student.setPassword(resultSet.getString("u1.Password"));
+            student.setName(resultSet.getString("u1.Name"));
+            student.setSurname(resultSet.getString("u1.Surname"));
+            student.setBirthday(resultSet.getDate("u1.Birthday"));
+            student.setLanguage(resultSet.getBoolean("u1.Language"));
+            student.setImage(resultSet.getString("u1.Image"));
+            student.setCreateDate(resultSet.getTimestamp("u1.CreateDate"));
+            student.setUpdateDate(resultSet.getTimestamp("u1.UpdateDate"));
 
             booking.setStudent(student);
         } catch (SQLException e) {
@@ -235,6 +194,7 @@ public class BookingDao implements BookingDaoInterface {
             prs.setInt(4, booking.getPlanning().getIdPlanning());
             prs.setInt(5, booking.getIdBooking());
             prs.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DatabaseException(e.getMessage());
@@ -596,7 +556,6 @@ public class BookingDao implements BookingDaoInterface {
     @Override
     public List<Booking> getHistoricalBokingsOfATeacherAndFilter(Teacher teacher, int macroMateriaRevelant, String macroMateria, int nomeLezioneRevelant, String nomeLezione, int microMateriaRevelant, String microMateria, int dateRelevant, Date date, int idStudentRelevant, int idStudent, int statoRelevant, int stato) throws DatabaseException {
         List<Booking> bookings = new ArrayList<>();
-        Student student = new Student();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
