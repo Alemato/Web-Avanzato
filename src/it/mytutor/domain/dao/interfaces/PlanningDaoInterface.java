@@ -25,8 +25,4 @@ public interface PlanningDaoInterface {
     void deletePlanningsByLesson(Integer idLesson) throws DatabaseException;
 
     void deletePlanning(Planning planning) throws DatabaseException;
-
-    Planning getPlanningByID(int id) throws DatabaseException;
-    Planning getPlanningByStudent(Student student) throws DatabaseException;
-    List<Planning> getAllPlanningOfStudent(Student student) throws DatabaseException;
 }
