@@ -4,29 +4,70 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css"
           href="https://cdn.datatables.net/v/bs4-4.1.1/jq-3.3.1/dt-1.10.20/datatables.min.css"/>
-    <script
-            src="https://code.jquery.com/jquery-3.4.1.min.js"
-            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-            crossorigin="anonymous"></script>
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/datatables.min.js"></script>
 </head>
 <body>
-<div class="row">
-    <button id="mario" class="btn btn-info btn-block">FAI QUALCOSA</button>
+<div id="login-wrap" class="row">
+    <div class="col">
+        <label for="email">Inserisci email</label><input id="email" type="email">
+    </div>
+    <div class="col">
+        <label for="password">Inserisci password</label><input id="password" type="password">
+    </div>
+    <div class="col align-self-center">
+        <button id="login" class="btn btn-info btn-block" >Login</button>
+    </div>
 </div>
 <script>
     $(document).ready(function () {
+        let XAuth = '';
+        async function login(email, password) {
+           await $.ajax({
+                contentType: "application/json",
+                dataType: "json",
+                url: "http://localhost:8080/api/auth",
+                method: "POST",
+                data: JSON.stringify({
+                    "username": email,
+                    "password": password
+                }),
+                success: function (data, textStatus, request) {
+                    console.log(data);
+                    console.log(textStatus);
+                    console.log(request.getAllResponseHeaders());
+                    XAuth = request.getResponseHeader("X-Auth");
+                },
+            });
+        }
+
+        $('#login').click(function () {
+            var email = $('#email').val();
+            var passowd = $('#password').val();
+            console.log(email);
+            console.log(passowd);
+            if (email !== null && email !== undefined && email !== ' ' && passowd !== null && passowd !== undefined && passowd !== ' ') {
+                login(email, passowd).then(()=>{
+                    console.log('Xauth sinc');
+                    console.log(XAuth);
+                });
+            }
+        });
 
         $('#mario').click(function () {
             $.ajax({
                 crossOrigin: true,
-                beforeSend: function(request) {
+                beforeSend: function (request) {
                     request.setRequestHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJmNjcyMTFiZi0wODgyLTQ5ODYtOGNhNC04NThhMDcxOGNkZjQiLCJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJhdWQiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJzdWIiOiJzdHVkZW50QHByb3ZhLml0IiwiaWF0IjoxNTgwNDcyNTA2LCJleHAiOjE2MTIwMDg1MDYsImF1dGhvcml0aWVzIjpbIlNUVURFTlQiXSwicmVmcmVzaENvdW50IjowLCJyZWZyZXNoTGltaXQiOjEsIm5hbWUiOiJBbGRvIiwic3VybmFtZSI6Ik1hcmNoZXR0aSJ9.YzZeFk7BMvZQr5TIxiP7dQ522mRaA7hxzeHmfWIkSZo");
                 },
                 dataType: "json",
                 url: "http://localhost:8080/api/auth/profiles/?email=teacher@prova.it",
                 method: 'GET',
-                success: function (result) {
-                    console.log(result);
+                success: function (data, textStatus, request) {
+                    console.log(data);
+                    console.log(textStatus);
+                    console.log(request);
+                    console.log(request.getAllResponseHeaders());
                 },
                 error: function (data) {
                     console.log(data)
