@@ -1,30 +1,72 @@
 package it.mytutor.domain.dao.implement;
 
-import it.mytutor.domain.*;
-
+import it.mytutor.domain.Chat;
+import it.mytutor.domain.Student;
+import it.mytutor.domain.Teacher;
 import it.mytutor.domain.dao.daofactory.DaoFactory;
 import it.mytutor.domain.dao.exception.DatabaseException;
-import it.mytutor.domain.dao.interfaces.BookingDaoInterface;
 import it.mytutor.domain.dao.interfaces.ChatDaoInterface;
 
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class ChatDao implements ChatDaoInterface {
-    private static final String CREATE_A_CHAT = "insert into Chat(Name,CreateDate, UpdateDate) value (?, DEFAULT , DEFAULT)";
-//    private static final String GET_ALL_CHAT_BY_ID_USER = "select distinct t.idchat, t.name, t.createdate, t.updatedate from Chat t, Message s Where s.IdChat=t.IdChat and s.IdUser = ? ORDER BY CreateDate DESC LIMIT 10";
-private static final String GET_ALL_CHAT_BY_ID_USER = "select * from Chat c " +
-        "join Creates cr on c.IdChat = cr.IdChat " +
-        "where cr.IdUser = ? or cr.IdUser2 = ?";
+    private static final String CREATE_A_CHAT = "insert into Chat(IdUser1, IdUser2) value (?,?)";
 
+private static final String GET_CHATS_BY_ID_USER_STATEMENT = "select * from Chat c, User u1, Student s, User u2, Teacher t where (c.IdUser1 = ? or c.IdUser2 = ?) and u1.IdUser = c.IdUser1 and s.IdUser = u1.IdUser and u2.IdUser = c.IDUser2 and t.IdUser = u2.IdUser";
 
-    private void configureChat(Chat chat, ResultSet resultSet) throws DatabaseException {
+    private void configureChat(Chat chat, List<Object> users, ResultSet resultSet) throws DatabaseException {
         try{
+            Student student = new Student();
+            student.setIdStudent(resultSet.getInt("s.IdStudent"));
+            student.setStudyGrade(resultSet.getString("s.StudyGrade"));
+            student.setCreateDateStudent(resultSet.getTimestamp("s.CreateDate"));
+            student.setUpdateDateStudent(resultSet.getTimestamp("s.UpdateDate"));
+            student.setIdUser(resultSet.getInt("s.IdUser"));
+            student.setEmail(resultSet.getString("u1.Email"));
+            student.setRoles(resultSet.getInt("u1.Roles"));
+            student.setPassword(resultSet.getString("u1.Password"));
+            student.setName(resultSet.getString("u1.Name"));
+            student.setSurname(resultSet.getString("u1.Surname"));
+            student.setBirthday(resultSet.getDate("u1.Birthday"));
+            student.setLanguage(resultSet.getBoolean("u1.Language"));
+            student.setImage(resultSet.getString("u1.Image"));
+            student.setCreateDate(resultSet.getTimestamp("u1.CreateDate"));
+            student.setUpdateDate(resultSet.getTimestamp("u1.UpdateDate"));
+
+            users.add(student);
+            Teacher teacher = new Teacher();
+
+            teacher.setIdTeacher(resultSet.getInt("t.IdTeacher"));
+            teacher.setPostCode(resultSet.getInt("t.PostCode"));
+            teacher.setCity(resultSet.getString("t.City"));
+            teacher.setRegion(resultSet.getString("t.Region"));
+            teacher.setStreet(resultSet.getString("t.Street"));
+            teacher.setStreetNumber(resultSet.getString("t.StreetNumber"));
+            teacher.setByography(resultSet.getString("t.Byography"));
+            teacher.setCrateDateTeacher(resultSet.getTimestamp("t.CreateDate"));
+            teacher.setUpdateDateTeacher(resultSet.getTimestamp("t.UpdateDate"));
+            teacher.setIdUser(resultSet.getInt("t.IdUser"));
+            teacher.setEmail(resultSet.getString("u2.Email"));
+            teacher.setRoles(resultSet.getInt("u2.Roles"));
+            teacher.setPassword(resultSet.getString("u2.Password"));
+            teacher.setName(resultSet.getString("u2.Name"));
+            teacher.setSurname(resultSet.getString("u2.Surname"));
+            teacher.setBirthday(resultSet.getDate("u2.Birthday"));
+            teacher.setLanguage(resultSet.getBoolean("u2.Language"));
+            teacher.setImage(resultSet.getString("u2.Image"));
+            teacher.setCreateDate(resultSet.getTimestamp("u2.CreateDate"));
+            teacher.setUpdateDate(resultSet.getTimestamp("u2.UpdateDate"));
+            users.add(teacher);
+            chat.setUserListser(users);
+
             chat.setIdChat(resultSet.getInt("IdChat"));
-            chat.setName(resultSet.getString("Name"));
+
             chat.setCreateDate(resultSet.getTimestamp("CreateDate"));
             chat.setUpdateDate(resultSet.getTimestamp("UpdateDate"));
         } catch (SQLException s) {
@@ -38,7 +80,8 @@ private static final String GET_ALL_CHAT_BY_ID_USER = "select * from Chat c " +
         try {
             while (resultSet.next()) {
                 Chat chat = new Chat();
-                configureChat(chat, resultSet);
+                List<Object> users = new ArrayList<>();
+                configureChat(chat, users, resultSet);
                 chats.add(chat);
             }
         } catch (SQLException e) {
@@ -48,41 +91,31 @@ private static final String GET_ALL_CHAT_BY_ID_USER = "select * from Chat c " +
     }
 
     @Override
-    public Integer crateAChat(String chatName) throws DatabaseException {
+    public void crateAChat(Integer idUserS, Integer idUserT) throws DatabaseException {
         Connection connection = DaoFactory.getConnection();
         if(connection == null){
             throw new DatabaseException("Connection is null");
         }
-        int i = 0;
         ResultSet rs = null;
         PreparedStatement prs = null;
         try {
-            prs = connection.prepareStatement(CREATE_A_CHAT, com.mysql.jdbc.Statement.RETURN_GENERATED_KEYS);
+            prs = connection.prepareStatement(CREATE_A_CHAT);
             if (prs == null){
                 throw new DatabaseException("Statement is null");
             }
-            prs.setString(1, chatName);
+            prs.setInt(1, idUserS);
+            prs.setInt(2, idUserT);
             prs.executeUpdate();
-
-            try {
-                rs = prs.getGeneratedKeys();
-                if (rs.next()) {
-                    i = rs.getInt(1);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
 
         } catch(SQLException e) {
             throw new DatabaseException(e.getMessage());
         } finally {
             DaoFactory.closeDbConnection(connection, rs, prs);
         }
-        return i;
     }
 
     @Override
-    public List<Chat> getAllChatByIdUser(int idUser) throws DatabaseException {
+    public List<Chat> getChatByIdUser(Integer idUser) throws DatabaseException {
         List<Chat> chatList = new ArrayList<>();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
@@ -91,7 +124,7 @@ private static final String GET_ALL_CHAT_BY_ID_USER = "select * from Chat c " +
         ResultSet rs = null;
         PreparedStatement prs = null;
         try {
-            prs = conn.prepareStatement(GET_ALL_CHAT_BY_ID_USER);
+            prs = conn.prepareStatement(GET_CHATS_BY_ID_USER_STATEMENT);
             if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
@@ -99,9 +132,7 @@ private static final String GET_ALL_CHAT_BY_ID_USER = "select * from Chat c " +
             prs.setInt(2, idUser);
             rs = prs.executeQuery();
             configureChatList(chatList, rs);
-//            if (chatList.isEmpty()) {
-//                 throw new DatabaseException("rs is empty");
-//            }
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -110,6 +141,5 @@ private static final String GET_ALL_CHAT_BY_ID_USER = "select * from Chat c " +
             DaoFactory.closeDbConnection(conn, rs, prs);
         }
         return chatList;
-
     }
 }

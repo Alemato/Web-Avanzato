@@ -4,7 +4,6 @@ import com.mysql.jdbc.Statement;
 import it.mytutor.domain.Lesson;
 import it.mytutor.domain.Subject;
 import it.mytutor.domain.Teacher;
-import it.mytutor.domain.User;
 import it.mytutor.domain.dao.daofactory.DaoFactory;
 import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.interfaces.LessonDaoInterface;
@@ -18,11 +17,7 @@ import java.util.List;
 
 public class LessonDao implements LessonDaoInterface {
 
-    private static final String GET_LESSON_BY_TEACHER_STATEMENT = "select * from Lesson l " +
-            "join Subject s on l.IdSubject = s.IdSubject " +
-            "join Teacher t on l.IdTeacher = t.IdTeacher " +
-            "join User u on t.IdUser = u.IdUser " +
-            "where l.IdTeacher = ? ";
+    private static final String GET_LESSON_BY_TEACHER_STATEMENT = "select * from Lesson l, Teacher t, User u, Subject s where l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and l.IdSubject = s.IdSubject and l.IdTeacher = ?";
 
     private static final String CREATE_LESSON_STATEMENT = "insert into Lesson (Name, Price, Description, IdSubject, IdTeacher) values (?, ?, ?, ?, ?)";
 
@@ -91,21 +86,6 @@ public class LessonDao implements LessonDaoInterface {
     }
 
     @Override
-    public List<Lesson> getAllLesson() throws DatabaseException {
-        return null;
-    }
-
-    @Override
-    public List<Lesson> getLessonByName(String name) throws DatabaseException {
-        return null;
-    }
-
-    @Override
-    public List<Lesson> getLessonsBySubject(String microSubject) throws DatabaseException {
-        return null;
-    }
-
-    @Override
     public List<Lesson> getLessonsByTeacher(Teacher teacher) throws DatabaseException {
         List<Lesson> lessons = new ArrayList<>();
         Connection conn = DaoFactory.getConnection();
@@ -135,23 +115,13 @@ public class LessonDao implements LessonDaoInterface {
     }
 
     @Override
-    public Lesson getLessonsByID(int id) throws DatabaseException {
-        return null;
-    }
-
-//    @Override
-//    public void modifyLesson(Lesson lesson) throws DatabaseException {
-//
-//    }
-
-    @Override
     public int createLesson(Lesson lesson) throws DatabaseException {
 
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
         }
-        int i = 0;
+        int i = -1;
         ResultSet rs = null;
         PreparedStatement prs = null;
         try {
@@ -168,14 +138,11 @@ public class LessonDao implements LessonDaoInterface {
 
             prs.executeUpdate();
 
-            try {
-                rs = prs.getGeneratedKeys();
-                if (rs.next()) {
-                    i = rs.getInt(1);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            rs = prs.getGeneratedKeys();
+            if (rs.next()) {
+                i = rs.getInt(1);
             }
+
 
         } catch (SQLException e) {
             e.printStackTrace();

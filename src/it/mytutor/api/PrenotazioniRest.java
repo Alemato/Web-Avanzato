@@ -47,7 +47,7 @@ public class PrenotazioniRest {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"STUDENT", "TEACHER"})
     public Response getBooking(@PathParam("ID") String idBoking) {
-        Booking booking = new Booking();
+        Booking booking;
         if (idBoking != null && !idBoking.isEmpty() && !idBoking.equals(" ")) {
             try {
                 booking = bookingService.findBookingById(Integer.parseInt(idBoking));
@@ -109,7 +109,7 @@ public class PrenotazioniRest {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
-        return Response.status(201).entity("{ \"message\": \"prenotazione aggiornata\" }").build();
+        return Response.status(Response.Status.CREATED).build();
     }
 
     /**

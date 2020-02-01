@@ -2,25 +2,21 @@ package it.mytutor.api;
 
 import it.mytutor.api.test.ApiWebApplicationException;
 import it.mytutor.business.exceptions.MessageBusinessException;
-import it.mytutor.business.impl.ChatBusiness;
 import it.mytutor.business.impl.MessageBusiness;
-import it.mytutor.business.services.ChatInterface;
 import it.mytutor.business.services.MessageInterface;
 import it.mytutor.domain.Message;
 
-import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-@Path("chats/{CID}/messaggi")
+@Path("chats/{CID}/messages")
 public class MessaggiRest {
 
     private MessageInterface messageService = new MessageBusiness();
-    private ChatInterface chatService = new ChatBusiness();
 
     /**
      * Rest per tutti i messaggi della chat
@@ -31,7 +27,7 @@ public class MessaggiRest {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
+    @RolesAllowed({"STUDENT", "TEACHER"})
     public Response getAllMessaggi(@PathParam("CID") Integer cid) {
         List<Message> messages = null;
         try {
@@ -43,17 +39,14 @@ public class MessaggiRest {
     }
 
     /**
-     * Rest per creare un nuovo messaggio
-     *
-     * @param cid           id della chat ricevuto dal client
-     * @param message id dell'ultimo messaggio che il client h nello storage
-     * @return lista di messaggi oppure 304 per nessun mnuovo messaggio
+     * @param message Oggetto messaggio da creare
+     * @param cid Path Param chat collegata al messaggio da creare
+     * @return 201 CREATED
      */
-
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
+    @RolesAllowed({"STUDENT", "TEACHER"})
     public Response createMessage(Message message, @PathParam("CID") Integer cid) {
         try {
             messageService.crateMessage(message);
@@ -61,47 +54,20 @@ public class MessaggiRest {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
-        return Response.ok().build();
+        return Response.status(Response.Status.CREATED).build();
     }
 
-
-    @Path("check")
+    /**
+     *  Rest per prendere i nuovi messaggi se ce ne sono
+     * @param idChat id della chat collegata agli ultimi messaggi richiesti
+     * @param idLastMessage ultimo id
+     * @return  lista di nuovi messaggi o 304 NOT_MODIFIED
+     */
+    @Path("last")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
-    public Response checkMessaggi(Map<Integer, Integer> map) {
-        List<Message> messages = new ArrayList<>();
-        List<Message> messages1 = new ArrayList<>();
-        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-//            Key = entry.getKey()
-//            Value = entry.getValue())
-            boolean i = false;
-            try {
-                messages = messageService.findAllMessageByChat(entry.getKey());
-            } catch (MessageBusinessException e) {
-                e.printStackTrace();
-                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-            }
-            for (Message message : messages) {
-                if (message.getIdMessage().equals(entry.getValue()) || i) {
-                    i = true;
-                    messages1.add(message);
-                }
-            }
-        }
-        if (!messages1.isEmpty()) {
-            return Response.ok(messages1).build();
-        } else {
-            return Response.status(Response.Status.NOT_MODIFIED).entity("nessun nuovo messaggio").build();
-        }
-    }
-
-    @Path("countmessage")
-    @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
+    @RolesAllowed({"STUDENT", "TEACHER"})
     public Response MessageAfterId(@PathParam("CID") Integer idChat, @QueryParam("id-last-message") Integer idLastMessage) {
         List<Message> messages;
         try {
@@ -124,9 +90,9 @@ public class MessaggiRest {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
+    @RolesAllowed({"STUDENT", "TEACHER"})
     public Response CountMessage(@PathParam("CID") Integer idChat) {
-        List<Message> messages = new ArrayList<>();
+        List<Message> messages;
         try {
             messages = messageService.findAllMessageByChat(idChat);
         } catch (MessageBusinessException e) {

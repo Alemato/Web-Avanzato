@@ -1,5 +1,6 @@
 package it.mytutor.business.services;
 
+import it.mytutor.business.exceptions.ChatBusinessException;
 import it.mytutor.domain.Chat;
 import it.mytutor.domain.Message;
 import it.mytutor.domain.User;
@@ -9,7 +10,10 @@ import java.util.List;
 
 public interface ChatInterface {
     List<Message> findAllChatByUser(String username) throws DatabaseException;
-    List<Message> findAllChatByUserByQuery(String username) throws DatabaseException;
-    Chat creationChat(Chat chat);
-    Chat findChatByID(Integer idChat);
+
+    boolean getIfExistChat(String username, Integer idUser2) throws ChatBusinessException;
+
+    List<Chat> getChatByIdUser(int idUser) throws ChatBusinessException;
+
+    void creationChat(User userCreate, Integer userAddressee) throws ChatBusinessException;
 }

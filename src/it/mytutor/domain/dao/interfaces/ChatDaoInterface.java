@@ -6,6 +6,9 @@ import it.mytutor.domain.dao.exception.DatabaseException;
 import java.util.List;
 
 public interface ChatDaoInterface {
-    List<Chat> getAllChatByIdUser(int idUser) throws DatabaseException;
-    Integer crateAChat(String chatName) throws DatabaseException;
+    void crateAChat(Integer idUserS, Integer idUserT) throws DatabaseException;
+
+
+    List<Chat> getChatByIdUser(Integer idUser) throws DatabaseException;
+
 }

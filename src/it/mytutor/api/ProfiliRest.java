@@ -9,7 +9,6 @@ import it.mytutor.domain.Student;
 import it.mytutor.domain.Teacher;
 import it.mytutor.domain.dao.exception.DatabaseException;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;

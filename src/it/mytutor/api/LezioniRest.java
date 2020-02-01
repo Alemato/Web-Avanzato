@@ -31,7 +31,7 @@ public class LezioniRest {
     private UserInterface userService = new UserBusiness();
 
     /**
-     * Rest per la lista delle lezioni della pagina "Lista Annunci" del Professore
+     * Ritorna la lista delle lezioni del professore che la richiede
      * @return Lista di Lesson
      */
     @GET
@@ -50,10 +50,7 @@ public class LezioniRest {
         List<Lesson> lessons;
         try {
             lessons = new ArrayList<>(lessonService.findAllLessonByTeacher(teacher));
-        } catch (LessonBusinessException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
-        } catch (DatabaseException e) {
+        } catch (LessonBusinessException | DatabaseException e) {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
         }
@@ -61,22 +58,19 @@ public class LezioniRest {
     }
 
     /**
-     * Rest per modificare la lezione da parte del professore
-     * @param lesson Lezione dal client
-     * @return Status accettato con messaggio "Lezione modificata"
+     * Rest che modifica la lezione inviata
+     * @param lesson Lezione da modificare con le mdifiche
+     * @return Status 201 CREATED
      */
     @Path("modify")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"TEACHER"})
     public Response modificaLezione(Lesson lesson) {
         try {
             lessonService.updateLessson(lesson);
-        } catch (LessonBusinessException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
-        } catch (SubjectBusinessException e) {
+        } catch (LessonBusinessException | SubjectBusinessException e) {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
         }

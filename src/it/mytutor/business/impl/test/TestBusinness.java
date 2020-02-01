@@ -71,7 +71,6 @@ public class TestBusinness {
     public static Chat generateChat(int i){
         Chat chat = new Chat();
         chat.setIdChat(i);
-        chat.setName("Chtat di prova");
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         chat.setCreateDate(timestamp);
         chat.setUpdateDate(timestamp);

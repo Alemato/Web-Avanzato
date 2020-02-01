@@ -1,8 +1,6 @@
 package it.mytutor.domain.dao.implement;
 
-import it.mytutor.domain.Message;
-import it.mytutor.domain.Chat;
-import it.mytutor.domain.User;
+import it.mytutor.domain.*;
 import it.mytutor.domain.dao.daofactory.DaoFactory;
 import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.interfaces.MessageDaoInterface;
@@ -17,11 +15,11 @@ import java.util.List;
 public class MessageDao implements MessageDaoInterface {
     private static final String CREATE_MESSAGE_STATEMENT = "insert into Message(text,sendDate,IdChat,IdUser) values (?,?,?,?)";
     private static final String GET_MESSAGE_BY_ID_STATEMENT = "select * from Message m, Chat c, User u where m.IdChat = c.IdChat AND m.IdUser = u.IdUser AND IdMessage = ?";
-    private static final String GET_ALL_MESSAGE_OF_CHAT_STATEMENT = "select * from Message m , Chat c, User u where m.IdChat = c.IdChat AND m.IdUser = u.IdUser AND m.IdChat = ? ORDER BY m.SendDate DESC, m.IdMessage DESC";
+    private static final String GET_ALL_MESSAGE_OF_CHAT_STATEMENT = "select * from Message m, Chat c, User u, User u1, Student s, User u2, Teacher t where m.IdChat = c.IdChat AND m.IdUser = u.IdUser AND u1.IdUser = c.IdUser1 and s.IdUser = u1.IdUser and u2.IdUser = c.IDUser2 and t.IdUser = u2.IdUser AND m.IdChat = ? ORDER BY m.SendDate DESC, m.IdMessage DESC";
     private static final String GET_ALL_MESSAGE_OF_CHAT_STATEMENT_LIMIT_5 = "select * from Message m , Chat c, User u where m.IdChat = c.IdChat AND m.IdUser = u.IdUser AND m.IdChat = ? ORDER BY m.SendDate DESC, m.IdMessage DESC LIMIT 5";
-    private static final String GET_A_MESSAGE_OF_CHAT_STATEMEN = "select * from Message m, Chat c, User u where m.IdChat = c.IdChat AND m.IdUser = u.IdUser AND m.IdChat = ? ORDER BY m.SendDate DESC, m.IdMessage DESC LIMIT 1";
+    private static final String GET_A_MESSAGE_OF_CHAT_STATEMEN = "select * from Message m, Chat c, User u, User u1, Student s, User u2, Teacher t where m.IdChat = c.IdChat AND m.IdUser = u.IdUser AND u1.IdUser = c.IdUser1 and s.IdUser = u1.IdUser and u2.IdUser = c.IDUser2 and t.IdUser = u2.IdUser AND m.IdChat = ? ORDER BY m.SendDate DESC, m.IdMessage DESC LIMIT 1";
 
-    private void configureMessage(Message message, Chat chat, User user, ResultSet resultSet) throws DatabaseException {
+    private void configureMessage(Message message, Chat chat, User user, List<Object> users, ResultSet resultSet) throws DatabaseException {
         try {
             message.setIdMessage(resultSet.getInt("IdMessage"));
             message.setText(resultSet.getString("Text"));
@@ -29,9 +27,53 @@ public class MessageDao implements MessageDaoInterface {
             message.setCreateDate(resultSet.getTimestamp("m.CreateDate"));
             message.setUpdateDate(resultSet.getTimestamp("m.UpdateDate"));
             chat.setIdChat(resultSet.getInt("c.IdChat"));
-            chat.setName(resultSet.getString("c.Name"));
+
+            Student student = new Student();
+            student.setIdStudent(resultSet.getInt("s.IdStudent"));
+            student.setStudyGrade(resultSet.getString("s.StudyGrade"));
+            student.setCreateDateStudent(resultSet.getTimestamp("s.CreateDate"));
+            student.setUpdateDateStudent(resultSet.getTimestamp("s.UpdateDate"));
+            student.setIdUser(resultSet.getInt("s.IdUser"));
+            student.setEmail(resultSet.getString("u1.Email"));
+            student.setRoles(resultSet.getInt("u1.Roles"));
+            student.setPassword(resultSet.getString("u1.Password"));
+            student.setName(resultSet.getString("u1.Name"));
+            student.setSurname(resultSet.getString("u1.Surname"));
+            student.setBirthday(resultSet.getDate("u1.Birthday"));
+            student.setLanguage(resultSet.getBoolean("u1.Language"));
+            student.setImage(resultSet.getString("u1.Image"));
+            student.setCreateDate(resultSet.getTimestamp("u1.CreateDate"));
+            student.setUpdateDate(resultSet.getTimestamp("u1.UpdateDate"));
+
+            users.add(student);
+            Teacher teacher = new Teacher();
+
+            teacher.setIdTeacher(resultSet.getInt("t.IdTeacher"));
+            teacher.setPostCode(resultSet.getInt("t.PostCode"));
+            teacher.setCity(resultSet.getString("t.City"));
+            teacher.setRegion(resultSet.getString("t.Region"));
+            teacher.setStreet(resultSet.getString("t.Street"));
+            teacher.setStreetNumber(resultSet.getString("t.StreetNumber"));
+            teacher.setByography(resultSet.getString("t.Byography"));
+            teacher.setCrateDateTeacher(resultSet.getTimestamp("t.CreateDate"));
+            teacher.setUpdateDateTeacher(resultSet.getTimestamp("t.UpdateDate"));
+            teacher.setIdUser(resultSet.getInt("t.IdUser"));
+            teacher.setEmail(resultSet.getString("u2.Email"));
+            teacher.setRoles(resultSet.getInt("u2.Roles"));
+            teacher.setPassword(resultSet.getString("u2.Password"));
+            teacher.setName(resultSet.getString("u2.Name"));
+            teacher.setSurname(resultSet.getString("u2.Surname"));
+            teacher.setBirthday(resultSet.getDate("u2.Birthday"));
+            teacher.setLanguage(resultSet.getBoolean("u2.Language"));
+            teacher.setImage(resultSet.getString("u2.Image"));
+            teacher.setCreateDate(resultSet.getTimestamp("u2.CreateDate"));
+            teacher.setUpdateDate(resultSet.getTimestamp("u2.UpdateDate"));
+            users.add(teacher);
+            chat.setUserListser(users);
+            chat.setIdChat(resultSet.getInt("IdChat"));
             chat.setCreateDate(resultSet.getTimestamp("c.CreateDate"));
             chat.setUpdateDate(resultSet.getTimestamp("c.UpdateDate"));
+
             message.setChat(chat);
             user.setIdUser(resultSet.getInt("u.IdUser"));
             user.setEmail(resultSet.getString("Email"));
@@ -57,9 +99,11 @@ public class MessageDao implements MessageDaoInterface {
                 Message message = new Message();
                 Chat chat = new Chat();
                 User user = new User();
-                configureMessage(message, chat, user, resultSet);
+                List<Object> users = new ArrayList<>();
+                configureMessage(message, chat, user, users, resultSet);
                 messages.add(message);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DatabaseException("Errore nel creare Lista oggetti Messaggi");
@@ -99,6 +143,7 @@ public class MessageDao implements MessageDaoInterface {
         Message message = new Message();
         Chat chat = new Chat();
         User user = new User();
+        List<Object> users = new ArrayList<>();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -113,7 +158,7 @@ public class MessageDao implements MessageDaoInterface {
             prs.setInt(1, id);
             rs = prs.executeQuery();
             if (rs.next()) {
-                configureMessage(message, chat, user, rs);
+                configureMessage(message, chat, user, users, rs);
             } else {
                 throw new DatabaseException("rs is empty");
             }
@@ -130,7 +175,7 @@ public class MessageDao implements MessageDaoInterface {
 
     @Override
     public List<Message> getAllMessagesOfChat(int chatID) throws DatabaseException {
-        List<Message> messages = new ArrayList<Message>();
+        List<Message> messages = new ArrayList<>();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -161,7 +206,7 @@ public class MessageDao implements MessageDaoInterface {
 
     @Override
     public List<Message> getAllMessagesOfChatLimitFive(int chatID) throws DatabaseException {
-        List<Message> messages = new ArrayList<Message>();
+        List<Message> messages = new ArrayList<>();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -195,6 +240,7 @@ public class MessageDao implements MessageDaoInterface {
         Chat chat = new Chat();
         User user = new User();
         Message message = new Message();
+        List<Object> users = new ArrayList<>();
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -209,7 +255,7 @@ public class MessageDao implements MessageDaoInterface {
             prs.setInt(1, chatID);
             rs = prs.executeQuery();
             if (rs.next()) {
-                configureMessage(message, chat, user, rs);
+                configureMessage(message, chat, user, users, rs);
             } else {
                 throw new DatabaseException("rs is empty");
             }
