@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/bs4-4.1.1/jq-3.3.1/dt-1.10.20/datatables.min.css"/>
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="row">
+    <button id="mario" class="btn btn-info btn-block">FAI QUALCOSA</button>
+</div>
+<script>
+    $(document).ready(function () {
+
+        $('#mario').click(function () {
+            $.ajax({
+                crossOrigin: true,
+                beforeSend: function(request) {
+                    request.setRequestHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJmNjcyMTFiZi0wODgyLTQ5ODYtOGNhNC04NThhMDcxOGNkZjQiLCJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJhdWQiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJzdWIiOiJzdHVkZW50QHByb3ZhLml0IiwiaWF0IjoxNTgwNDcyNTA2LCJleHAiOjE2MTIwMDg1MDYsImF1dGhvcml0aWVzIjpbIlNUVURFTlQiXSwicmVmcmVzaENvdW50IjowLCJyZWZyZXNoTGltaXQiOjEsIm5hbWUiOiJBbGRvIiwic3VybmFtZSI6Ik1hcmNoZXR0aSJ9.YzZeFk7BMvZQr5TIxiP7dQ522mRaA7hxzeHmfWIkSZo");
+                },
+                dataType: "json",
+                url: "http://localhost:8080/api/auth/profiles/?email=teacher@prova.it",
+                method: 'GET',
+                success: function (result) {
+                    console.log(result);
+                },
+                error: function (data) {
+                    console.log(data)
+                }
+            })
+        });
+    });
+</script>
+</body>
+</html>
