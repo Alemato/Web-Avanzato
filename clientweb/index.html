@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title></title>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css"
           href="https://cdn.datatables.net/v/bs4-4.1.1/jq-3.3.1/dt-1.10.20/datatables.min.css"/>
     <link rel="stylesheet" type="text/css"
           href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"/>
-
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
@@ -18,6 +18,7 @@
         }
 
         .imgChat {
+            border-radius: 50px;
             height: 50px;
             width: 50px;
         }
@@ -59,427 +60,810 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
+    <script src="js/sha512.js"></script>
 </head>
 <body>
-<div id="login-wrap" class="row px-2">
-    <div class="col">
-        <label for="email">Inserisci email</label><input id="email" type="email">
+<div id="login-wrap" class="row px-5 align-self-center">
+    <div class="row w-100 justify-content-center">
+        <div class="col-3">
+            <label for="email">Inserisci email</label><input id="email" type="email" class="w-100">
+        </div>
+        <div class="col-3">
+            <label for="password">Inserisci password</label><input id="password" type="password" class="w-100">
+        </div>
     </div>
-    <div class="col">
-        <label for="password">Inserisci password</label><input id="password" type="password">
-    </div>
-    <div class="col align-self-center">
-        <button id="login" class="btn btn-info btn-block">Login</button>
-    </div>
+    <button id="login" class="btn btn-info w-25 mx-auto mt-3">Login</button>
 </div>
+<!--suppress JSPotentiallyInvalidConstructorUsage -->
 <script>
     $(document).ready(function () {
-        let XAuth = '';
-        let user = {};
-        let $loginWrap;
-        let $login = $("#login");
+            let XAuth = '';
+            let user = {};
+            let password = '';
+            let presentaListaChat = true;
+            let chats = [];
+            let message = [];
+            let selLoginWrap;
+            let selLogin = $("#login");
+            let selBody = $("body");
+            let selBottoniProfilo;
+            let selPostModifica;
+            let selModificaProfilo;
+            let selPreModifica;
+            let selListaChat;
+            let selChiudiChat;
+            let selChiudiMessage;
+            let selNewMessage;
+            let selChiudiNewMessage;
+            let selSendMessage;
+            let selDivWrapTableMessage;
+            let selRigaDivMex = $("#rigaDiv");
+            let selDivWrapTableChat;
+            let selRigaDivChat;
+            let selRigaDivNewMex;
+            let selDivWrapNewMessage;
 
-        let chats = [];
-        let message = [];
-        let $divTableMess = $("#divWrapTableMessage");
-        let $rigaDivMex = $("#rigaDiv");
-        let $divTable = $("#divWrapTableChat");
-        let $rigaDivChat = $("#rigaDivChat");
-        let $rigaDivNewMex = $("#riga-div-new-mex");
-        let $divWrapNewMessage = $("#div-wrap-new-message");
 
+            selLogin.click(function () {
+                runLogin();
+            });
 
-        $login.click(function () {
-            runLogin();
-        });
-
-        function profiloStudentPresentation(data) {
-            const ruoles = "Studente";
-            let studyGrade = "Non disponibile";
-            let dataNascita = new Date(data.birthday).toLocaleDateString();
-            $loginWrap.after("<div id='profilo-wrap' style='display: none;'></div>");
-            let $profilowrap = $("#profilo-wrap");
-
-            $profilowrap.append("<div class='riga'></div><div class='row'></div>");
-            let $profilowrapRow = $("#profilo-wrap div.row");
-
-            $profilowrapRow.append("<div class='col-auto align-self-center pl-3'></div>");
-            let $profilowrapRowColAutoAlign = $("#profilo-wrap div.row div.col-auto.align-self-center");
-
-            if (data.image !== null && data.image !== undefined && data.image !== ' ') {
-                $profilowrapRowColAutoAlign.append("<img class='imgProfilo rounded-circle' src=\"" + data.image + "\" alt='img profilo'>");
-            } else {
-                $profilowrapRowColAutoAlign.append("<i class='fas fa-user-circle text-primary fs-150'></i>")
+            function runLogin() {
+                const email = $("#email").val();
+                password = $("#password").val();
+                console.log(email);
+                console.log(password);
+                if (email !== null && email !== undefined && email !== " " && email !== "" && password !== null && password !== undefined && password !== " " && password !== "") {
+                    login(email, password).then(() => {
+                        $("input").val("");
+                        selLoginWrap = $("#login-wrap");
+                        if (user.roles === 1) {
+                            profiloStudentPresentation(user);
+                        } else {
+                            profiloTeacherPresentation(user);
+                        }
+                    });
+                }
             }
-            $profilowrapRow.append("<div class='col-auto row pr-5'></div>");
-            if (data.studyGrade !== null && data.studyGrade !== undefined) {
-                studyGrade = data.studyGrade;
+
+            async function login(email, password) {
+                await $.ajax({
+                    contentType: "application/json",
+                    dataType: "json",
+                    url: "http://localhost:8080/api/auth",
+                    method: "POST",
+                    data: JSON.stringify({
+                        "username": email,
+                        "password": password
+                    }),
+                    success: function (data, textStatus, request) {
+                        console.log(data);
+                        console.log(textStatus);
+                        console.log(request.getAllResponseHeaders());
+                        user = data;
+                        XAuth = request.getResponseHeader("X-Auth");
+                    },
+                });
             }
-            let $profilowarpRowColAutoRowPr5 = $("#profilo-wrap div.row div.col-auto.row.pr-5");
 
-            $profilowarpRowColAutoRowPr5.append("<div class='col-auto'><h3>" + data.name + " " + data.surname + "</h3><h3>" + ruoles + "</h3><h3>Nato il:</h3></div>");
-            $profilowarpRowColAutoRowPr5.append("<div class='col-auto'><h3>" + data.email + "</h3><h3>" + studyGrade + "</h3><h3>" + dataNascita + "</h3></div>")
-            $profilowrap.after("<div class='riga'></div><div id='bottoni-profilo' class='row px-2' style='display: none;'></div>");
-            let $bottoniProfilo = $("#bottoni-profilo");
-
-            $bottoniProfilo.append("<div class='col'><button id='moficaUtente' class='btn btn-info btn-block'>Modifica Utente</button></div>" +
-                "<div class='col'><button id='listaChat' class='btn btn-success btn-block'>Visualizza chat disponibili</button>\n" +
-                "</div><div class='col'><button id='logOut' class='btn btn-danger btn-block'>Logout</button></div>");
-
-            $("#listaChat").click(function () {
-                $divTableMess.fadeOut();
-                $rigaDivMex.fadeOut();
-                $divTable.fadeOut();
-                $rigaDivChat.fadeOut();
-                $divWrapNewMessage.fadeOut();
-                $rigaDivNewMex.fadeOut();
-                takeChats()
-            });
-
-            $("#logOut").click(function () {
-                logOut();
-            });
-
-            $loginWrap.fadeOut();
-            $profilowrap.fadeIn();
-            $bottoniProfilo.fadeIn();
-        }
-
-        function profiloTeacherPresentation(data) {
-            const ruoles = "Teacher";
-            let byography = "Non disponibile";
-            let dataNascitaT = new Date(data.birthday).toLocaleDateString();
-            $loginWrap.after("<div id='profilo-wrap' style='display: none;'></div>");
-            let $profilowrap = $("#profilo-wrap");
-
-            $profilowrap.append("<div class='riga'></div><div class='row'></div>");
-            let $profilowrapRow = $("#profilo-wrap div.row");
-
-            $profilowrapRow.append("<div class='col-auto align-self-center pl-3'></div>");
-            let $profilowrapRowColAutoAlign = $("#profilo-wrap div.row div.col-auto.align-self-center");
-
-            if (data.image !== null && data.image !== undefined && data.image !== ' ') {
-                $profilowrapRowColAutoAlign.append("<img class='imgProfilo rounded-circle' src=\"" + data.image + "\" alt='img profilo'>");
-            } else {
-                $profilowrapRowColAutoAlign.append("<i class='fas fa-user-circle text-primary fs-150'></i>")
+            async function logOut() {
+                console.log("cliccato");
+                user = {};
+                XAuth = "";
+                await selBody.children().fadeOut();
+                selBody.children().remove();
+                selBody.append(selLoginWrap);
+                selLoginWrap.fadeIn();
+                selLogin.click(function () {
+                    runLogin();
+                });
             }
-            $profilowrapRow.append("<div class='col-auto row pr-5'></div>");
-            if (data.byography !== null && data.byography !== undefined) {
-                byography = data.byography;
-            }
-            let $profilowarpRowColAutoRowPr5 = $("#profilo-wrap div.row div.col-auto.row.pr-5");
 
-            $profilowarpRowColAutoRowPr5.append("<div class='col-auto'><h3>" + data.name + " " + data.surname + "</h3><h3>" + ruoles + "</h3><h3>Nato il:</h3></div>");
-            $profilowarpRowColAutoRowPr5.append("<div class='col-auto'><h3>" + data.email + "</h3><h3>&nbsp;</h3><h3>" + dataNascitaT + "</h3></div>");
-            $profilowrap.after("<div class='riga'></div><div id='bottoni-profilo' class='row px-2' style='display: none;'></div>");
-            let $bottoniProfilo = $("#bottoni-profilo");
-
-            $bottoniProfilo.append("<div class='col'><button id='moficaUtente' class='btn btn-info btn-block'>Modifica Utente</button></div>" +
-                "<div class='col'><button id='listaChat' class='btn btn-success btn-block'>Visualizza chat disponibili</button>\n" +
-                "</div><div class='col'><button id='logOut' class='btn btn-danger btn-block'>Logout</button></div>");
-
-            $("#listaChat").click(function () {
-                $divTableMess.fadeOut();
-                $rigaDivMex.fadeOut();
-                $divTable.fadeOut();
-                $rigaDivChat.fadeOut();
-                $divWrapNewMessage.fadeOut();
-                $rigaDivNewMex.fadeOut();
-                takeChats()
-            });
-
-            $("#logOut").click(function () {
-                logOut();
-            });
-
-            $loginWrap.fadeOut();
-            $profilowrap.fadeIn();
-            $bottoniProfilo.fadeIn();
-        }
-
-        async function login(email, password) {
-            await $.ajax({
-                contentType: "application/json",
-                dataType: "json",
-                url: "http://localhost:8080/api/auth",
-                method: "POST",
-                data: JSON.stringify({
-                    "username": email,
-                    "password": password
-                }),
-                success: function (data, textStatus, request) {
-                    console.log(data);
-                    console.log(textStatus);
-                    console.log(request.getAllResponseHeaders());
-                    user = data;
-                    XAuth = request.getResponseHeader("X-Auth");
-                    console.log(XAuth);
-                },
-            });
-        }
-
-        function runLogin() {
-            const email = $("#email").val();
-            const passowd = $("#password").val();
-            console.log(email);
-            console.log(passowd);
-            if (email !== null && email !== undefined && email !== " " && email !== "" && passowd !== null && passowd !== undefined && passowd !== " " && passowd !== "") {
-                login(email, passowd).then(() => {
-                    $("input").val("");
-                    $loginWrap = $("#login-wrap");
-                    if (user.roles === 1) {
-                        profiloStudentPresentation(user);
+            function bViewChat() {
+                selListaChat.click(async function () {
+                    if (presentaListaChat) {
+                        presentaListaChat = false;
+                        await takeChats();
                     } else {
-                        profiloTeacherPresentation(user);
+                        if (selDivWrapTableChat !== undefined) {
+                            selDivWrapTableChat.fadeOut();
+                            selDivWrapTableChat.remove();
+                        }
+                        if (selRigaDivChat !== undefined) {
+                            selRigaDivChat.fadeOut();
+                            selRigaDivChat.remove();
+                        }
+                        if (selDivWrapTableMessage !== undefined) {
+                            selDivWrapTableMessage.fadeOut();
+                            selDivWrapTableMessage.remove();
+                        }
+                        if (selRigaDivMex !== undefined) {
+                            selRigaDivMex.fadeOut();
+                            selRigaDivMex.remove();
+                        }
+                        if (selDivWrapNewMessage !== undefined) {
+                            selDivWrapNewMessage.fadeOut();
+                            selDivWrapNewMessage.remove();
+                        }
+                        if (selRigaDivNewMex !== undefined) {
+                            selRigaDivNewMex.fadeOut();
+                            selRigaDivNewMex.remove();
+                        }
+                        presentaListaChat = true;
                     }
                 });
             }
-        }
 
-        async function logOut() {
-            console.log("cliccato");
-            user = {};
-            XAuth = "";
-            await $("body").children().fadeOut();
-            $("body").children().remove();
-            $("body").append($loginWrap);
-            $loginWrap.fadeIn();
-            $login.click(function () {
-                runLogin();
-            });
-        }
+            function bHideChat() {
+                selChiudiChat.click(async function () {
+                    presentaListaChat = true;
+                    selDivWrapTableChat.fadeOut();
+                    selRigaDivChat.fadeOut();
+                    selDivWrapTableChat.remove();
+                    selRigaDivChat.remove();
+                    if (selDivWrapTableMessage !== undefined) {
+                        selDivWrapTableMessage.fadeOut();
+                        selDivWrapTableMessage.remove();
+                    }
+                    if (selRigaDivMex !== undefined) {
+                        selRigaDivMex.fadeOut();
+                        selRigaDivMex.remove();
+                    }
+                    if (selDivWrapNewMessage !== undefined) {
+                        selDivWrapNewMessage.fadeOut();
+                        selDivWrapNewMessage.remove();
+                    }
+                    if (selRigaDivNewMex !== undefined) {
+                        selRigaDivNewMex.fadeOut();
+                        selRigaDivNewMex.remove();
+                    }
+                });
+            }
 
-        function datatableChat() {
-            let $bottoniProfilo = $("#bottoni-profilo");
-            $bottoniProfilo.after("<div id='rigaDivChat' class='riga-divisoria'></div><div id='divWrapTableChat' class='mt-50'></div>");
-            $divTable = $("#divWrapTableChat");
-            $rigaDivChat = $("#rigaDivChat");
-            $divTable.append("<h4 class='text-center'>Lista Chat</h4>");
-            $divTable.append("<table id=\"chat\" class=\"cell-border\" style=\"width:100%\"></table>");
-            let $table = $("#chat");
-            $table.append("<thead>\n" +
-                "        <tr>\n" +
-                "            <th>Immagine Utente</th>\n" +
-                "            <th>Nome Utente</th>\n" +
-                "            <th>Cognome Utente</th>\n" +
-                "            <th>Ultimo Messaggio</th>\n" +
-                "            <th>Data Invio</th>\n" +
-                "        </tr>\n" +
-                "        </thead>");
-            $table.after("<tbody></tbody>");
-            $divTable.append("<div class='riga'></div><div id='bottoni-chiudiChat'></div>");
-            let $bottoniChiudiChat = $("#bottoni-chiudiChat");
-            $bottoniChiudiChat.append("<div id='divChiudiChat' class='col'><button id='chiudiChat' class='btn btn-danger btn-block'>ChiudiChat</button></div>");
-            $('#chat').on('click', 'tr', function () {
-                console.log("chat cliccata");
-                console.log(this.id);
-                $divTableMess.fadeOut();
-                $rigaDivMex.fadeOut();
-                $divWrapNewMessage.fadeOut();
-                $rigaDivNewMex.fadeOut();
-                takeMessages(this.id);
-            });
+            function bHideMessage() {
+                selChiudiMessage.click(function () {
+                    selDivWrapTableMessage.fadeOut();
+                    selRigaDivMex.fadeOut();
+                    if (selDivWrapNewMessage !== undefined) {
+                        selDivWrapNewMessage.fadeOut();
+                        selDivWrapNewMessage.remove();
+                    }
+                    if (selRigaDivNewMex !== undefined) {
+                        selRigaDivNewMex.fadeOut();
+                        selRigaDivNewMex.remove();
+                    }
+                    selDivWrapTableMessage.remove();
+                    selRigaDivMex.remove();
+                });
+            }
 
-            $("#chiudiChat").click(function () {
-                $divTable.fadeOut();
-                $rigaDivChat.fadeOut();
-                $divTableMess.fadeOut();
-                $rigaDivMex.fadeOut();
-                $divWrapNewMessage.fadeOut();
-                $rigaDivNewMex.fadeOut();
-            });
-        }
+            function bViewNewMessage(idChat, data) {
+                selNewMessage.click(function () {
+                    writeNewMessage(idChat, data);
+                });
+            }
 
-        function datatableMessage(idChat, data) {
-            let divWrapTableChat = $("#divWrapTableChat");
-            divWrapTableChat.after("<div id='rigaDivMex' class='riga-divisoria'></div><div id='divWrapTableMessage' class='mt-50'></div>");
-            $divTableMess = $("#divWrapTableMessage");
-            $rigaDivMex = $("#rigaDivMex");
-            $divTableMess.append("<h4 class='text-center'>Lista Messaggi</h4>");
-            $divTableMess.append("<table id=\"message\" class=\"cell-border\" style=\"width:100%\"></table>");
-            let $tableMess = $("#message");
-            $tableMess.append("<thead>\n" +
-                "        <tr>\n" +
-                "            <th>Immagine Utente</th>\n" +
-                "            <th>Nome Utente</th>\n" +
-                "            <th>Cognome Utente</th>\n" +
-                "            <th>Ultimo Messaggio</th>\n" +
-                "            <th>Data Invio</th>\n" +
-                "        </tr>\n" +
-                "        </thead>");
-            $tableMess.after("<tbody></tbody>");
-            $divTableMess.append("<div class='riga'></div><div class='row' id='bottoni-message'></div>");
-            let $bottoniMessage = $("#bottoni-message");
-            $bottoniMessage.append("<div class='col'><button id='newMessage' class='btn btn-info btn-block'>Nuovo Messaggio</button></div>" +
-                "<div id='divchiudiMessage' class='col'><button id='chiudiMessage' class='btn btn-danger btn-block'>Chiudi Messaggi</button></div>");
-            $divTableMess.fadeIn();
+            function bHideNewMessage() {
+                selChiudiNewMessage.click(function () {
+                    selDivWrapNewMessage.fadeOut();
+                    selRigaDivNewMex.fadeOut();
+                    selDivWrapNewMessage.remove();
+                    selRigaDivMex.remove();
+                });
+            }
 
-            $("#chiudiMessage").click(function () {
-                $divTableMess.fadeOut();
-                $rigaDivMex.fadeOut();
-                $divWrapNewMessage.fadeOut();
-                $rigaDivNewMex.fadeOut();
-            });
+            function bSendMessage(idChat, data) {
+                selSendMessage.click(function () {
+                    const testo = $("#textarea-new-message").val();
+                    if (testo !== null && testo !== undefined && testo !== "" && testo !== " ") {
+                        storeMessage(testo, idChat, data).then(() => {
+                            console.log(testo);
+                            selDivWrapNewMessage.fadeOut();
+                            selRigaDivNewMex.fadeOut();
+                            selDivWrapTableMessage.fadeOut();
+                            selRigaDivMex.fadeOut();
+                            presentaListaChat = false;
+                            selDivWrapTableChat.fadeOut();
+                            selRigaDivChat.fadeOut();
+                            selDivWrapNewMessage.remove();
+                            selRigaDivMex.remove();
+                            selDivWrapTableChat.remove();
+                            selDivWrapTableMessage.remove();
+                            selRigaDivMex.remove();
+                            selRigaDivChat.remove();
+                            takeChats();
+                            takeMessages(idChat);
+                        });
+                    }
+                });
+            }
 
-            $("#newMessage").click(function () {
-                $divWrapNewMessage.fadeOut();
-                $rigaDivNewMex.fadeOut();
-                writeNewMessage(idChat, data);
-            });
-        }
+            function profiloStudentPresentation(data) {
+                const ruoles = "Studente";
+                let studyGrade = "Non disponibile";
+                let dataNascita = new Date(data.birthday).toLocaleDateString();
+                selLoginWrap.after("<div id='profilo-wrap' style='display: none;'></div>");
+                let $profilowrap = $("#profilo-wrap");
 
-        async function storeMessage(value, idChat, dato) {
-            const headerParams = {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJmNjcyMTFiZi0wODgyLTQ5ODYtOGNhNC04NThhMDcxOGNkZjQiLCJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJhdWQiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJzdWIiOiJzdHVkZW50QHByb3ZhLml0IiwiaWF0IjoxNTgwNDcyNTA2LCJleHAiOjE2MTIwMDg1MDYsImF1dGhvcml0aWVzIjpbIlNUVURFTlQiXSwicmVmcmVzaENvdW50IjowLCJyZWZyZXNoTGltaXQiOjEsIm5hbWUiOiJBbGRvIiwic3VybmFtZSI6Ik1hcmNoZXR0aSJ9.YzZeFk7BMvZQr5TIxiP7dQ522mRaA7hxzeHmfWIkSZo'};
-            const message = dato[0];
-            message.idMessage = 0;
-            message.text = value;
-            message.sendDate = new Date().getTime();
-            message.user = user;
-            console.log(message);
-            await $.ajax({
-                headers: headerParams,
-                contentType: "application/json",
-                accept: "application/json",
-                url: "http://localhost:8080/api/chats/" + idChat + "/messages",
-                method: "POST",
-                data: JSON.stringify(message),
-                success: function (data, textStatus, request) {
-                    console.log(data);
-                    console.log(textStatus);
-                    console.log(request.getAllResponseHeaders());
+                $profilowrap.append("<div class='riga'></div><div class='row'></div>");
+                let $profilowrapRow = $("#profilo-wrap div.row");
+
+                $profilowrapRow.append("<div class='col-auto align-self-center pl-3'></div>");
+                let $profilowrapRowColAutoAlign = $("#profilo-wrap div.row div.col-auto.align-self-center");
+
+                if (data.image !== null && data.image !== undefined && data.image !== ' ') {
+                    $profilowrapRowColAutoAlign.append("<img class='imgProfilo rounded-circle' src=\"" + data.image + "\" alt='img profilo'>");
+                } else {
+                    $profilowrapRowColAutoAlign.append("<i class='fas fa-user-circle text-primary fs-150'></i>")
                 }
-            });
-        }
-
-        function writeNewMessage(idChat, data) {
-            let $divWrapTableMessage = $("#divWrapTableMessage");
-            $divWrapTableMessage.after("<div id='riga-div-new-mex' class='riga-divisoria'></div><div id='div-wrap-new-message' class='mt-50'></div>");
-            $rigaDivNewMex = $("#riga-div-new-mex");
-            $divWrapNewMessage = $("#div-wrap-new-message");
-            $divWrapNewMessage.append("<h4 class='text-center'>Nuovo Messaggio</h4>");
-            $divWrapNewMessage.append("<div id='div-wrap-textarea' ><textarea id='textarea-new-message' style='width: 95%; margin-left: 30px' rows=\"2\" cols=\"60\" placeholder='Scrivi un nuovo messaggio'></textarea></div>");
-            let $divWrapTextarea = $("#div-wrap-textarea");
-            $divWrapTextarea.after("<div class='riga'></div><div class='row' id='bottoni-new-message'></div>");
-            let $bottoniNewMessage = $("#bottoni-new-message");
-            $bottoniNewMessage.append("<div class='col'><button id='new-message' class='btn btn-info btn-block'>Invia</button></div>" +
-                "<div id='div-chiudi-new-message' class='col'><button id='chiudi-new-message' class='btn btn-danger btn-block'>Chiudi</button></div>");
-
-            $("#chiudi-new-message").click(function () {
-                $divWrapNewMessage.fadeOut();
-                $rigaDivNewMex.fadeOut();
-            });
-            $("#new-message").click(function () {
-                const testo = $("#textarea-new-message").val();
-                if (testo !== null && testo !== undefined && testo !== "" && testo !== " ") {
-                    storeMessage(testo, idChat, data);
-                    console.log(testo);
-                    $divWrapNewMessage.fadeOut();
-                    $rigaDivNewMex.fadeOut();
+                $profilowrapRow.append("<div class='col-auto row pr-5'></div>");
+                if (data.studyGrade !== null && data.studyGrade !== undefined) {
+                    studyGrade = data.studyGrade;
                 }
-            });
-        }
+                let $profilowarpRowColAutoRowPr5 = $("#profilo-wrap div.row div.col-auto.row.pr-5");
 
-        async function takeChats() {
-            $('<div id="loadingChat" class="loading loading-centrato">Loading...</div>').appendTo('body');
-            chats = [];
-            message = [];
-            console.log('prendo le chat');
-            const headerParams = {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJmNjcyMTFiZi0wODgyLTQ5ODYtOGNhNC04NThhMDcxOGNkZjQiLCJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJhdWQiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJzdWIiOiJzdHVkZW50QHByb3ZhLml0IiwiaWF0IjoxNTgwNDcyNTA2LCJleHAiOjE2MTIwMDg1MDYsImF1dGhvcml0aWVzIjpbIlNUVURFTlQiXSwicmVmcmVzaENvdW50IjowLCJyZWZyZXNoTGltaXQiOjEsIm5hbWUiOiJBbGRvIiwic3VybmFtZSI6Ik1hcmNoZXR0aSJ9.YzZeFk7BMvZQr5TIxiP7dQ522mRaA7hxzeHmfWIkSZo'};
-            await $.ajax({
-                headers: headerParams,
-                contentType: "application/json",
-                accept: "application/json",
-                url: "http://localhost:8080/api/chats",
-                method: "GET",
-                success: function (data, textStatus, request) {
-                    console.log(data);
-                    console.log(textStatus);
-                    console.log(request.getAllResponseHeaders());
-                    data.forEach((c) => {
-                        console.log(c.chat.userListser[0].name);
-                        if (user.roles === 1) {
-                            chats.push({
-                                "name": c.chat.userListser[1].name,
-                                "surname": c.chat.userListser[1].surname,
-                                "text": "<textarea rows=\"2\" cols=\"60\" readonly>" + c.text + "</textarea>",
-                                "sendDate": new Date(c.sendDate).toLocaleString(),
-                                "image": "<img class='imgChat' src=\"" + c.chat.userListser[1].image + "\" alt='img chat'>",
-                                "idChat": c.chat.idChat
-                            });
-                        } else {
-                            chats.push({
-                                "name": c.chat.userListser[0].name,
-                                "surname": c.chat.userListser[0].surname,
-                                "text": "<textarea rows=\"2\" cols=\"60\" readonly>" + c.text + "</textarea>",
-                                "sendDate": new Date(c.sendDate).toLocaleString(),
-                                "image": "<img class='imgChat' src=\"" + c.chat.userListser[0].image + "\" alt='img chat'>",
-                                "idChat": c.chat.idChat
-                            });
-                        }
-                    });
-                    datatableChat();
-                    $("#chat").DataTable({
-                        "initComplete": function () {
-                            $('#loadingChat').remove();
-                        },
-                        "data": chats,
-                        "rowId": "idChat",
-                        "columns": [
-                            {"data": "image", "className": "centrato"},
-                            {"data": "name", "className": "centrato"},
-                            {"data": "surname", "className": "centrato"},
-                            {"data": "text", "className": "centrato"},
-                            {"data": "sendDate", "className": "centrato"}
-                        ]
-                    });
+                $profilowarpRowColAutoRowPr5.append("<div class='col-auto'><h3>" + data.name + " " + data.surname + "</h3><h3>" + ruoles + "</h3><h3>Nato il:</h3></div>");
+                $profilowarpRowColAutoRowPr5.append("<div class='col-auto'><h3>" + data.email + "</h3><h3>" + studyGrade + "</h3><h3>" + dataNascita + "</h3></div>")
+                $profilowrap.after("<div class='riga'></div><div id='bottoni-profilo' class='row px-2' style='display: none;'></div>");
+                selBottoniProfilo = $("#bottoni-profilo");
+
+                selBottoniProfilo.append("<div class='col'><button id='modificaUtente' class='btn btn-info btn-block'>Modifica Utente</button></div>" +
+                    "<div class='col'><button id='listaChat' class='btn btn-success btn-block'>Visualizza chat disponibili</button>\n" +
+                    "</div><div class='col'><button id='logOut' class='btn btn-danger btn-block'>Logout</button></div>");
+
+                selListaChat = $("#listaChat");
+                bViewChat();
+
+                $("#logOut").click(function () {
+                    logOut();
+                });
+
+                let flagModifica = true;
+                $("#modificaUtente").click(function () {
+                    if (flagModifica) {
+                        presentaModificaStudente();
+                        console.log("presenta");
+                        flagModifica = false;
+                    } else {
+                        selPostModifica.fadeOut();
+                        selModificaProfilo.fadeOut();
+                        selPreModifica.fadeOut();
+                        selPostModifica.remove();
+                        selModificaProfilo.remove();
+                        selPreModifica.remove;
+                        flagModifica = true;
+                    }
+                });
+
+                selLoginWrap.fadeOut();
+                $profilowrap.fadeIn();
+                selBottoniProfilo.fadeIn();
+            }
+
+            function profiloTeacherPresentation(data) {
+                const ruoles = "Teacher";
+                let byography = "Non disponibile";
+                let dataNascitaT = new Date(data.birthday).toLocaleDateString();
+                selLoginWrap.after("<div id='profilo-wrap' style='display: none;'></div>");
+                let $profilowrap = $("#profilo-wrap");
+
+                $profilowrap.append("<div class='riga'></div><div class='row'></div>");
+                let $profilowrapRow = $("#profilo-wrap div.row");
+
+                $profilowrapRow.append("<div class='col-auto align-self-center pl-3'></div>");
+                let $profilowrapRowColAutoAlign = $("#profilo-wrap div.row div.col-auto.align-self-center");
+
+                if (data.image !== null && data.image !== undefined && data.image !== ' ') {
+                    $profilowrapRowColAutoAlign.append("<img class='imgProfilo rounded-circle' src=\"" + data.image + "\" alt='img profilo'>");
+                } else {
+                    $profilowrapRowColAutoAlign.append("<i class='fas fa-user-circle text-primary fs-150'></i>")
                 }
-            });
-        }
+                $profilowrapRow.append("<div class='col-auto row pr-5'></div>");
+                if (data.byography !== null && data.byography !== undefined) {
+                    byography = data.byography;
+                }
+                let $profilowarpRowColAutoRowPr5 = $("#profilo-wrap div.row div.col-auto.row.pr-5");
 
-        async function takeMessages(idChat) {
-            $('<div id="loadingMessage" class="loading loading-centrato">Loading...</div>').appendTo('body');
-            message = [];
-            console.log('prendo i messaggi');
-            const headerParams = {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJmNjcyMTFiZi0wODgyLTQ5ODYtOGNhNC04NThhMDcxOGNkZjQiLCJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJhdWQiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJzdWIiOiJzdHVkZW50QHByb3ZhLml0IiwiaWF0IjoxNTgwNDcyNTA2LCJleHAiOjE2MTIwMDg1MDYsImF1dGhvcml0aWVzIjpbIlNUVURFTlQiXSwicmVmcmVzaENvdW50IjowLCJyZWZyZXNoTGltaXQiOjEsIm5hbWUiOiJBbGRvIiwic3VybmFtZSI6Ik1hcmNoZXR0aSJ9.YzZeFk7BMvZQr5TIxiP7dQ522mRaA7hxzeHmfWIkSZo'};
-            await $.ajax({
-                headers: headerParams,
-                contentType: "application/json",
-                accept: "application/json",
-                url: "http://localhost:8080/api/chats/" + idChat + "/messages",
-                method: "GET",
-                success: function (data, textStatus, request) {
-                    console.log(data);
-                    console.log(textStatus);
-                    console.log(request.getAllResponseHeaders());
-                    data.forEach((m) => {
-                        console.log(m.user.name);
-                        message.push({
-                            "name": m.user.name,
-                            "surname": m.user.surname,
-                            "text": "<textarea rows=\"3\" cols=\"60\" readonly>" + m.text + "</textarea>",
-                            "sendDate": new Date(m.sendDate).toLocaleString(),
-                            "image": "<img class='imgChat' src=\"" + m.user.image + "\" alt='img chat'>"
+                $profilowarpRowColAutoRowPr5.append("<div class='col-auto'><h3>" + data.name + " " + data.surname + "</h3><h3>" + ruoles + "</h3><h3>Nato il:</h3></div>");
+                $profilowarpRowColAutoRowPr5.append("<div class='col-auto'><h3>" + data.email + "</h3><h3>&nbsp;</h3><h3>" + dataNascitaT + "</h3></div>");
+                $profilowrap.append("<div style='margin-left: 165px;'><div class='col-auto'><h3>Biografia:</h3></div><p class='col-auto'>" + byography + "</p></div>");
+                $profilowrap.after("<div class='riga'></div><div id='bottoni-profilo' class='row px-2' style='display: none;'></div>");
+                selBottoniProfilo = $("#bottoni-profilo");
+
+                selBottoniProfilo.append("<div class='col'><button id='modificaUtente' class='btn btn-info btn-block'>Modifica Utente</button></div>" +
+                    "<div class='col'><button id='listaChat' class='btn btn-success btn-block'>Visualizza chat disponibili</button>\n" +
+                    "</div><div class='col'><button id='logOut' class='btn btn-danger btn-block'>Logout</button></div>");
+
+                selListaChat = $("#listaChat");
+                bViewChat();
+
+                $("#logOut").click(function () {
+                    logOut();
+                });
+
+                let flagModifica = true;
+
+                $("#modificaUtente").click(function () {
+                    if (flagModifica) {
+                        presentaModificaTeacher();
+                        console.log("presenta");
+                        flagModifica = false;
+                    } else {
+                        selPostModifica.fadeOut();
+                        selModificaProfilo.fadeOut();
+                        selPreModifica.fadeOut();
+                        selPostModifica.remove();
+                        selModificaProfilo.remove();
+                        selPreModifica.remove;
+                        flagModifica = true;
+                    }
+                });
+
+                selLoginWrap.fadeOut();
+                $profilowrap.fadeIn();
+                selBottoniProfilo.fadeIn();
+            }
+
+            /**
+             * presetazione degli input per la modifica del profilo
+             * @returns {Promise<void>}
+             */
+            async function presentaModificaStudente() {
+                var nome = user.name;
+                var cognome = user.surname;
+                var birthday = new Date(user.birthday);
+                birthday = new Date(birthday.setMinutes(birthday.getMinutes() - birthday.getTimezoneOffset()));
+                var livelloDiStudio = user.studyGrade;
+                selBottoniProfilo.after('<div id="preModifica" class="riga" style="display: none;"></div>' +
+                    '    <div id="modificaProfilo" class="row px-5" style="display: none;">' +
+                    '        <div class="row w-100">' +
+                    '            <div class="col-6">' +
+                    '                <label for="name">Nome:</label><input id="name" type="text" class="w-100">' +
+                    '            </div>' +
+                    '            <div class="col-6">' +
+                    '                <label for="surname">Cognome:</label><input id="surname" type="text" class="w-100">' +
+                    '            </div>' +
+                    '        </div>' +
+                    '        <div class="row w-100 mt-3">' +
+                    '            <div class="col-6">' +
+                    '                <label for="birthday">Data di Nascita:</label><input id="birthday" type="date" class="w-100">' +
+                    '            </div>' +
+                    '            <div class="col-6">' +
+                    '                <label for="studyGrade">Livello di Studio:</label><input id="studyGrade" type="text" class="w-100">' +
+                    '            </div>' +
+                    '        </div>' +
+                    '        <div class="row w-100 mt-4 p-3 justify-content-between">' +
+                    '            <button id="annullaModifiche" type="button" class="btn btn-danger w-25">Annulla</button>' +
+                    '            <button id="invioModifiche" type="button" class="btn btn-success w-25">Invia Modifica</button>' +
+                    '        </div>' +
+                    '    </div>' +
+                    '<div id="postModifica" class="riga" style="display: none"></div>');
+                $("#name").val(nome);
+                $("#surname").val(cognome);
+                $("#birthday").val(birthday.toISOString().split('T')[0]);
+                $("#studyGrade").val(livelloDiStudio);
+                selPostModifica = $("#postModifica");
+                selModificaProfilo = $("#modificaProfilo");
+                selPreModifica = $("#preModifica");
+                selPostModifica.fadeIn();
+                selModificaProfilo.fadeIn();
+                selPreModifica.fadeIn();
+
+                $("#invioModifiche").click(function () {
+                    inviaModifiche(nome, cognome, birthday, livelloDiStudio);
+                });
+
+                $("#annullaModifiche").click(async function () {
+                    selPostModifica.fadeOut();
+                    selModificaProfilo.fadeOut();
+                    selPreModifica.fadeOut();
+                    selPostModifica.remove();
+                    selModificaProfilo.remove();
+                    selPreModifica.remove;
+                })
+            }
+
+            /**
+             * presetazione degli input per la modifica del profilo
+             * @returns {Promise<void>}
+             */
+            async function presentaModificaTeacher() {
+                const nome = user.name;
+                const cognome = user.surname;
+                let birthday = new Date(user.birthday);
+                birthday = new Date(birthday.setMinutes(birthday.getMinutes() - birthday.getTimezoneOffset()));
+                const byography = user.byography;
+                selBottoniProfilo.after('<div id="preModifica" class="riga" style="display: none;"></div>' +
+                    '    <div id="modificaProfilo" class="row px-5" style="display: none;">' +
+                    '        <div class="row w-100">' +
+                    '            <div class="col-6">' +
+                    '                <label for="name">Nome:</label><input id="name" type="text" class="w-100">' +
+                    '            </div>' +
+                    '            <div class="col-6">' +
+                    '                <label for="surname">Cognome:</label><input id="surname" type="text" class="w-100">' +
+                    '            </div>' +
+                    '        </div>' +
+                    '        <div class="row w-100 mt-3">' +
+                    '            <div class="col-6">' +
+                    '                <label for="birthday">Data di Nascita:</label><input id="birthday" type="date" class="w-100">' +
+                    '            </div>' +
+                    '            <div class="col-6">' +
+                    '                <label for="studyGrade">Livello di Studio:</label><input id="byography" type="text" class="w-100">' +
+                    '            </div>' +
+                    '        </div>' +
+                    '        <div class="row w-100 mt-4 p-3 justify-content-between">' +
+                    '            <button id="annullaModifiche" type="button" class="btn btn-danger w-25">Annulla</button>' +
+                    '            <button id="invioModifiche" type="button" class="btn btn-success w-25">Invia Modifica</button>' +
+                    '        </div>' +
+                    '    </div>' +
+                    '<div id="postModifica" class="riga" style="display: none"></div>');
+                $("#name").val(nome);
+                $("#surname").val(cognome);
+                $("#birthday").val(birthday.toISOString().split('T')[0]);
+                $("#byography").val(byography);
+
+                selPostModifica = $("#postModifica");
+                selModificaProfilo = $("#modificaProfilo");
+                selPreModifica = $("#preModifica");
+                selPostModifica.fadeIn();
+                selModificaProfilo.fadeIn();
+                selPreModifica.fadeIn();
+
+                $("#invioModifiche").click(function () {
+                    inviaModificheTeacher(nome, cognome, birthday, byography);
+                });
+
+                $("#annullaModifiche").click(async function () {
+                    selPostModifica.fadeOut();
+                    selModificaProfilo.fadeOut();
+                    selPreModifica.fadeOut();
+                    selPostModifica.remove();
+                    selModificaProfilo.remove();
+                    selPreModifica.remove;
+                })
+            }
+
+            function inviaModificheTeacher(nome, cognome, birthday, byography) {
+                let send = false;
+                const n = $("#name").val();
+                const c = $("#surname").val();
+                const b = new Date($("#birthday").val());
+                const by = $("#byography").val();
+                if (nome !== n) {
+                    user.name = n;
+                    send = true;
+                }
+                if (cognome !== c) {
+                    user.surname = c;
+                    send = true;
+                }
+                if (birthday.getTime() !== b.getTime()) {
+                    user.birthday = b.getTime();
+                    send = true;
+                }
+                if (byography !== by) {
+                    user.byography = by;
+                    send = true;
+                }
+                if (send) {
+                    console.log(user);
+                    let hspw = new jsSHA("SHA-512", "TEXT");
+                    hspw.update(password);
+                    user.password = hspw.getHash("HEX").toUpperCase();
+                    console.log(user);
+                    sendProfiloTeacher(hspw.getHash("HEX").toUpperCase()).then(() => {
+                        deleteModificaProfilo().then(() => {
+                            logOut();
                         });
                     });
-                    message.reverse();
-                    datatableMessage(idChat, data);
-                    $("#message").DataTable({
-                        "initComplete": function () {
-                            $('#loadingMessage').remove();
-                        },
-                        "data": message,
-                        "columns": [
-                            {"data": "image", "className": "centrato"},
-                            {"data": "name", "className": "centrato"},
-                            {"data": "surname", "className": "centrato"},
-                            {"data": "text", "className": "centrato"},
-                            {"data": "sendDate", "className": "centrato"}
-                        ]
-                    });
-
                 }
-            });
-        }
+            }
+
+            async function sendProfiloTeacher(hspw) {
+                const urlquery = "http://localhost:8080/api/auth/profiles/teacher/?" + "hspwd=" + hspw;
+                await $.ajax({
+                    headers: {"Authorization": "Bearer " + XAuth},
+                    contentType: "application/json",
+                    accept: "application/json",
+                    url: urlquery,
+                    method: "PUT",
+                    data: JSON.stringify(user),
+                    success: function (data, textStatus, request) {
+                        console.log(request);
+                        console.log(textStatus);
+                        console.log(data);
+                    }
+                });
+            }
+
+            /**
+             * Funzione per pre elaborare le modifiche, userà la
+             * @param nome
+             * @param cognome
+             * @param birthday
+             * @param livelloDiStudio
+             * @returns {Promise<void>}
+             */
+            async function inviaModifiche(nome, cognome, birthday, livelloDiStudio) {
+                let send = false;
+                const n = $("#name").val();
+                const c = $("#surname").val();
+                const b = new Date($("#birthday").val());
+                const l = $("#studyGrade").val();
+                if (nome !== n) {
+                    user.name = n;
+                    send = true;
+                }
+                if (cognome !== c) {
+                    user.surname = c;
+                    send = true;
+                }
+                if (birthday.getTime() !== b.getTime()) {
+                    user.birthday = b.getTime();
+                    send = true;
+                }
+                if (livelloDiStudio !== l) {
+                    user.studyGrade = l;
+                    send = true;
+                }
+                if (send) {
+                    console.log(user);
+                    let hspw = new jsSHA("SHA-512", "TEXT");
+                    hspw.update(password);
+                    user.password = hspw.getHash("HEX").toUpperCase();
+                    console.log(user);
+                    sendProfiloStudente(hspw.getHash("HEX").toUpperCase()).then(() => {
+                        deleteModificaProfilo().then(() => {
+                            logOut();
+                        });
+                    });
+                }
+            }
+
+            async function sendProfiloStudente(hspw) {
+                const urlquery = "http://localhost:8080/api/auth/profiles/student/?" + "hspwd=" + hspw;
+                await $.ajax({
+                    headers: {"Authorization": "Bearer " + XAuth},
+                    contentType: "application/json",
+                    accept: "application/json",
+                    url: urlquery,
+                    method: "PUT",
+                    data: JSON.stringify(user),
+                    success: function (data, textStatus, request) {
+                        console.log(request);
+                        console.log(textStatus);
+                        console.log(data);
+                    }
+                });
+            }
+
+            async function deleteModificaProfilo() {
+                let selModificaProfilo = $("#modificaProfilo");
+                await selModificaProfilo.fadeOut();
+                $("#preModifica").remove();
+                $("#postModifica").remove();
+                selModificaProfilo.remove();
+            }
+
+            async function takeChats() {
+                $('<div id="loadingChat" class="loading loading-centrato">Loading...</div>').appendTo('body');
+                chats = [];
+                message = [];
+                console.log('prendo le chat');
+                await $.ajax({
+                    headers: {"Authorization": "Bearer " + XAuth},
+                    contentType: "application/json",
+                    accept: "application/json",
+                    url: "http://localhost:8080/api/chats",
+                    method: "GET",
+                    success: function (data) {
+                        console.log(data);
+                        data.forEach((c) => {
+                            console.log(c.chat.userListser[0].name);
+                            if (user.roles === 1) {
+                                chats.push({
+                                    "name": c.chat.userListser[1].name,
+                                    "surname": c.chat.userListser[1].surname,
+                                    "text": "<p class='mb-0'>" + c.text + "</p>",
+                                    "sendDate": new Date(c.sendDate).toLocaleString(),
+                                    "image": "<img class='imgChat' src=\"" + c.chat.userListser[1].image + "\" alt='img chat'>",
+                                    "idChat": c.chat.idChat,
+                                    "button": "<button id='button-chat' type='button' class='btn btn-success' value='" + c.chat.idChat + "'>Vai alla chat</button>"
+                                });
+                            } else {
+                                chats.push({
+                                    "name": c.chat.userListser[0].name,
+                                    "surname": c.chat.userListser[0].surname,
+                                    "text": "<p class='mb-0'>" + c.text + "</p>",
+                                    "sendDate": new Date(c.sendDate).toLocaleString(),
+                                    "image": "<img class='imgChat' src=\"" + c.chat.userListser[0].image + "\" alt='img chat'>",
+                                    "idChat": c.chat.idChat,
+                                    "button": "<button id='button-chat' type='button' class='btn btn-success' value='" + c.chat.idChat + "'>Vai alla chat</button>"
+                                });
+                            }
+                        });
+                        presentationDatatableChat(chats);
+                    }
+                });
+            }
+
+            async function presentationDatatableChat() {
+                let selBottoniProfilo = $("#bottoni-profilo");
+                selBottoniProfilo.after("<div id='rigaDivChat' class='riga-divisoria'></div><div id='divWrapTableChat' class='mt-50 px-5' style='display: none;'></div>");
+                selDivWrapTableChat = $("#divWrapTableChat");
+                selRigaDivChat = $("#rigaDivChat");
+                selDivWrapTableChat.append("<h4 class='text-center'>Lista Chat</h4>");
+                selDivWrapTableChat.append("<table id=\"chat\" class=\"cell-border w-100\"></table>");
+                let $table = $("#chat");
+                $table.append("<thead>\n" +
+                    "        <tr>\n" +
+                    "            <th>Immagine Utente</th>\n" +
+                    "            <th>Nome Utente</th>\n" +
+                    "            <th>Cognome Utente</th>\n" +
+                    "            <th>Ultimo Messaggio</th>\n" +
+                    "            <th>Data Invio</th>\n" +
+                    "            <th>Vail alla chat</th>\n" +
+                    "        </tr>\n" +
+                    "        </thead>");
+                $table.after("<tbody></tbody>");
+                selDivWrapTableChat.append("<div class='riga'></div><div id='bottoni-chiudiChat'></div>");
+                let $bottoniChiudiChat = $("#bottoni-chiudiChat");
+                $bottoniChiudiChat.append("<div id='divChiudiChat' class='col'><button id='chiudiChat' class='btn btn-danger btn-block'>ChiudiChat</button></div>");
+                selRigaDivChat.fadeIn();
+                selDivWrapTableChat.fadeIn();
+                $table.DataTable({
+                    "initComplete": function () {
+                        $('#loadingChat').remove();
+                    },
+                    "searching": false,
+                    "data": chats,
+                    "rowId": "idChat",
+                    "scrollX": true,
+                    "columns": [
+                        {"data": "image", "className": "centrato"},
+                        {"data": "name", "className": "centrato"},
+                        {"data": "surname", "className": "centrato"},
+                        {"data": "text", "className": "centrato"},
+                        {"data": "sendDate", "className": "centrato"},
+                        {"data": "button", "orderable": false}
+                    ]
+                });
+                let flagclick = false;
+                $('#chat tbody tr').click(function () {
+                    if (!flagclick) {
+                        takeMessages(this.id);
+                        flagclick = true;
+                        console.log('#chat tbody tr');
+                    }
+                });
+                $('td #button-chat').click(function () {
+                    if (!flagclick) {
+                        takeMessages(this.value);
+                        flagclick = true;
+                        console.log('td #button-chat');
+                    }
+
+                });
+                selChiudiChat = $("#chiudiChat");
+                bHideChat();
+            }
+
+            async function takeMessages(idChat) {
+                $('<div id="loadingMessage" class="loading loading-centrato">Loading...</div>').appendTo('body');
+                message = [];
+                console.log('prendo i messaggi');
+                await $.ajax({
+                    headers: {"Authorization": "Bearer " + XAuth},
+                    contentType: "application/json",
+                    accept: "application/json",
+                    url: "http://localhost:8080/api/chats/" + idChat + "/messages",
+                    method: "GET",
+                    success: function (data, textStatus, request) {
+                        console.log(data);
+                        console.log(textStatus);
+                        console.log(request.getAllResponseHeaders());
+                        data.forEach((m) => {
+                            console.log(m.user.name);
+                            message.push({
+                                "name": m.user.name,
+                                "surname": m.user.surname,
+                                "text": "<p>" + m.text + "</p>",
+                                "sendDate": new Date(m.sendDate).toLocaleString(),
+                                "image": "<img class='imgChat' src=\"" + m.user.image + "\" alt='img chat'>"
+                            });
+                        });
+                        message.reverse();
+                        presentationDatatableMessage(idChat, data);
+                    }
+                });
+            }
+
+            async function presentationDatatableMessage(idChat, data) {
+                let divWrapTableChat = $("#divWrapTableChat");
+                divWrapTableChat.after("<div id='rigaDivMex' class='riga-divisoria'></div><div id='divWrapTableMessage' class='mt-50'></div>");
+                selDivWrapTableMessage = $("#divWrapTableMessage");
+                selRigaDivMex = $("#rigaDivMex");
+                selDivWrapTableMessage.append("<h4 class='text-center'>Lista Messaggi</h4>");
+                selDivWrapTableMessage.append("<table id=\"message\" class=\"cell-border\" style=\"width:100%\"></table>");
+                let $tableMess = $("#message");
+                $tableMess.append("<thead>\n" +
+                    "        <tr>\n" +
+                    "            <th>Immagine Utente</th>\n" +
+                    "            <th>Nome Utente</th>\n" +
+                    "            <th>Cognome Utente</th>\n" +
+                    "            <th>Ultimo Messaggio</th>\n" +
+                    "            <th>Data Invio</th>\n" +
+                    "        </tr>\n" +
+                    "        </thead>");
+                $tableMess.after("<tbody></tbody>");
+                selDivWrapTableMessage.append("<div class='riga'></div><div class='row' id='bottoni-message'></div>");
+                let $bottoniMessage = $("#bottoni-message");
+                $bottoniMessage.append("<div class='col'><button id='newMessage' class='btn btn-info btn-block'>Nuovo Messaggio</button></div>" +
+                    "<div id='divchiudiMessage' class='col'><button id='chiudiMessage' class='btn btn-danger btn-block'>Chiudi Messaggi</button></div>");
+                await selDivWrapTableMessage.fadeIn();
+
+                $tableMess.DataTable({
+                    "initComplete": function () {
+                        $('#loadingMessage').remove();
+                    },
+                    "data": message,
+                    "scrollX": true,
+                    "columns": [
+                        {"data": "image", "className": "centrato"},
+                        {"data": "name", "className": "centrato"},
+                        {"data": "surname", "className": "centrato"},
+                        {"data": "text", "className": "centrato"},
+                        {"data": "sendDate", "className": "centrato"}
+                    ]
+                });
+
+                selChiudiMessage = $("#chiudiMessage");
+                bHideMessage();
+                selNewMessage = $("#newMessage");
+                bViewNewMessage(idChat, data);
+            }
+
+            async function storeMessage(value, idChat, dato) {
+                const message = dato[0];
+                message.idMessage = 0;
+                message.text = value;
+                message.sendDate = new Date().getTime();
+                message.user = user;
+                console.log(message);
+                await $.ajax({
+                    headers: {"Authorization": "Bearer " + XAuth},
+                    contentType: "application/json",
+                    accept: "application/json",
+                    url: "http://localhost:8080/api/chats/" + idChat + "/messages",
+                    method: "POST",
+                    data: JSON.stringify(message),
+                    success: function (data, textStatus, request) {
+                        console.log(data);
+                        console.log(textStatus);
+                        console.log(request.getAllResponseHeaders());
+                    }
+                });
+            }
+
+            function writeNewMessage(idChat, data) {
+                let selDivWrapTableMessage = $("#divWrapTableMessage");
+                selDivWrapTableMessage.after("<div id='riga-div-new-mex' class='riga-divisoria'></div><div id='div-wrap-new-message' class='mt-50'></div>");
+                selRigaDivNewMex = $("#riga-div-new-mex");
+                selDivWrapNewMessage = $("#div-wrap-new-message");
+                selDivWrapNewMessage.append("<h4 class='text-center'>Nuovo Messaggio</h4>");
+                selDivWrapNewMessage.append("<div id='div-wrap-textarea' ><textarea id='textarea-new-message' style='width: 95%; margin-left: 30px' rows=\"2\" cols=\"60\" placeholder='Scrivi un nuovo messaggio'></textarea></div>");
+                let $divWrapTextarea = $("#div-wrap-textarea");
+                $divWrapTextarea.after("<div class='riga'></div><div class='row' id='bottoni-new-message'></div>");
+                let $bottoniNewMessage = $("#bottoni-new-message");
+                $bottoniNewMessage.append("<div class='col'><button id='sedMessage' class='btn btn-info btn-block'>Invia</button></div>" +
+                    "<div id='div-chiudi-new-message' class='col'><button id='chiudi-new-message' class='btn btn-danger btn-block'>Chiudi</button></div>");
+
+                selChiudiNewMessage = $("#chiudi-new-message");
+                bHideNewMessage();
+
+                selSendMessage = $("#sedMessage");
+                bSendMessage(idChat, data);
+            }
         }
     );
 </script>
