@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css"
           href="https://cdn.datatables.net/v/bs4-4.1.1/jq-3.3.1/dt-1.10.20/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"/>
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
@@ -12,6 +15,30 @@
         .imgProfilo {
             height: 150px;
             width: 150px;
+        }
+
+        .imgChat {
+            height: 50px;
+            width: 50px;
+        }
+
+        .loading-centrato {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .centrato {
+            text-align: center;
+        }
+
+        .mt-50 {
+            margin-top: 50px;
+        }
+
+        .riga-divisoria {
+            border: rgba(82, 82, 82, 0.41) 1px solid;
+            margin-bottom: 25px;
+            margin-top: 25px;
         }
 
         .riga {
@@ -52,6 +79,16 @@
         let $loginWrap;
         let $login = $("#login");
 
+        let chats = [];
+        let message = [];
+        let $divTableMess = $("#divWrapTableMessage");
+        let $rigaDivMex = $("#rigaDiv");
+        let $divTable = $("#divWrapTableChat");
+        let $rigaDivChat = $("#rigaDivChat");
+        let $rigaDivNewMex = $("#riga-div-new-mex");
+        let $divWrapNewMessage = $("#div-wrap-new-message");
+
+
         $login.click(function () {
             runLogin();
         });
@@ -86,8 +123,18 @@
             let $bottoniProfilo = $("#bottoni-profilo");
 
             $bottoniProfilo.append("<div class='col'><button id='moficaUtente' class='btn btn-info btn-block'>Modifica Utente</button></div>" +
-                "<div class='col'><button id='Lista-Chat' class='btn btn-success btn-block'>Visualizza chat disponibili</button>\n" +
+                "<div class='col'><button id='listaChat' class='btn btn-success btn-block'>Visualizza chat disponibili</button>\n" +
                 "</div><div class='col'><button id='logOut' class='btn btn-danger btn-block'>Logout</button></div>");
+
+            $("#listaChat").click(function () {
+                $divTableMess.fadeOut();
+                $rigaDivMex.fadeOut();
+                $divTable.fadeOut();
+                $rigaDivChat.fadeOut();
+                $divWrapNewMessage.fadeOut();
+                $rigaDivNewMex.fadeOut();
+                takeChats()
+            });
 
             $("#logOut").click(function () {
                 logOut();
@@ -128,8 +175,18 @@
             let $bottoniProfilo = $("#bottoni-profilo");
 
             $bottoniProfilo.append("<div class='col'><button id='moficaUtente' class='btn btn-info btn-block'>Modifica Utente</button></div>" +
-                "<div class='col'><button id='Lista-Chat' class='btn btn-success btn-block'>Visualizza chat disponibili</button>\n" +
+                "<div class='col'><button id='listaChat' class='btn btn-success btn-block'>Visualizza chat disponibili</button>\n" +
                 "</div><div class='col'><button id='logOut' class='btn btn-danger btn-block'>Logout</button></div>");
+
+            $("#listaChat").click(function () {
+                $divTableMess.fadeOut();
+                $rigaDivMex.fadeOut();
+                $divTable.fadeOut();
+                $rigaDivChat.fadeOut();
+                $divWrapNewMessage.fadeOut();
+                $rigaDivNewMex.fadeOut();
+                takeChats()
+            });
 
             $("#logOut").click(function () {
                 logOut();
@@ -156,6 +213,7 @@
                     console.log(request.getAllResponseHeaders());
                     user = data;
                     XAuth = request.getResponseHeader("X-Auth");
+                    console.log(XAuth);
                 },
             });
         }
@@ -190,7 +248,240 @@
                 runLogin();
             });
         }
-    });
+
+        function datatableChat() {
+            let $bottoniProfilo = $("#bottoni-profilo");
+            $bottoniProfilo.after("<div id='rigaDivChat' class='riga-divisoria'></div><div id='divWrapTableChat' class='mt-50'></div>");
+            $divTable = $("#divWrapTableChat");
+            $rigaDivChat = $("#rigaDivChat");
+            $divTable.append("<h4 class='text-center'>Lista Chat</h4>");
+            $divTable.append("<table id=\"chat\" class=\"cell-border\" style=\"width:100%\"></table>");
+            let $table = $("#chat");
+            $table.append("<thead>\n" +
+                "        <tr>\n" +
+                "            <th>Immagine Utente</th>\n" +
+                "            <th>Nome Utente</th>\n" +
+                "            <th>Cognome Utente</th>\n" +
+                "            <th>Ultimo Messaggio</th>\n" +
+                "            <th>Data Invio</th>\n" +
+                "        </tr>\n" +
+                "        </thead>");
+            $table.after("<tbody></tbody>");
+            $divTable.append("<div class='riga'></div><div id='bottoni-chiudiChat'></div>");
+            let $bottoniChiudiChat = $("#bottoni-chiudiChat");
+            $bottoniChiudiChat.append("<div id='divChiudiChat' class='col'><button id='chiudiChat' class='btn btn-danger btn-block'>ChiudiChat</button></div>");
+            $('#chat').on('click', 'tr', function () {
+                console.log("chat cliccata");
+                console.log(this.id);
+                $divTableMess.fadeOut();
+                $rigaDivMex.fadeOut();
+                $divWrapNewMessage.fadeOut();
+                $rigaDivNewMex.fadeOut();
+                takeMessages(this.id);
+            });
+
+            $("#chiudiChat").click(function () {
+                $divTable.fadeOut();
+                $rigaDivChat.fadeOut();
+                $divTableMess.fadeOut();
+                $rigaDivMex.fadeOut();
+                $divWrapNewMessage.fadeOut();
+                $rigaDivNewMex.fadeOut();
+            });
+        }
+
+        function datatableMessage(idChat, data) {
+            let divWrapTableChat = $("#divWrapTableChat");
+            divWrapTableChat.after("<div id='rigaDivMex' class='riga-divisoria'></div><div id='divWrapTableMessage' class='mt-50'></div>");
+            $divTableMess = $("#divWrapTableMessage");
+            $rigaDivMex = $("#rigaDivMex");
+            $divTableMess.append("<h4 class='text-center'>Lista Messaggi</h4>");
+            $divTableMess.append("<table id=\"message\" class=\"cell-border\" style=\"width:100%\"></table>");
+            let $tableMess = $("#message");
+            $tableMess.append("<thead>\n" +
+                "        <tr>\n" +
+                "            <th>Immagine Utente</th>\n" +
+                "            <th>Nome Utente</th>\n" +
+                "            <th>Cognome Utente</th>\n" +
+                "            <th>Ultimo Messaggio</th>\n" +
+                "            <th>Data Invio</th>\n" +
+                "        </tr>\n" +
+                "        </thead>");
+            $tableMess.after("<tbody></tbody>");
+            $divTableMess.append("<div class='riga'></div><div class='row' id='bottoni-message'></div>");
+            let $bottoniMessage = $("#bottoni-message");
+            $bottoniMessage.append("<div class='col'><button id='newMessage' class='btn btn-info btn-block'>Nuovo Messaggio</button></div>" +
+                "<div id='divchiudiMessage' class='col'><button id='chiudiMessage' class='btn btn-danger btn-block'>Chiudi Messaggi</button></div>");
+            $divTableMess.fadeIn();
+
+            $("#chiudiMessage").click(function () {
+                $divTableMess.fadeOut();
+                $rigaDivMex.fadeOut();
+                $divWrapNewMessage.fadeOut();
+                $rigaDivNewMex.fadeOut();
+            });
+
+            $("#newMessage").click(function () {
+                $divWrapNewMessage.fadeOut();
+                $rigaDivNewMex.fadeOut();
+                writeNewMessage(idChat, data);
+            });
+        }
+
+        async function storeMessage(value, idChat, dato) {
+            const headerParams = {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJmNjcyMTFiZi0wODgyLTQ5ODYtOGNhNC04NThhMDcxOGNkZjQiLCJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJhdWQiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJzdWIiOiJzdHVkZW50QHByb3ZhLml0IiwiaWF0IjoxNTgwNDcyNTA2LCJleHAiOjE2MTIwMDg1MDYsImF1dGhvcml0aWVzIjpbIlNUVURFTlQiXSwicmVmcmVzaENvdW50IjowLCJyZWZyZXNoTGltaXQiOjEsIm5hbWUiOiJBbGRvIiwic3VybmFtZSI6Ik1hcmNoZXR0aSJ9.YzZeFk7BMvZQr5TIxiP7dQ522mRaA7hxzeHmfWIkSZo'};
+            const message = dato[0];
+            message.idMessage = 0;
+            message.text = value;
+            message.sendDate = new Date().getTime();
+            message.user = user;
+            console.log(message);
+            await $.ajax({
+                headers: headerParams,
+                contentType: "application/json",
+                accept: "application/json",
+                url: "http://localhost:8080/api/chats/" + idChat + "/messages",
+                method: "POST",
+                data: JSON.stringify(message),
+                success: function (data, textStatus, request) {
+                    console.log(data);
+                    console.log(textStatus);
+                    console.log(request.getAllResponseHeaders());
+                }
+            });
+        }
+
+        function writeNewMessage(idChat, data) {
+            let $divWrapTableMessage = $("#divWrapTableMessage");
+            $divWrapTableMessage.after("<div id='riga-div-new-mex' class='riga-divisoria'></div><div id='div-wrap-new-message' class='mt-50'></div>");
+            $rigaDivNewMex = $("#riga-div-new-mex");
+            $divWrapNewMessage = $("#div-wrap-new-message");
+            $divWrapNewMessage.append("<h4 class='text-center'>Nuovo Messaggio</h4>");
+            $divWrapNewMessage.append("<div id='div-wrap-textarea' ><textarea id='textarea-new-message' style='width: 95%; margin-left: 30px' rows=\"2\" cols=\"60\" placeholder='Scrivi un nuovo messaggio'></textarea></div>");
+            let $divWrapTextarea = $("#div-wrap-textarea");
+            $divWrapTextarea.after("<div class='riga'></div><div class='row' id='bottoni-new-message'></div>");
+            let $bottoniNewMessage = $("#bottoni-new-message");
+            $bottoniNewMessage.append("<div class='col'><button id='new-message' class='btn btn-info btn-block'>Invia</button></div>" +
+                "<div id='div-chiudi-new-message' class='col'><button id='chiudi-new-message' class='btn btn-danger btn-block'>Chiudi</button></div>");
+
+            $("#chiudi-new-message").click(function () {
+                $divWrapNewMessage.fadeOut();
+                $rigaDivNewMex.fadeOut();
+            });
+            $("#new-message").click(function () {
+                const testo = $("#textarea-new-message").val();
+                if (testo !== null && testo !== undefined && testo !== "" && testo !== " ") {
+                    storeMessage(testo, idChat, data);
+                    console.log(testo);
+                    $divWrapNewMessage.fadeOut();
+                    $rigaDivNewMex.fadeOut();
+                }
+            });
+        }
+
+        async function takeChats() {
+            $('<div id="loadingChat" class="loading loading-centrato">Loading...</div>').appendTo('body');
+            chats = [];
+            message = [];
+            console.log('prendo le chat');
+            const headerParams = {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJmNjcyMTFiZi0wODgyLTQ5ODYtOGNhNC04NThhMDcxOGNkZjQiLCJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJhdWQiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJzdWIiOiJzdHVkZW50QHByb3ZhLml0IiwiaWF0IjoxNTgwNDcyNTA2LCJleHAiOjE2MTIwMDg1MDYsImF1dGhvcml0aWVzIjpbIlNUVURFTlQiXSwicmVmcmVzaENvdW50IjowLCJyZWZyZXNoTGltaXQiOjEsIm5hbWUiOiJBbGRvIiwic3VybmFtZSI6Ik1hcmNoZXR0aSJ9.YzZeFk7BMvZQr5TIxiP7dQ522mRaA7hxzeHmfWIkSZo'};
+            await $.ajax({
+                headers: headerParams,
+                contentType: "application/json",
+                accept: "application/json",
+                url: "http://localhost:8080/api/chats",
+                method: "GET",
+                success: function (data, textStatus, request) {
+                    console.log(data);
+                    console.log(textStatus);
+                    console.log(request.getAllResponseHeaders());
+                    data.forEach((c) => {
+                        console.log(c.chat.userListser[0].name);
+                        if (user.roles === 1) {
+                            chats.push({
+                                "name": c.chat.userListser[1].name,
+                                "surname": c.chat.userListser[1].surname,
+                                "text": "<textarea rows=\"2\" cols=\"60\" readonly>" + c.text + "</textarea>",
+                                "sendDate": new Date(c.sendDate).toLocaleString(),
+                                "image": "<img class='imgChat' src=\"" + c.chat.userListser[1].image + "\" alt='img chat'>",
+                                "idChat": c.chat.idChat
+                            });
+                        } else {
+                            chats.push({
+                                "name": c.chat.userListser[0].name,
+                                "surname": c.chat.userListser[0].surname,
+                                "text": "<textarea rows=\"2\" cols=\"60\" readonly>" + c.text + "</textarea>",
+                                "sendDate": new Date(c.sendDate).toLocaleString(),
+                                "image": "<img class='imgChat' src=\"" + c.chat.userListser[0].image + "\" alt='img chat'>",
+                                "idChat": c.chat.idChat
+                            });
+                        }
+                    });
+                    datatableChat();
+                    $("#chat").DataTable({
+                        "initComplete": function () {
+                            $('#loadingChat').remove();
+                        },
+                        "data": chats,
+                        "rowId": "idChat",
+                        "columns": [
+                            {"data": "image", "className": "centrato"},
+                            {"data": "name", "className": "centrato"},
+                            {"data": "surname", "className": "centrato"},
+                            {"data": "text", "className": "centrato"},
+                            {"data": "sendDate", "className": "centrato"}
+                        ]
+                    });
+                }
+            });
+        }
+
+        async function takeMessages(idChat) {
+            $('<div id="loadingMessage" class="loading loading-centrato">Loading...</div>').appendTo('body');
+            message = [];
+            console.log('prendo i messaggi');
+            const headerParams = {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJmNjcyMTFiZi0wODgyLTQ5ODYtOGNhNC04NThhMDcxOGNkZjQiLCJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJhdWQiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJzdWIiOiJzdHVkZW50QHByb3ZhLml0IiwiaWF0IjoxNTgwNDcyNTA2LCJleHAiOjE2MTIwMDg1MDYsImF1dGhvcml0aWVzIjpbIlNUVURFTlQiXSwicmVmcmVzaENvdW50IjowLCJyZWZyZXNoTGltaXQiOjEsIm5hbWUiOiJBbGRvIiwic3VybmFtZSI6Ik1hcmNoZXR0aSJ9.YzZeFk7BMvZQr5TIxiP7dQ522mRaA7hxzeHmfWIkSZo'};
+            await $.ajax({
+                headers: headerParams,
+                contentType: "application/json",
+                accept: "application/json",
+                url: "http://localhost:8080/api/chats/" + idChat + "/messages",
+                method: "GET",
+                success: function (data, textStatus, request) {
+                    console.log(data);
+                    console.log(textStatus);
+                    console.log(request.getAllResponseHeaders());
+                    data.forEach((m) => {
+                        console.log(m.user.name);
+                        message.push({
+                            "name": m.user.name,
+                            "surname": m.user.surname,
+                            "text": "<textarea rows=\"3\" cols=\"60\" readonly>" + m.text + "</textarea>",
+                            "sendDate": new Date(m.sendDate).toLocaleString(),
+                            "image": "<img class='imgChat' src=\"" + m.user.image + "\" alt='img chat'>"
+                        });
+                    });
+                    message.reverse();
+                    datatableMessage(idChat, data);
+                    $("#message").DataTable({
+                        "initComplete": function () {
+                            $('#loadingMessage').remove();
+                        },
+                        "data": message,
+                        "columns": [
+                            {"data": "image", "className": "centrato"},
+                            {"data": "name", "className": "centrato"},
+                            {"data": "surname", "className": "centrato"},
+                            {"data": "text", "className": "centrato"},
+                            {"data": "sendDate", "className": "centrato"}
+                        ]
+                    });
+
+                }
+            });
+        }
+        }
+    );
 </script>
 </body>
 </html>
