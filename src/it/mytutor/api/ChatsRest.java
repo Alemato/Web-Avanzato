@@ -87,7 +87,7 @@ public class ChatsRest {
      * Rest e l'utente identificato dalli'id-addressee
      *
      * @param addressee id user del destinatario
-     * @return 201 CREATED
+     * @return Risposta custuom con stato 201 Created
      */
     @Path("create")
     @POST

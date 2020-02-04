@@ -42,7 +42,7 @@ public class MessaggiRest {
      *
      * @param message Oggetto messaggio da creare
      * @param cid Path Param chat collegata al messaggio da creare
-     * @return 201 CREATED
+     * @return Risposta custuom con stato 201 Created
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -63,7 +63,7 @@ public class MessaggiRest {
      *
      * @param idChat id della chat collegata agli ultimi messaggi richiesti
      * @param idLastMessage ultimo id
-     * @return  lista di nuovi messaggi o 304 NOT_MODIFIED
+     * @return  lista di nuovi messaggi
      */
     @Path("last")
     @GET
@@ -78,11 +78,8 @@ public class MessaggiRest {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
-        if (!messages.isEmpty()) {
-            return Response.ok(messages).build();
-        } else {
-            return Response.status(Response.Status.NOT_MODIFIED).entity("nessun nuovo messaggio").build();
-        }
+
+        return Response.ok(messages).build();
     }
 
 

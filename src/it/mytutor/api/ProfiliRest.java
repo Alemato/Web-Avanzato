@@ -22,10 +22,10 @@ public class ProfiliRest {
 
 
     /**
-     * Rest
+     * Rest che ritorna l'oggetto di tipo Student o Teacher a seconda del suo id
      *
-     * @param idUtente
-     * @return
+     * @param idUtente è l'id del oggetto richiesto
+     * @return Risposta OK con oggetto chiesto
      */
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
@@ -51,6 +51,12 @@ public class ProfiliRest {
         return Response.ok(user).build();
     }
 
+    /**
+     * Rest per l'aggiornamneto dei dati del accout di tipo Student
+     * @param student Oggetto modificato da caricare
+     * @param hspwd hash della password del Account
+     * @return Risposta custuom con stato 201 Created
+     */
     @Path("/student")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -81,6 +87,12 @@ public class ProfiliRest {
         return Response.status(Response.Status.CREATED).build();
     }
 
+    /**
+     * Rest per l'aggiornamneto dei dati del accout di tipo Student
+     * @param teacher Oggetto modificato da caricare
+     * @param hspwd hash della password del Account
+     * @return Risposta custuom con stato 201 Created
+     */
     @Path("/teacher")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
