@@ -1,4 +1,4 @@
-package it.mytutor.api.test;
+package it.mytutor.api;
 
 public class AuthenticationToken {
 

@@ -1,7 +1,5 @@
 package it.mytutor.api;
 
-import it.mytutor.api.test.ApiWebApplicationException;
-import it.mytutor.api.test.UserCredentials;
 import it.mytutor.business.exceptions.UserException;
 import it.mytutor.business.impl.UserBusiness;
 import it.mytutor.business.security.AuthenticationTokenService;

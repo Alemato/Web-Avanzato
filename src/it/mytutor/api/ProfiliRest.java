@@ -1,9 +1,7 @@
 package it.mytutor.api;
 
-import it.mytutor.api.test.ApiWebApplicationException;
 import it.mytutor.business.exceptions.UserException;
 import it.mytutor.business.impl.UserBusiness;
-import it.mytutor.business.security.SecurityHash;
 import it.mytutor.business.services.UserInterface;
 import it.mytutor.domain.Student;
 import it.mytutor.domain.Teacher;
