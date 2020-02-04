@@ -6,6 +6,9 @@ import it.mytutor.domain.dao.exception.DatabaseException;
 
 public interface UserInterface {
     Object findUserByUsername(String username) throws UserException, DatabaseException;
+
+    Object findUserById(String idUser) throws UserException, DatabaseException;
+
     void editUser(Object user) throws UserException, DatabaseException;
     Object autentication(String username, String password) throws UserException, DatabaseException;
 }
