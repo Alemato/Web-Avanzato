@@ -1,4 +1,4 @@
-package it.mytutor.api.test;
+package it.mytutor.api;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;

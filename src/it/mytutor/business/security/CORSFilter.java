@@ -46,9 +46,10 @@ public class CORSFilter implements ContainerRequestFilter, ContainerResponseFilt
         if (isPreflightRequest(request)) {
             response.getHeaders().add("Access-Control-Allow-Credentials", "true");
             response.getHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-            response.getHeaders().add("Access-Control-Allow-Headers", "Authorization, Content-Type");
+            response.getHeaders().add("Access-Control-Allow-Headers", "Authorization, Content-Type, X-Auth, X-User-Type");
         }
         // setto il cors
         response.getHeaders().add("Access-Control-Allow-Origin", "*");
+        response.getHeaders().add("Access-Control-Expose-Headers", "Authorization, Content-Type, X-Auth, X-User-Type");
     }
 }

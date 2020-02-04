@@ -1,6 +1,5 @@
 package it.mytutor.api;
 
-import it.mytutor.api.test.ApiWebApplicationException;
 import it.mytutor.business.exceptions.ChatBusinessException;
 import it.mytutor.business.exceptions.UserException;
 import it.mytutor.business.impl.ChatBusiness;

@@ -1,6 +1,5 @@
 package it.mytutor.api;
 
-import it.mytutor.api.test.ApiWebApplicationException;
 import it.mytutor.business.exceptions.MessageBusinessException;
 import it.mytutor.business.impl.MessageBusiness;
 import it.mytutor.business.services.MessageInterface;

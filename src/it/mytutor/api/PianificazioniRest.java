@@ -1,6 +1,5 @@
 package it.mytutor.api;
 
-import it.mytutor.api.test.ApiWebApplicationException;
 import it.mytutor.business.exceptions.*;
 import it.mytutor.business.impl.LessonBusiness;
 import it.mytutor.business.impl.PlanningBusiness;

@@ -1,6 +1,5 @@
 package it.mytutor.api;
 
-import it.mytutor.api.test.ApiWebApplicationException;
 import it.mytutor.business.exceptions.RegistrationException;
 import it.mytutor.business.impl.RegistrationBusiness;
 import it.mytutor.business.services.RegistrationInterface;

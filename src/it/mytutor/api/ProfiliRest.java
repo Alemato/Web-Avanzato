@@ -1,9 +1,7 @@
 package it.mytutor.api;
 
-import it.mytutor.api.test.ApiWebApplicationException;
 import it.mytutor.business.exceptions.UserException;
 import it.mytutor.business.impl.UserBusiness;
-import it.mytutor.business.security.SecurityHash;
 import it.mytutor.business.services.UserInterface;
 import it.mytutor.domain.Student;
 import it.mytutor.domain.Teacher;
@@ -60,8 +58,6 @@ public class ProfiliRest {
                 try {
                     if (student.getPassword().equals("")) {
                         student.setPassword(student1.getPassword());
-                    } else {
-                        student.setPassword(SecurityHash.SetHash(student.getPassword()));
                     }
                     userService.editUser(student);
                 } catch (UserException | DatabaseException e) {
@@ -92,10 +88,8 @@ public class ProfiliRest {
             System.out.println(hspwd);
             if(teacher.getEmail().equals(emailTeacher) && teacher1.getPassword().equals(hspwd)){
                 try {
-                    if(teacher.getPassword().equals("")){
+                    if(teacher.getPassword().equals("")) {
                         teacher.setPassword(teacher1.getPassword());
-                    } else {
-                        teacher.setPassword(SecurityHash.SetHash(teacher.getPassword()));
                     }
                     userService.editUser(teacher);
                 } catch (UserException | DatabaseException e) {
