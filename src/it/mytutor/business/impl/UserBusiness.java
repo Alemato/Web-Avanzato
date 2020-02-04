@@ -33,6 +33,20 @@ public class UserBusiness implements UserInterface {
     }
 
     @Override
+    public Object findUserById(String idUser) throws UserException, DatabaseException {
+        UserDao userDao = new UserDao();
+        User user = userDao.getUserById(Integer.parseInt(idUser));
+        if(user.getRoles() == 1){
+            StudentDao studentDao = new StudentDao();
+            return studentDao.getStudentByIdUser(user.getIdUser());
+        } else if (user.getRoles() == 2){
+            System.out.println("Teacher");
+            TeacherDao teacherDao = new TeacherDao();
+            return teacherDao.getTeacherByUserID(user.getIdUser());
+        } else throw new UserException("USER NON TROVATO");
+    }
+
+    @Override
     public void editUser(Object user) throws UserException, DatabaseException {
         UserDao userDao = new UserDao();
         if(user instanceof Teacher){
