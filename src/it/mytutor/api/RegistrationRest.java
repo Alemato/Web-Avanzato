@@ -18,6 +18,12 @@ import javax.ws.rs.core.Response;
 public class RegistrationRest {
     private RegistrationInterface registration = new RegistrationBusiness();
 
+    /**
+     * Rest che si occupa della Registrazione dell'utente Studente
+     *
+     * @param student oggetto contenente id dati dell'utente Studente che si sta registrando
+     * @return 200 OK
+     */
     @Path("student")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -33,6 +39,12 @@ public class RegistrationRest {
         return Response.ok().build();
     }
 
+    /**
+     * Rest che si occupa della Registrazione dell'utente Professore
+     *
+     * @param teacher oggetto contenente id dati dell'utente Professore che si sta registrando
+     * @return 200 OK
+     */
     @Path("teacher")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

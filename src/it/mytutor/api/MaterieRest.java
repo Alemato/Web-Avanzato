@@ -29,9 +29,12 @@ public class MaterieRest {
     private UserInterface userService = new UserBusiness();
 
     /**
-     * rest per i menu di select di inserimento lezione e di ricerca lezione e per lo storico
+     * Rest che ritorna la lista degli oggetti materie.
+     * usata per i menu di select inserimento lezione, ricerca lezione e storico dell'app
      *
      * @param storico parametro che identifica il fatto che si fa la richiesta dalla pagina dello storico
+     *                e quindi gli oggetti materia da tornare devono essere solo quelli collegati alle lezioni
+     *                associate all'utente che richiede la Rest che sono state prenotate
      * @return lista di subject contenenti materie e micromaterie usate per i menu select
      */
     @GET

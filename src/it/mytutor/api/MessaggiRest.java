@@ -18,9 +18,9 @@ public class MessaggiRest {
     private MessageInterface messageService = new MessageBusiness();
 
     /**
-     * Rest per tutti i messaggi della chat
+     * Rest che ritorna tutti i messaggi della chat identificata dall'id CID
      *
-     * @param cid id della chat ricevuto dal client
+     * @param cid id della chat
      * @return lista di messaggi
      */
     @GET
@@ -38,6 +38,8 @@ public class MessaggiRest {
     }
 
     /**
+     * Rest che si occupa della creazione di un messaggio
+     *
      * @param message Oggetto messaggio da creare
      * @param cid Path Param chat collegata al messaggio da creare
      * @return 201 CREATED
@@ -57,7 +59,8 @@ public class MessaggiRest {
     }
 
     /**
-     *  Rest per prendere i nuovi messaggi se ce ne sono
+     *  Rest usata per prendere i nuovi messaggi, se ce ne sono
+     *
      * @param idChat id della chat collegata agli ultimi messaggi richiesti
      * @param idLastMessage ultimo id
      * @return  lista di nuovi messaggi o 304 NOT_MODIFIED
@@ -83,8 +86,12 @@ public class MessaggiRest {
     }
 
 
-
-
+    /**
+     * Rest che si occupa di tornare in numero dei messaggi presenti nella chat identificata dall'id CID
+     *
+     * @param idChat id della chat
+     * @return numero di messaggi della chat
+     */
     @Path("count")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
@@ -100,72 +107,5 @@ public class MessaggiRest {
         }
         return Response.ok(messages.size()).build();
     }
-
-/*    @Path("allchat")
-    @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
-    public Response getAllMessageOfAChat(@QueryParam("id-chat") Integer idChat) {
-        List<Message> messages = new ArrayList<>();
-        try {
-            messages = messageService.findAllMessageByChat(idChat);
-        } catch (MessageBusinessException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-        }
-        return Response.ok(messages).build();
-    }*/
-
-
-
-    /*@Path("new")
-    @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
-    public Response getNewMessaggi(@PathParam("CID") Integer cid, @QueryParam("idlastmessage") Integer idLastMessage) {
-        List<Message> newMessages = new ArrayList<>(messageService.getNewMessagesByIdLast(idLastMessage));
-        if (!(newMessages.isEmpty())) {
-            return Response.ok(newMessages).build();
-        }
-        return Response.status(Response.Status.NOT_MODIFIED).entity("nessun nuovo messaggio").build();
-    }*/
-
-/*    @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
-    public Response getMessaggi(@PathParam("CID") Integer cid, @QueryParam("numero") Integer numero, @QueryParam("sotto") Integer sotto) {
-
-        Chat chat = new Chat();
-        chat.setIdChat(cid);
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        chat.setName("chat col prof");
-        chat.setCreateDate(timestamp);
-        chat.setUpdateDate(timestamp);
-        List<Message> messages = new ArrayList<>(messageService.findAllMessageByChat(chat));
-        List<Message> messages20 = new ArrayList<Message>();
-        int index = 0;
-        if (numero == null && sotto == null) {
-            if (messages.size() > 20) {
-                messages20.subList(0, 20);
-            } else {
-                messages20.addAll(messages);
-            }
-        } else {
-            for (Message message : messages) {
-                if (message.getIdMessage().equals(sotto)) {
-                    index = messages.indexOf(message);
-                }
-            }
-            if (messages.size() > index + 1 + numero) {
-                messages20.subList(index + 1, index + 1 + numero);
-            } else {
-                messages20.subList(index + 1, messages.size());
-            }
-        }
-        return Response.ok(messages20).build();
-    }*/
 
 }

@@ -30,7 +30,7 @@ public class LezioniRest {
     private UserInterface userService = new UserBusiness();
 
     /**
-     * Ritorna la lista delle lezioni del professore che la richiede
+     * Rest che ritorna la lista delle lezioni del professore che la richiede
      * @return Lista di Lesson
      */
     @GET

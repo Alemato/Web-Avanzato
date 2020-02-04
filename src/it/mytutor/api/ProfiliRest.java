@@ -20,13 +20,20 @@ public class ProfiliRest {
     private SecurityContext securityContext;
     private UserInterface userService = new UserBusiness();
 
+
+    /**
+     * Rest
+     *
+     * @param idUtente
+     * @return
+     */
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"TEACHER", "STUDENT"})
-    public Response profilo(@QueryParam("email") String email){
+    public Response profilo(@QueryParam("id-user") String idUtente){
         Object user;
-        if (email == null || email.isEmpty() || email.equals(" ")){
+        if (idUtente == null || idUtente.isEmpty() || idUtente.equals(" ")){
             try {
                 user = userService.findUserByUsername(securityContext.getUserPrincipal().getName());
             } catch (UserException | DatabaseException e) {
@@ -35,7 +42,7 @@ public class ProfiliRest {
             }
         } else {
             try {
-                user = userService.findUserByUsername(email);
+                user = userService.findUserById(idUtente);
             } catch (UserException | DatabaseException e) {
                 e.printStackTrace();
                 throw new ApiWebApplicationException(e.getMessage());

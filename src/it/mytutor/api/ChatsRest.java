@@ -83,6 +83,9 @@ public class ChatsRest {
     }
 
     /**
+     * Api Rest usata per crere una nuova chat tra l'utente stesso che richiede la
+     * Rest e l'utente identificato dalli'id-addressee
+     *
      * @param addressee id user del destinatario
      * @return 201 CREATED
      */

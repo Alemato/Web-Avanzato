@@ -6,10 +6,12 @@ import it.mytutor.business.security.AuthenticationTokenService;
 import it.mytutor.business.security.securityexception.AuthenticationException;
 import it.mytutor.domain.Student;
 import it.mytutor.domain.Teacher;
-import it.mytutor.domain.User;
 
 import javax.annotation.security.PermitAll;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -18,6 +20,12 @@ public class LoginRest {
     private UserBusiness userService = new UserBusiness();
     private AuthenticationTokenService authenticationTokenService = new AuthenticationTokenService();
 
+    /**
+     * Rest che si occupa del login
+     *
+     * @param credentials credenziali di accesso rappresentate da un aggetto contente l'email e la password
+     * @return l'oggetto dell'utente richiedente (Student o Teacher)
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -33,9 +41,6 @@ public class LoginRest {
             }else if(utente instanceof Teacher){
                 Teacher teacher= (Teacher) utente;
                 return Response.ok(teacher).header("X-Auth", token).header("X-User-Type", "teacher").build();
-            }else if(utente instanceof User){
-                User admin = (User) utente;
-                return Response.ok(admin).header("X-Auth", token).header("X-User-Type", "admin").build();
             } else throw new ApiWebApplicationException("bad credentials");
         } catch (UserException e) {
             e.printStackTrace();

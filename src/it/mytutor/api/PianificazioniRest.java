@@ -30,7 +30,7 @@ public class PianificazioniRest {
     private LessonInterface lessonInterface = new LessonBusiness();
 
     /**
-     * Rest Creazione del planning concesa solamente al professore
+     * Rest di creazione del planning concesa solamente al professore
      *
      * @param plannings Lista di Pianificazioni della prenotazione della lezione
      * @return Response Status ACCEPTED
@@ -94,7 +94,7 @@ public class PianificazioniRest {
 
 
     /**
-     * rest ricerca lezioni con possibilità  di filtro concesa solamente allo studente
+     * Rest  per la ricerca lezioni con possibilità di filtro concesa solamente allo studente
      *
      * @param macroMateria query string filtro marcro materia
      * @param nome query string filtro nome
@@ -142,7 +142,7 @@ public class PianificazioniRest {
     }
 
     /**
-     * Rest per tutte le pianificazioni collegate ad una lezione
+     * Rest usata per tornare tutte le pianificazioni collegate ad una lezione identificata dall'id LID
      *
      * @param idLesson id della lezione in oggetto
      * @return lista di planning

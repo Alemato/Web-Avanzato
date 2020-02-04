@@ -35,7 +35,7 @@ public class PrenotazioniRest {
     private UserInterface userService = new UserBusiness();
 
     /**
-     * Rest che ritorna un singolo booking
+     * Rest usata per tornare un singolo booking
      *
      * @param idBoking id del booking singolo
      * @return lista di Bookings
@@ -60,7 +60,7 @@ public class PrenotazioniRest {
 
 
     /**
-     * Creazione della prenotazione da parte dello studente
+     * Rest per la creazione di una prenotazione effettuata da uno studente
      *
      * @param booking lista di oggetti prenotazione ricevuti dal client
      * @return Response Status ACCEPTED
@@ -90,18 +90,16 @@ public class PrenotazioniRest {
     }
 
     /**
-     * Rest per l'aggiornamento dello stato della lezione
-     * concesso ad entrambe le tipologie di utenti
+     * Rest per l'aggiornamento dello stato della lezione concesso ad entrambe le tipologie di utenti
      *
-     *
-     *
-     * @return Response Status Created
+     * @param booking oggetto prenotazione da modificare con le modifiche da effettuare
+     * @return 201 CREATED
      */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"TEACHER", "STUDENT"})
-    public Response rispostaTheacher(Booking booking){
+    public Response updateBooking(Booking booking){
         try {
             bookingService.updateBooking(booking);
         } catch (BookingBusinessException e) {
@@ -112,9 +110,9 @@ public class PrenotazioniRest {
     }
 
     /**
-     * Rest della HomePage di entrambe le tipologie di utente
+     * Rest che si occhupa di tornare la lista delle prenotazioni usate per popolare la home page dell'applicazione
      *
-     * @return lista di Bookings
+     * @return lista di oggetti Booking
      */
     @Path("home")
     @GET
@@ -167,7 +165,7 @@ public class PrenotazioniRest {
     }
 
     /**
-     * Rest della pagina dello storico con il filtro di entrambe le tipologie di utente
+     * Rest che si occupa di tornare la lista dello storico delle prenotazioni usata nella pagina storico dell'app
      *
      * @param macroMateria macro materia
      * @param nomeLezione  nome della lezione
@@ -230,6 +228,11 @@ public class PrenotazioniRest {
         return Response.ok(bookings).build();
     }
 
+    /**
+     * Rest che ritorna il numero delle prenotzioni collegate all'utente che la richiede
+     *
+     * @return int
+     */
     @Path("count")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
