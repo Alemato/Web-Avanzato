@@ -26,7 +26,7 @@ public class UserBusiness implements UserInterface {
             StudentDao studentDao = new StudentDao();
             return studentDao.getStudentByIdUser(user.getIdUser());
         } else if (user.getRoles() == 2){
-            System.out.println("Teacher");
+
             TeacherDao teacherDao = new TeacherDao();
             return teacherDao.getTeacherByUserID(user.getIdUser());
         } else throw new UserException("USER NON TROVATO");
@@ -40,7 +40,6 @@ public class UserBusiness implements UserInterface {
             StudentDao studentDao = new StudentDao();
             return studentDao.getStudentByIdUser(user.getIdUser());
         } else if (user.getRoles() == 2){
-            System.out.println("Teacher");
             TeacherDao teacherDao = new TeacherDao();
             return teacherDao.getTeacherByUserID(user.getIdUser());
         } else throw new UserException("USER NON TROVATO");
@@ -67,25 +66,16 @@ public class UserBusiness implements UserInterface {
         Object object;
         // QUERY USER: per vedere se esiste ed di che tipo è
         User user = (User) this.findUserByUsername(username);
-        System.out.println(user.toString());
-        System.out.println("hash da inserire :"+SecurityHash.SetHash(password));
-        System.out.println("hash e giusto? "+ SecurityHash.equals(password,user) + " " + user.getPassword());
         // CONTROLLO LA PASSWORD
         if(SecurityHash.equals(password,user)){
             // QUERY SULLA TABELLA DEL TIPO
             if(user.getRoles() == 1){
-                System.out.println("Studente");
                 StudentDao studentDao = new StudentDao();
                 object = studentDao.getStudentByIdUser(user.getIdUser());
                 return object;
             } else if (user.getRoles() == 2){
-                System.out.println("Teacher");
                 TeacherDao teacherDao = new TeacherDao();
                 object = teacherDao.getTeacherByUserID(user.getIdUser());
-                return object;
-            } else if (user.getRoles() == 3){
-                System.out.println("Admin");
-                object = user;
                 return object;
             }
         } else throw new UserException("AUTENTICAZIONE NON VALIDA");

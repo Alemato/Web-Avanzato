@@ -36,7 +36,6 @@ public class MessageBusiness implements MessageInterface {
             e.printStackTrace();
             throw new MessageBusinessException("Errore nel prendere i messaggi");
         }
-        System.out.println(messages);
         for (Message message : messages) {
             if (message.getIdMessage().equals(idLastMessage)) {
                 break;

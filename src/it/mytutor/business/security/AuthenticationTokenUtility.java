@@ -76,11 +76,7 @@ public class AuthenticationTokenUtility {
                     .setAllowedClockSkewSeconds(clockSkew)
                     .parseClaimsJws(token)
                     .getBody();
-            System.out.println("##############");
             Set<MyRoles> roles = extractAuthoritiesFromClaims(claims);
-            System.out.println(roles);
-            System.out.println(roles.contains(MyRoles.STUDENT));
-            System.out.println("##############");
             return new AuthenticationTokenDetails.Builder()
                     .withId(extractTokenIdFromClaims(claims))
                     .withUsername(extractUsernameFromClaims(claims))

@@ -103,8 +103,6 @@ public class ProfiliRest {
         Teacher teacher1;
         try {
             teacher1 = (Teacher) userService.findUserByUsername(emailTeacher);
-            System.out.println(teacher1.getPassword());
-            System.out.println(hspwd);
             if(teacher.getEmail().equals(emailTeacher) && teacher1.getPassword().equals(hspwd)){
                 try {
                     if(teacher.getPassword().equals("")) {

@@ -391,10 +391,8 @@ public class PlanningBusiness implements PlanningInterface {
             }
         }
         if (mar != null && !mar.equals("") && mar.equals("1")) {
-            System.out.println("mar");
             for (Planning planning : plannings) {
                 c.setTime(planning.getDate());
-                System.out.println(c.get(Calendar.DAY_OF_WEEK));
                 if (c.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY) {
                     plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
                 }

@@ -77,18 +77,12 @@ public class BookingBusiness implements BookingInterface {
                 throw new BookingBusinessException("Errore nel prendere gli oggetti booking");
             }
         }
-
-        System.out.println(bookings1.size());
-        System.out.println(bookings1);
         if (dom != null && !dom.isEmpty() && !dom.equals("0") || lun != null && !lun.isEmpty() && !lun.equals("0") ||
                 mar != null && !mar.isEmpty() && !mar.equals("0") || mer != null && !mer.isEmpty() && !mer.equals("0") ||
                 gio != null && !gio.isEmpty() && !gio.equals("0") || ven != null && !ven.isEmpty() && !ven.equals("0") ||
                 sab != null && !sab.isEmpty() && !sab.equals("0") ) {
             bookings1 = dayOfWeek(bookings1, dom, lun, mar, mer, gio, ven, sab);
         }
-        System.out.println(bookings1.size());
-        System.out.println(bookings1);
-
         for (Booking b: bookings1) {
             if (b.getPlanning().getDate().getTime() > new Date(System.currentTimeMillis()).getTime()) {
                 bFinali.add(b);

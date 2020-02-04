@@ -33,7 +33,7 @@ public class LoginRest {
     public Response getAuth(UserCredentials credentials){
         try {
             Object utente = userService.autentication(credentials.getUsername(), credentials.getPassword());
-            System.out.println(utente.toString());
+
             String token = authenticationTokenService.generateToken(utente);
             if (utente  instanceof Student){
                 Student student= (Student) utente;
