@@ -42,7 +42,7 @@ public class MessaggiRest {
      *
      * @param message Oggetto messaggio da creare
      * @param cid Path Param chat collegata al messaggio da creare
-     * @return Risposta custuom con stato 201 Created
+     * @return Risposta custom con stato 201 Created
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

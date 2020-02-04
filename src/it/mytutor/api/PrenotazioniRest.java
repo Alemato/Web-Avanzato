@@ -93,7 +93,7 @@ public class PrenotazioniRest {
      * Rest per l'aggiornamento dello stato della lezione concesso ad entrambe le tipologie di utenti
      *
      * @param booking oggetto prenotazione da modificare con le modifiche da effettuare
-     * @return Risposta custuom con stato 201 Created
+     * @return Risposta custom con stato 201 Created
      */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)

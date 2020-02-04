@@ -59,7 +59,7 @@ public class LezioniRest {
     /**
      * Rest che modifica la lezione inviata
      * @param lesson Lezione da modificare con le mdifiche
-     * @return Risposta custuom con stato 201 Created
+     * @return Risposta custom con stato 201 Created
      */
     @Path("modify")
     @PUT

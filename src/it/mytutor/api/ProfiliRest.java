@@ -55,7 +55,7 @@ public class ProfiliRest {
      * Rest per l'aggiornamneto dei dati del accout di tipo Student
      * @param student Oggetto modificato da caricare
      * @param hspwd hash della password del Account
-     * @return Risposta custuom con stato 201 Created
+     * @return Risposta custom con stato 201 Created
      */
     @Path("/student")
     @PUT
@@ -91,7 +91,7 @@ public class ProfiliRest {
      * Rest per l'aggiornamneto dei dati del accout di tipo Student
      * @param teacher Oggetto modificato da caricare
      * @param hspwd hash della password del Account
-     * @return Risposta custuom con stato 201 Created
+     * @return Risposta custom con stato 201 Created
      */
     @Path("/teacher")
     @PUT

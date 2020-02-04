@@ -62,7 +62,7 @@ public class PianificazioniRest {
      *  Rest per la modifica dele pianificazioni di una lezione concesa solamente al professore
      *
      * @param plannings lista di oggetti pianificazione
-     * @return Risposta custuom con stato 201 Created
+     * @return Risposta custom con stato 201 Created
      */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
