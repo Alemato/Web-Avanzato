@@ -171,11 +171,11 @@
             /**
              * funzione per il logOut
              */
-            async function logOut() {
+            function logOut() {
                 console.log("cliccato");
                 user = {};
                 XAuth = "";
-                await selBody.children().fadeOut();
+                selBody.children().fadeOut();
                 selBody.children().remove();
                 selBody.append(selLoginWrap);
                 selLoginWrap.fadeIn();
@@ -227,7 +227,7 @@
              * sezione della lista delle chat
              */
             function bHideChat() {
-                selChiudiChat.click(async function () {
+                selChiudiChat.click(function () {
                     presentaListaChat = true;
                     selDivWrapTableChat.fadeOut();
                     selRigaDivChat.fadeOut();
@@ -457,7 +457,7 @@
             /**
              * presetazione degli input per la modifica del profilo studente.
              */
-            async function presentaModificaStudente() {
+            function presentaModificaStudente() {
                 var nome = user.name;
                 var cognome = user.surname;
                 var birthday = new Date(user.birthday);
@@ -502,7 +502,7 @@
                     inviaModifiche(nome, cognome, birthday, livelloDiStudio);
                 });
 
-                $("#annullaModifiche").click(async function () {
+                $("#annullaModifiche").click(function () {
                     selPostModifica.fadeOut();
                     selModificaProfilo.fadeOut();
                     selPreModifica.fadeOut();
@@ -515,7 +515,7 @@
             /**
              * presetazione degli input per la modifica del profilo teacher.
              */
-            async function presentaModificaTeacher() {
+            function presentaModificaTeacher() {
                 const nome = user.name;
                 const cognome = user.surname;
                 let birthday = new Date(user.birthday);
@@ -561,7 +561,7 @@
                     inviaModificheTeacher(nome, cognome, birthday, byography);
                 });
 
-                $("#annullaModifiche").click(async function () {
+                $("#annullaModifiche").click(function () {
                     selPostModifica.fadeOut();
                     selModificaProfilo.fadeOut();
                     selPreModifica.fadeOut();
@@ -642,7 +642,7 @@
              * @param livelloDiStudio
              * @returns {Promise<void>}
              */
-            async function inviaModifiche(nome, cognome, birthday, livelloDiStudio) {
+            function inviaModifiche(nome, cognome, birthday, livelloDiStudio) {
                 let send = false;
                 const n = $("#name").val();
                 const c = $("#surname").val();
@@ -701,13 +701,13 @@
             /**
              * funzione del bottone annulla modifiche profilo.
              */
-            async function deleteModificaProfilo() {
+            function deleteModificaProfilo() {
                 let selModificaProfilo = $("#modificaProfilo");
-                await selModificaProfilo.fadeOut();
+                selModificaProfilo.fadeOut();
                 $("#preModifica").remove();
                 $("#postModifica").remove();
                 selModificaProfilo.remove();
-            };
+            }
 
             /**
              * funzione per l'elaborazione della sezione della lista delle chat
@@ -755,7 +755,7 @@
             /**
              * funzione che presenta i dati della sezione chat
              */
-            async function presentationDatatableChat() {
+            function presentationDatatableChat() {
                 let selBottoniProfilo = $("#bottoni-profilo");
                 selBottoniProfilo.after("<div id='rigaDivChat' class='riga-divisoria'></div><div id='divWrapTableChat' class='mt-50 px-5' style='display: none;'></div>");
                 selDivWrapTableChat = $("#divWrapTableChat");
@@ -851,7 +851,7 @@
              * @param idChat
              * @param data
              */
-            async function presentationDatatableMessage(idChat, data) {
+            function presentationDatatableMessage(idChat, data) {
                 let divWrapTableChat = $("#divWrapTableChat");
                 divWrapTableChat.after("<div id='rigaDivMex' class='riga-divisoria'></div><div id='divWrapTableMessage' class='mt-50'></div>");
                 selDivWrapTableMessage = $("#divWrapTableMessage");
@@ -873,7 +873,7 @@
                 let $bottoniMessage = $("#bottoni-message");
                 $bottoniMessage.append("<div class='col'><button id='newMessage' class='btn btn-info btn-block'>Nuovo Messaggio</button></div>" +
                     "<div id='divchiudiMessage' class='col'><button id='chiudiMessage' class='btn btn-danger btn-block'>Chiudi Messaggi</button></div>");
-                await selDivWrapTableMessage.fadeIn();
+                selDivWrapTableMessage.fadeIn();
 
                 $tableMess.DataTable({
                     "initComplete": function () {
