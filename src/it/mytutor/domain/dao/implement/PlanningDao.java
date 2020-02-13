@@ -23,11 +23,13 @@ public class PlanningDao implements PlanningDaoInterface {
 
     private static final String UPDATE_PLANNING_STATEMENT = "update Planning set Date=?, StartTime=?, EndTime=?, Available=?, RepeatPlanning =? , IdLesson=? where IdPlanning=?";
 
-    private static final String GET_PLANNING_BY_FILTER_STATEMENT = "SELECT * from Planning p, Lesson l, Subject s, Teacher t, User u where p.IdLesson = l.IdLesson and l.IdSubject = s.IdSubject and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and (0 = ? or s.MacroSubject = ?) and (0 = ? or match(l.Name) AGAINST (?)) and (0 = ? or t.City = ?) and (0 = ? or s.MicroSubject = ?) and (0 = ? or l.Price =? ) and (0 = ? or p.StartTime >= ? ) and (0 = ? or p.EndTime = ?)";
+    private static final String GET_PLANNING_BY_FILTER_STATEMENT = "SELECT * from Planning p, Lesson l, Subject s, Teacher t, User u where p.IdLesson = l.IdLesson and l.IdSubject = s.IdSubject and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and (0 = ? or s.MacroSubject = ?) and (0 = ? or match(l.Name) AGAINST (?)) and (0 = ? or t.City = ?) and (0 = ? or s.MicroSubject = ?) and (0 = ? or l.Price =? ) and (0 = ? or p.StartTime >= ? ) and (0 = ? or p.EndTime <= ?)";
 
     private static final String GET_PLANNING_BY_LESSON_ID_STATEMENT = "SELECT * from Planning p, Lesson l, Subject s, Teacher t, User u where p.IdLesson = l.IdLesson and l.IdSubject = s.IdSubject and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and p.IdLesson = ? and p.Available = true order by p.Date asc, p.StartTime asc";
 
     private static final String GET_PLANNING_BOOKED_UP_BY_LESSONID_STATEMENT = "SELECT * from Planning p, Lesson l, Subject s, Teacher t, User u where p.IdLesson = l.IdLesson and l.IdSubject = s.IdSubject and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and p.IdLesson = ? and b.IdStudent = ? order by p.CreateDate";
+
+    private static final String GET_PLANNING_BY_TEACHER_STATEMENT = "select * from planning p, Lesson l, teacher t, user u, subject s where p.IdLesson = l.IdLesson and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and l.IdSubject = s.IdSubject and t.IdTeacher = ?";
 
     //TODO query per la ricerca nei
     // campi text. NB settare i campi sul db come indice FULTEXT
@@ -216,6 +218,35 @@ public class PlanningDao implements PlanningDaoInterface {
         } finally {
             DaoFactory.closeDbConnection(conn, rs, prs);
         }
+    }
+
+
+    @Override
+    public List<Planning> getPlanningByTeacher(Teacher teacher) throws DatabaseException {
+        List<Planning> plannings = new ArrayList<>();
+        Connection connection = DaoFactory.getConnection();
+        if (connection == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = connection.prepareStatement(GET_PLANNING_BY_TEACHER_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            prs.setInt(1, teacher.getIdTeacher());
+
+            rs = prs.executeQuery();
+            configurelanningList(plannings, rs);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+
+        } finally {
+            DaoFactory.closeDbConnection(connection, rs, prs);
+        }
+        return plannings;
     }
 
     @Override

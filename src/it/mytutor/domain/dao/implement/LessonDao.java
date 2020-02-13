@@ -23,6 +23,8 @@ public class LessonDao implements LessonDaoInterface {
 
     private static final String UPDATE_LESSON_STATEMENT = "update Lesson set name=?, price=?, description=?, IdSubject=? where IdLesson=?";
 
+    private static final String GET_LESSON_BY_ID_STATEMENT =  "select * from Lesson l, Teacher t, User u, Subject s where l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and l.IdSubject = s.IdSubject and l.IdLesson = ?";
+
     private void configureLesson(Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
         try {
 
@@ -116,7 +118,6 @@ public class LessonDao implements LessonDaoInterface {
 
     @Override
     public int createLesson(Lesson lesson) throws DatabaseException {
-
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -184,220 +185,37 @@ public class LessonDao implements LessonDaoInterface {
         }
     }
 
-    /*private static final String GET_ALL_LESSON_STATEMENT="select * from Lesson";
-    private static final String GET_LESSON_BY_ID_STATEMENT="select * from lesson where id=?";
-    private static final String GET_LESSON_BY_SUBJECT_STATEMENT="select * from lesson where IdSubject=?";
-    private static final String GET_LESSON_BY_NAME_STATEMENT="select * from Lesson where name=?";
-    private static final String UPDATE_LESSON_STATEMENT="update Lesson set name=?,price=?,publicationDate=?,description=?,IdSubject=? where IdLesson=?";
-    private static final String CREATE_LESSON_STATEMENT="insert into Lesson(name,price,publicationDate,description,IdSubject,IdTeacher) values(?,?,?,?,?,?)";
-
-   private void configureLessonObject(Lesson lesson, ResultSet rs)throws DatabaseException {
-       try {
-           lesson.setIdLesson(rs.getInt("idLesson"));
-           lesson.setName(rs.getString("name"));
-           lesson.setPrice(rs.getDouble("price"));
-           lesson.setPublicationDate(rs.getDate("publicationDate"));
-           lesson.setDescription(rs.getString("description"));
-           lesson.setSubject((Subject) rs.getObject("subject"));
-           lesson.setCreateDate(rs.getTimestamp("createDate"));
-           lesson.setUpdateDate(rs.getTimestamp("updateDate"));
-       }catch(SQLException e){
-           throw new DatabaseException(e.getMessage());
-       }   }
-
-    private void configureLessonList(List<Lesson> lessons, ResultSet rs) throws DatabaseException {
+    @Override
+    public Lesson getLessonById(Integer idLesson) throws DatabaseException {
+        Lesson lesson = new Lesson();
+        Subject subject = new Subject();
+        Teacher teacher = new Teacher();
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
         try {
-            while (rs.next()) {
-                Lesson lesson = new Lesson();
-                configureLessonObject(lesson, rs);
-                lessons.add(lesson);
+            prs = conn.prepareStatement(GET_LESSON_BY_ID_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
             }
+            prs.setInt(1, idLesson);
+            rs = prs.executeQuery();
+
+            if (rs.next()) {
+                configureLesson(lesson, subject,teacher, rs);
+            } else {
+                throw new DatabaseException("rs is empty");
+            }
+
         } catch (SQLException e) {
-            throw new DatabaseException("Errore nel creare Lista oggetti Lesson");
-        }
-    }
-
-
-    @Override
-    public void createLesson(Lesson lesson) throws DatabaseException {
-        Connection conn= DaoFactory.getConnection();
-        if (conn==null){
-            throw new DatabaseException("Connection is null");
-        }
-        ResultSet rs=null;
-        PreparedStatement prs=null;
-        try {
-            prs=conn.prepareStatement(CREATE_LESSON_STATEMENT);
-            if(prs==null){
-                throw new DatabaseException("Statement is null");
-            }
-            prs.setString(1,lesson.getName());
-            prs.setDouble(2,lesson.getPrice());
-            prs.setDate(3,lesson.getPublicationDate());
-            prs.setString(4,lesson.getDescription());
-            prs.setInt(5,lesson.getSubject().getIdSubject());
-            prs.setInt(6,lesson.getTeacher().getIdTeacher());
-            prs.executeQuery();
-
-        }catch (SQLException e){
             e.printStackTrace();
             throw new DatabaseException(e.getMessage());
-        }finally {
-            DaoFactory.closeDbConnection(conn, rs, prs);
-        }
-    }
-
-    @Override
-    public List<Lesson> getAllLesson()throws DatabaseException{
-        List<Lesson> lessons=new ArrayList<Lesson>();
-
-        Connection conn= DaoFactory.getConnection();
-        if (conn==null){
-            throw new DatabaseException("Connection is null");
-        }
-        ResultSet rs=null;
-        PreparedStatement prs=null;
-        try {
-            prs=conn.prepareStatement(GET_ALL_LESSON_STATEMENT);
-            if(prs==null){
-                throw new DatabaseException("Statement is null");
-            }
-            rs=prs.executeQuery();
-            if(rs.next()){
-                configureLessonList(lessons,rs);
-            }else{
-                throw new DatabaseException("Statement is null");
-            }
-            }catch (SQLException e){
-            e.printStackTrace();
-            throw new DatabaseException(e.getMessage());
-        }finally {
-            DaoFactory.closeDbConnection(conn, rs, prs);
-        }
-        return lessons;
-    }
-
-    @Override
-    public  Lesson getLessonsByID(int id) throws DatabaseException {
-       Lesson lesson= new Lesson();
-        Connection conn= DaoFactory.getConnection();
-        if (conn==null){
-            throw new DatabaseException("Connection is null");
-        }
-        ResultSet rs=null;
-        PreparedStatement prs=null;
-        try {
-            prs=conn.prepareStatement(GET_LESSON_BY_ID_STATEMENT);
-            if(prs==null){
-                throw new DatabaseException("Statement is null");
-            }
-            prs.setInt(1,id);
-            rs=prs.executeQuery();
-            if(rs.next()){
-                configureLessonObject(lesson,rs);
-            }else{
-                throw new DatabaseException("Statement is null");
-            }
-           }catch (SQLException e){
-            e.printStackTrace();
-            throw new DatabaseException(e.getMessage());
-        }finally {
+        } finally {
             DaoFactory.closeDbConnection(conn, rs, prs);
         }
         return lesson;
     }
-
-    @Override
-    public List<Lesson> getLessonByName (String name) throws DatabaseException{
-        List<Lesson> lessons= new ArrayList<Lesson>();
-        Connection conn= DaoFactory.getConnection();
-        if (conn==null){
-            throw new DatabaseException("Connection is null");
-        }
-        ResultSet rs=null;
-        PreparedStatement prs=null;
-        try {
-            prs=conn.prepareStatement(GET_LESSON_BY_NAME_STATEMENT);
-            prs.setString(1,name);
-            rs=prs.executeQuery();
-            if(rs.next()){
-                configureLessonList(lessons,rs);
-            }else{
-                throw new DatabaseException("Statement is null");
-            }
-            if(prs==null){
-                throw new DatabaseException("Statement is null");
-            }}catch (SQLException e){
-            e.printStackTrace();
-            throw new DatabaseException(e.getMessage());
-        }finally {
-            DaoFactory.closeDbConnection(conn, rs, prs);
-        }
-        return lessons;
-    }
-
-    @Override
-    public List<Lesson> getLessonsBySubject(String microSubject) throws DatabaseException{
-       List<Lesson> lessons=new ArrayList<Lesson>();
-                Connection conn= DaoFactory.getConnection();
-                if (conn==null){
-                    throw new DatabaseException("Connection is null");
-                }
-                ResultSet rs=null;
-                PreparedStatement prs=null;
-                try {
-                    prs=conn.prepareStatement(GET_LESSON_BY_SUBJECT_STATEMENT);
-                    if(prs==null){
-                        throw new DatabaseException("Statement is null");
-                    }
-                    prs.setString(1,microSubject);
-                    rs=prs.executeQuery();
-                    if(rs.next()){
-                        configureLessonList(lessons,rs);
-                    }else{
-                        throw new DatabaseException("Statement is null");
-                    }
-
-                    }catch (SQLException e){
-                    e.printStackTrace();
-                    throw new DatabaseException(e.getMessage());
-                }finally {
-                    DaoFactory.closeDbConnection(conn, rs, prs);
-                }
-                return lessons;
-    }
-
-    @Override
-    public void modifyLesson(Lesson lesson) throws DatabaseException{
-                    Connection conn= DaoFactory.getConnection();
-                    if (conn==null){
-                        throw new DatabaseException("Connection is null");
-                    }
-                    ResultSet rs=null;
-                    PreparedStatement prs=null;
-                    try {
-                        prs=conn.prepareStatement(UPDATE_LESSON_STATEMENT);
-                        if(prs==null){
-                            throw new DatabaseException("Statement is null");
-                        }
-                        prs.setString(1,lesson.getName());
-                        prs.setDouble(2,lesson.getPrice());
-                        prs.setDate(3,lesson.getPublicationDate());
-                        prs.setString(4,lesson.getDescription());
-                        prs.setObject(5,lesson.getSubject());
-                        prs.setInt(6,lesson.getIdLesson());
-
-
-
-                        prs.executeUpdate();
-
-                    }catch (SQLException e){
-                        e.printStackTrace();
-                        throw new DatabaseException(e.getMessage());
-                    }finally {
-                        DaoFactory.closeDbConnection(conn, rs, prs);
-                    }*/
-    //}
-
-
 }

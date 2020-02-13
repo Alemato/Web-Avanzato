@@ -1,5 +1,6 @@
 package it.mytutor.domain.dao.implement;
 
+import com.mysql.jdbc.Statement;
 import it.mytutor.domain.Subject;
 import it.mytutor.domain.dao.daofactory.DaoFactory;
 import it.mytutor.domain.dao.exception.DatabaseException;
@@ -110,15 +111,16 @@ public class SubjectDao implements SubjectDaoInterface {
     }
 
     @Override
-    public void createSubject(Subject subject) throws DatabaseException {
+    public Integer createSubject(Subject subject) throws DatabaseException {
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
         }
+        int i = -1;
         ResultSet rs = null;
         PreparedStatement prs = null;
         try {
-            prs = conn.prepareStatement(CREATE_SUBJECT_STATEMENT);
+            prs = conn.prepareStatement(CREATE_SUBJECT_STATEMENT, Statement.RETURN_GENERATED_KEYS);
             if (prs == null) {
                 throw new DatabaseException("Statement is null");
             }
@@ -126,12 +128,18 @@ public class SubjectDao implements SubjectDaoInterface {
             prs.setString(2, subject.getMicroSubject());
             prs.executeUpdate();
 
+            rs = prs.getGeneratedKeys();
+            if (rs.next()) {
+                i = rs.getInt(1);
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DatabaseException(e.getMessage());
         } finally {
             DaoFactory.closeDbConnection(conn, rs, prs);
         }
+        return i;
     }
 
     @Override
