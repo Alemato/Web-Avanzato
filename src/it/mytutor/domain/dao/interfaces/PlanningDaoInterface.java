@@ -3,11 +3,14 @@ package it.mytutor.domain.dao.interfaces;
 import it.mytutor.domain.Lesson;
 import it.mytutor.domain.Planning;
 import it.mytutor.domain.Student;
+import it.mytutor.domain.Teacher;
 import it.mytutor.domain.dao.exception.DatabaseException;
 
 import java.util.List;
 
 public interface PlanningDaoInterface {
+    List<Planning> getPlanningByTeacher(Teacher teacher) throws DatabaseException;
+
     List<Planning> getPlanningByFilter(int macroMateriaRelevant, String macroMateria, int nomeRelevant, String nome,
                                        int zonaRelevant, String zona, int microMateriaRelevant, String microMateria, int prezzoRelevant,
                                        String prezzo, int oraInizioRelevant, String oraInizio,

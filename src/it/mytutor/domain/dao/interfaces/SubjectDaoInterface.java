@@ -12,7 +12,7 @@ public interface SubjectDaoInterface {
 
     List<Subject> getSubjectsByName(String subjectName) throws DatabaseException;
 
-    void createSubject(Subject subject)throws DatabaseException;
+    Integer createSubject(Subject subject)throws DatabaseException;
 
     void modifySubjectByID(Subject subject)throws DatabaseException;
 
