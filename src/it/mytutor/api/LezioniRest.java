@@ -17,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +57,22 @@ public class LezioniRest {
         return Response.ok(lessons).build();
     }
 
+    @Path("{IDL}")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"TEACHER"})
+    public Response getLezionebyid(@PathParam("IDL") Integer idLesson) {
+        Lesson lesson;
+        try {
+            lesson = lessonService.findLessonByID(idLesson);
+        } catch (LessonBusinessException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
+        }
+        return Response.ok(lesson).build();
+    }
+
     /**
      * Rest che modifica la lezione inviata
      * @param lesson Lezione da modificare con le mdifiche
@@ -74,6 +91,26 @@ public class LezioniRest {
             throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
         }
         return Response.status(Response.Status.CREATED).build();
+    }
+
+    /**
+     * @param lesson
+     * @return
+     */
+    @Path("create")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"TEACHER"})
+    public Response creaLezione(Lesson lesson) {
+        String id;
+        try {
+            id = lessonService.createLesson(lesson).toString();
+        } catch (LessonBusinessException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
+        }
+        return Response.ok(id).build();
     }
 
 }

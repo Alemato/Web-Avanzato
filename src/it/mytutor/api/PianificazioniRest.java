@@ -32,14 +32,14 @@ public class PianificazioniRest {
     /**
      * Rest di creazione del planning concesa solamente al professore
      *
-     * @param plannings Lista di Pianificazioni della prenotazione della lezione
+     * @param planning Lista di Pianificazioni della prenotazione della lezione
      * @return Response Status ACCEPTED
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"TEACHER"})
-    public Response creaPlanning(List<Planning> plannings) {
+    public Response creaPlanning(Planning planning) {
 
         String teacherEmail = securityContext.getUserPrincipal().getName();
         Teacher teacher;
@@ -50,7 +50,7 @@ public class PianificazioniRest {
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
         try {
-            planningService.creaPlanning(plannings, teacher);
+            planningService.creaPlanning(planning, teacher);
         } catch (PlanningBusinessException | SubjectBusinessException | LessonBusinessException e) {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
@@ -69,14 +69,9 @@ public class PianificazioniRest {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"TEACHER"})
     public Response updateLesson(List<Planning> plannings, @QueryParam("id-lesson") Integer idLesson) {
-        try {
-            planningService.deletePlanningsByLesson(idLesson);
-        } catch (PlanningBusinessException e) {
-            e.printStackTrace();
-        }
         if (plannings.size() > 0) {
             try {
-                planningService.addPlannings(plannings);
+                planningService.updatePlanning(plannings);
             } catch (PlanningBusinessException e) {
                 e.printStackTrace();
                 throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
@@ -88,6 +83,23 @@ public class PianificazioniRest {
         } catch (LessonBusinessException | SubjectBusinessException e) {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        }
+        return Response.status(Response.Status.CREATED).build();
+    }
+
+    @Path("delete")
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"TEACHER"})
+    public Response deleteLesson(List<Planning> plannings, @QueryParam("id-lesson") Integer idLesson) {
+        if (plannings.size() > 0) {
+            try {
+                planningService.deletePlannings(plannings);
+            } catch (PlanningBusinessException e) {
+                e.printStackTrace();
+                throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+            }
         }
         return Response.status(Response.Status.CREATED).build();
     }
@@ -163,4 +175,27 @@ public class PianificazioniRest {
         return Response.ok(plannings).build();
     }
 
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"TEACHER"})
+    public Response getPlanningsOfATeacherAsLesson() {
+        List<Planning> plannings;
+        String teacherEmail = securityContext.getUserPrincipal().getName();
+        Teacher teacher;
+        try {
+            teacher = (Teacher) userService.findUserByUsername(teacherEmail);
+        } catch (UserException | DatabaseException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        }
+
+        try {
+            plannings = planningService.findPlanningsOfATeacherAsLesson(teacher);
+        } catch (PlanningBusinessException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        }
+        return Response.ok(plannings).build();
+    }
 }

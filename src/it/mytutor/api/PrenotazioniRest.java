@@ -30,7 +30,6 @@ import java.util.List;
 public class PrenotazioniRest {
     @Context
     private SecurityContext securityContext;
-
     private BookingInterface bookingService = new BookingBusiness();
     private UserInterface userService = new UserBusiness();
 
