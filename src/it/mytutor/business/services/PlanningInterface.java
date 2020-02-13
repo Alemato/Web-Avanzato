@@ -12,7 +12,7 @@ import it.mytutor.domain.dao.exception.DatabaseException;
 import java.util.List;
 
 public interface PlanningInterface {
-    void creaPlanning(List<Planning> plannings, Teacher teacher) throws PlanningBusinessException, LessonBusinessException, SubjectBusinessException;
+    void creaPlanning(Planning planning, Teacher teacher) throws PlanningBusinessException, LessonBusinessException, SubjectBusinessException;
 
     void deletePlanningsByLesson(Integer idLesson) throws PlanningBusinessException;
 
@@ -28,4 +28,6 @@ public interface PlanningInterface {
     List<Planning> findAllPlanningByLessonId(Integer idLesson) throws PlanningBusinessException;
 
     List<Planning> findAllPlanningBookedUpByLessonId(Integer idLesson, Integer idStudent) throws PlanningBusinessException;
+
+    List<Planning> findPlanningsOfATeacherAsLesson(Teacher teacher) throws PlanningBusinessException;
 }
