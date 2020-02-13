@@ -6,113 +6,42 @@ import it.mytutor.business.exceptions.SubjectBusinessException;
 import it.mytutor.business.services.PlanningInterface;
 import it.mytutor.domain.Lesson;
 import it.mytutor.domain.Planning;
-import it.mytutor.domain.Subject;
 import it.mytutor.domain.Teacher;
 import it.mytutor.domain.dao.exception.DatabaseException;
-import it.mytutor.domain.dao.implement.LessonDao;
 import it.mytutor.domain.dao.implement.PlanningDao;
-import it.mytutor.domain.dao.implement.SubjectDao;
-import it.mytutor.domain.dao.interfaces.LessonDaoInterface;
 import it.mytutor.domain.dao.interfaces.PlanningDaoInterface;
-import it.mytutor.domain.dao.interfaces.SubjectDaoInterface;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class PlanningBusiness implements PlanningInterface {
 
     @Override
-    public void creaPlanning(List<Planning> plannings, Teacher teacher) throws PlanningBusinessException, LessonBusinessException, SubjectBusinessException {
+    public void creaPlanning(Planning planning, Teacher teacher) throws PlanningBusinessException {
         PlanningDaoInterface planningDao = new PlanningDao();
-        LessonDaoInterface lessonDao = new LessonDao();
-        SubjectDaoInterface subjectDao = new SubjectDao();
         List<Planning> planningList = new ArrayList<>();
-        List<Subject> subjectList;
-        Subject subject = new Subject();
-        boolean existSubject = false;
-        int i;
-
-        try {
-            subjectList = subjectDao.getAllSubject();
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-            throw new SubjectBusinessException("Errore nel prendere i Subject dal database");
-        }
-
-        for (Subject subject1 : subjectList) {
-            if (plannings.get(0).getLesson().getSubject().getMicroSubject().equals(subject1.getMicroSubject())) {
-                subject = subject1;
-                existSubject = true;
-                break;
-            }
-        }
-        if (!existSubject) {
-            try {
-                subjectDao.createSubject(plannings.get(0).getLesson().getSubject());
-            } catch (DatabaseException e) {
-                e.printStackTrace();
-                throw new SubjectBusinessException("Errore nel'aggiunta del subject nel database");
-            }
-        }
-        Lesson lesson = plannings.get(0).getLesson();
-        lesson.setTeacher(teacher);
-        if (!existSubject) {
-            subject = plannings.get(0).getLesson().getSubject();
-
-            List<Subject> subjects;
-
-            try {
-                subjects = subjectDao.getSubjectsByName(plannings.get(0).getLesson().getSubject().getMacroSubject());
-            } catch (DatabaseException e) {
-                e.printStackTrace();
-                throw new SubjectBusinessException("Errore nel prendere gli oggetti subject dal database");
-            }
-            for (Subject subject1 : subjects) {
-                if (subject1.getMicroSubject().equals(plannings.get(0).getLesson().getSubject().getMicroSubject())) {
-                    subject.setIdSubject(subject1.getIdSubject());
-                    break;
-                }
-            }
-        }
-        lesson.setSubject(subject);
-        try {
-            i = lessonDao.createLesson(lesson);
-            lesson.setIdLesson(i);
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-            throw new LessonBusinessException("Errore nel'aggiunta della Lesson nel database");
-        }
         List<Planning> planningsOrari = new ArrayList<>();
         SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
-
         boolean check = false;
         long cost = 3600000;
 
+        if (planning.getRepeatPlanning()) {
+            Date dateAppo = new Date(planning.getDate().getTime());
+            Date dateAddWeek = new Date(planning.getDate().getTime());
+            planningList.add(planning);
 
-        for (Planning planning : plannings) {
-            if (planning.getRepeatPlanning()) {
-                Date dateAppo = new Date(planning.getDate().getTime());
-                Date dateAddWeek = new Date(planning.getDate().getTime());
-                planningList.add(planning);
-
-                while (dateAddWeek.before(addYearToJavaUtilDate(dateAppo))) {
-                    dateAddWeek = addWeekToJavaUtilDate(dateAddWeek);
-                    planningList.add(new Planning(planning.getIdPlanning(), new java.sql.Date(dateAddWeek.getTime()),
-                            planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(),
-                            planning.getUpdateDate(), planning.getLesson()));
-                }
-            } else {
-                planningList.add(planning);
+            while (dateAddWeek.before(addYearToJavaUtilDate(dateAppo))) {
+                dateAddWeek = addWeekToJavaUtilDate(dateAddWeek);
+                planningList.add(new Planning(planning.getIdPlanning(), new java.sql.Date(dateAddWeek.getTime()),
+                        planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(),
+                        planning.getUpdateDate(), planning.getLesson()));
             }
         }
 
-        for (Planning planning : planningList) {
-            Date startDate = new Date(planning.getStartTime().getTime());
-            Date endDate = new Date(planning.getEndTime().getTime());
+        for (Planning planning1 : planningList) {
+            Date startDate = new Date(planning1.getStartTime().getTime());
+            Date endDate = new Date(planning1.getEndTime().getTime());
             Date dateZero = new Date(Time.valueOf("00:00:00").getTime() + cost);
 
             if (endDate.before(addHoursToJavaUtilDate(startDate))) {
@@ -123,28 +52,27 @@ public class PlanningBusiness implements PlanningInterface {
                     startDate = new Date(dateStart);
                     dateZero = addHoursToJavaUtilDate(dateZero);
                     check = true;
-                    planningsOrari.add(new Planning(planning.getIdPlanning(), planning.getDate(),
+                    planningsOrari.add(new Planning(planning1.getIdPlanning(), planning1.getDate(),
                             Time.valueOf(localDateFormat.format(startDate)),
                             Time.valueOf(localDateFormat.format(addHoursToJavaUtilDate(new Date(dateStart)))),
-                            planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(), planning.getUpdateDate(),
-                            planning.getLesson()));
+                            planning1.getAvailable(), planning1.getRepeatPlanning(), planning1.getCreateDate(), planning1.getUpdateDate(),
+                            planning1.getLesson()));
                     if (dateStart > 82800000) {
-                        planningsOrari.set(planningsOrari.size() - 1, new Planning(planning.getIdPlanning(), planning.getDate(),
-                                Time.valueOf("23:00:00"), Time.valueOf("23:59:59"), planning.getAvailable(), planning.getRepeatPlanning(),
-                                planning.getCreateDate(),  planning.getUpdateDate(), planning.getLesson()));
+                        planningsOrari.set(planningsOrari.size() - 1, new Planning(planning1.getIdPlanning(), planning1.getDate(),
+                                Time.valueOf("23:00:00"), Time.valueOf("23:59:59"), planning1.getAvailable(), planning1.getRepeatPlanning(),
+                                planning1.getCreateDate(), planning1.getUpdateDate(), planning1.getLesson()));
                     }
                 }
                 if (!check) {
-                    planningsOrari.add(planning);
+                    planningsOrari.add(planning1);
                 }
             }
         }
 
-        for (Planning planning : planningsOrari) {
-            planning.setAvailable(true);
-            planning.setLesson(lesson);
+        for (Planning planning1 : planningsOrari) {
+            planning1.setAvailable(true);
             try {
-                planningDao.createPlanning(planning);
+                planningDao.createPlanning(planning1);
             } catch (DatabaseException e) {
                 e.printStackTrace();
                 throw new PlanningBusinessException("Errore nel'aggiunta del planning nel database");
@@ -266,14 +194,25 @@ public class PlanningBusiness implements PlanningInterface {
     @Override
     public void updatePlanning(List<Planning> plannings) throws PlanningBusinessException {
         PlanningDaoInterface planningDao = new PlanningDao();
-        for (Planning planning : plannings) {
+        if (plannings.size() > 1) {
+            for (Planning planning : plannings) {
 
+                try {
+                    planningDao.updatePlanning(planning);
+                } catch (DatabaseException e) {
+                    e.printStackTrace();
+                    throw new PlanningBusinessException("Errore nella modifica del planning");
+                }
+            }
+        } else {
+            for (Planning planning : plannings) {
 
-            try {
-                planningDao.updatePlanning(planning);
-            } catch (DatabaseException e) {
-                e.printStackTrace();
-                throw new PlanningBusinessException("Errore nella modifica del planning");
+                try {
+                    planningDao.updatePlanning(planning);
+                } catch (DatabaseException e) {
+                    e.printStackTrace();
+                    throw new PlanningBusinessException("Errore nella modifica del planning");
+                }
             }
         }
     }
@@ -285,7 +224,7 @@ public class PlanningBusiness implements PlanningInterface {
         List<Planning> plannings;
         List<Planning> pFinali = new ArrayList<>();
         int macroMateriaRelevant = 0;
-        if (macroMateria != null && !macroMateria.equals("null") && !macroMateria.isEmpty()  && !macroMateria.equals(" ")) {
+        if (macroMateria != null && !macroMateria.equals("null") && !macroMateria.isEmpty() && !macroMateria.equals(" ")) {
             macroMateriaRelevant = 1;
         }
         int nomeRelevant = 0;
@@ -301,11 +240,11 @@ public class PlanningBusiness implements PlanningInterface {
             microMateriaRelevant = 1;
         }
         int prezzoRelevant = 0;
-        if (prezzo != null && !prezzo.equals("null") && !prezzo.isEmpty()&& !prezzo.equals(" ")) {
+        if (prezzo != null && !prezzo.equals("null") && !prezzo.isEmpty() && !prezzo.equals(" ")) {
             prezzoRelevant = 1;
         }
         int oraInizioRelevant = 0;
-        if (oraInizio != null && !oraInizio.equals("null") && !oraInizio.isEmpty()  && !oraInizio.equals(" ")) {
+        if (oraInizio != null && !oraInizio.equals("null") && !oraInizio.isEmpty() && !oraInizio.equals(" ")) {
             oraInizioRelevant = 1;
         }
         int oraFineaRelevant = 0;
@@ -328,7 +267,7 @@ public class PlanningBusiness implements PlanningInterface {
             plannings = dayOfWeek(plannings, dom, lun, mar, mer, gio, ven, sab);
         }
 
-        for (Planning p: plannings) {
+        for (Planning p : plannings) {
             if (p.getDate().getTime() > new java.sql.Date(System.currentTimeMillis()).getTime()) {
                 pFinali.add(p);
             } else {
@@ -349,13 +288,29 @@ public class PlanningBusiness implements PlanningInterface {
     public List<Planning> findAllPlanningByLessonId(Integer idLesson) throws PlanningBusinessException {
         PlanningDaoInterface planningDao = new PlanningDao();
         List<Planning> plannings;
+        List<Planning> pFinali = new ArrayList<>();
         try {
             plannings = planningDao.getPlanningByLessonId(idLesson);
         } catch (DatabaseException e) {
             e.printStackTrace();
             throw new PlanningBusinessException("Errore nel prendere la lista dei planning");
         }
-        return plannings;
+
+        for (Planning p : plannings) {
+            if (p.getDate().getTime() > new java.sql.Date(System.currentTimeMillis()).getTime()) {
+                pFinali.add(p);
+            } else {
+                PlanningDaoInterface planningDaoRep = new PlanningDao();
+                p.setAvailable(false);
+                try {
+                    planningDaoRep.updatePlanning(p);
+                } catch (DatabaseException e) {
+                    e.printStackTrace();
+                    throw new PlanningBusinessException("Errore nel'aggiornare l'oggetto plenning");
+                }
+            }
+        }
+        return pFinali;
     }
 
     @Override
@@ -402,7 +357,7 @@ public class PlanningBusiness implements PlanningInterface {
             for (Planning planning : plannings) {
                 c.setTime(planning.getDate());
                 if (c.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) {
-                    plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(),planning.getRepeatPlanning(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
+                    plannings1.add(new Planning(planning.getIdPlanning(), planning.getDate(), planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(), planning.getUpdateDate(), planning.getLesson()));
                 }
             }
         }
@@ -433,4 +388,60 @@ public class PlanningBusiness implements PlanningInterface {
         return plannings1;
     }
 
+    @Override
+    public List<Planning> findPlanningsOfATeacherAsLesson(Teacher teacher) throws PlanningBusinessException {
+        PlanningDao planningDao = new PlanningDao();
+        List<Planning> plannings;
+        HashMap<Integer, Planning> hashMap = new HashMap<>();
+        List<Planning> pFinali = new ArrayList<>();
+        HashSet<Lesson> hashSet = new HashSet<>();
+
+        try {
+            plannings = planningDao.getPlanningByTeacher(teacher);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new PlanningBusinessException("Errore nel prendere la lista dei planning");
+        }
+        for (Planning planning : plannings) {
+            hashSet.add(planning.getLesson());
+        }
+
+        for (Planning p : plannings) {
+            if (p.getDate().getTime() > new java.sql.Date(System.currentTimeMillis()).getTime()) {
+                pFinali.add(p);
+            } else {
+                PlanningDaoInterface planningDaoRep = new PlanningDao();
+                p.setAvailable(false);
+                try {
+                    planningDaoRep.updatePlanning(p);
+                } catch (DatabaseException e) {
+                    e.printStackTrace();
+                    throw new PlanningBusinessException("Errore nel'aggiornare l'oggetto plenning");
+                }
+            }
+        }
+
+        for (int i = pFinali.size() - 1; i >= 0; i--) {
+            hashMap.put(pFinali.get(i).getLesson().getIdLesson(), pFinali.get(i));
+        }
+        List<Lesson> lessons = new ArrayList<>(hashSet);
+        for (Lesson lesson : lessons) {
+            boolean flag = false;
+            for (Planning planning : pFinali) {
+                if (lesson.getIdLesson().equals(planning.getLesson().getIdLesson())) {
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag) {
+                for (Planning planning : plannings) {
+                    if (planning.getLesson().getIdLesson().equals(lesson.getIdLesson())) {
+                        pFinali.add(planning);
+                    }
+                }
+            }
+        }
+
+        return new ArrayList<>(hashMap.values());
+    }
 }

@@ -13,6 +13,7 @@ import it.mytutor.domain.dao.implement.SubjectDao;
 import it.mytutor.domain.dao.interfaces.LessonDaoInterface;
 import it.mytutor.domain.dao.interfaces.SubjectDaoInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LessonBusiness implements LessonInterface {
@@ -93,12 +94,67 @@ public class LessonBusiness implements LessonInterface {
         return null;
     }
     @Override
-    public Lesson findLessonByID(Integer idLesson){
-        return null;
+    public Lesson findLessonByID(Integer idLesson) throws LessonBusinessException {
+        LessonDao lessonDao = new LessonDao();
+        Lesson lesson = new Lesson();
+        try {
+            lesson = lessonDao.getLessonById(idLesson);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new LessonBusinessException("Errore nella modifica della lezione");
+        }
+        return lesson;
     }
+
     @Override
-    public Planning createLesson(Planning planning) {
-        return planning;
+    public Integer createLesson(Lesson lesson) throws LessonBusinessException {
+        boolean subjectTrovata = false;
+        int idLesson;
+        int idSubject;
+        List<Subject> subjects;
+        LessonDao lessonDao = new LessonDao();
+        SubjectDao subjectDao = new SubjectDao();
+
+        try {
+            subjects = subjectDao.getSubjectsByName(lesson.getSubject().getMacroSubject());
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new LessonBusinessException("Errore nella prendere le materie");
+        }
+        if (!subjects.isEmpty()) {
+            for (Subject subject: subjects) {
+                if (subject.getMicroSubject().equals(lesson.getSubject().getMicroSubject())) {
+                    lesson.getSubject().setIdSubject(subject.getIdSubject());
+                    subjectTrovata = true;
+                    break;
+                }
+            }
+            if (!subjectTrovata) {
+                try {
+                    idSubject = subjectDao.createSubject(lesson.getSubject());
+                } catch (DatabaseException e) {
+                    e.printStackTrace();
+                    throw new LessonBusinessException("Errore nella creazione della materia");
+                }
+                lesson.getSubject().setIdSubject(idSubject);
+            }
+        } else {
+            try {
+                idSubject = subjectDao.createSubject(lesson.getSubject());
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new LessonBusinessException("Errore nella creazione della materia");
+            }
+            lesson.getSubject().setIdSubject(idSubject);
+        }
+
+        try {
+            idLesson = lessonDao.createLesson(lesson);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new LessonBusinessException("Errore nella creazione della lezione");
+        }
+        return idLesson;
     }
 }
 
