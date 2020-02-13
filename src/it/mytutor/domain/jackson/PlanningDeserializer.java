@@ -30,8 +30,10 @@ public class PlanningDeserializer  extends StdDeserializer<Planning> {
         }
         Date date = new Date(node.get("date").asLong());
         planning.setDate(date);
-        planning.setStartTime(java.sql.Time.valueOf(node.get("startTime").asText()));
-        planning.setEndTime(java.sql.Time.valueOf(node.get("endTime").asText()));
+        String oraInizio = node.get("startTime").asText().substring(0, 5) + ":00";
+        planning.setStartTime(java.sql.Time.valueOf(oraInizio));
+        String oraFine = node.get("endTime").asText().substring(0, 5) + ":00";
+        planning.setEndTime(java.sql.Time.valueOf(oraFine));
         planning.setAvailable(node.get("available").asBoolean());
         planning.setRepeatPlanning(node.get("repeatPlanning").asBoolean());
 

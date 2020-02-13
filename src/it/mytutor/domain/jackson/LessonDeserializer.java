@@ -35,7 +35,9 @@ public class LessonDeserializer extends StdDeserializer<Lesson> {
         lesson.setName(node.get("name").asText());
         lesson.setPrice(node.get("price").asDouble());
         lesson.setDescription(node.get("description").asText());
-        lesson.setPublicationDate(new Date(node.get("publicationDate").asLong()));
+        if (node.get("publicationDate") != null) {
+            lesson.setPublicationDate(new Date(node.get("publicationDate").asLong()));
+        }
         Subject subject = new Subject();
         JsonNode subjectNode = node.get("subject");
         if (subjectNode.get("idSubject") != null) {
