@@ -40,6 +40,7 @@ public class BookingDao implements BookingDaoInterface {
     private static final String GET_ALL_HISTORICAL_BOOOKING_OF_A_TEACHER_STATEMENT = "select * from Booking b, User u1, Student st, Planning p, Lesson l, User u2, Teacher t, Subject s where b.IdStudent = st.IdStudent and st.IdUser = u1.IdUser and b.IdPlanning = p.IdPlanning and p.IdLesson = l.IdLesson and l.IdTeacher = t.IdTeacher and t.IdUser = u2.IdUser and l.IdSubject = s.IdSubject and (b.IdStudent = ?) and (b.LessonState = 2 or b.LessonState = 3 or b.LessonState = 4)";
     private static final String GET_ALL_BOOKING_BOOKED_STATEMENT = "select * from Booking b, User u1, Student st, Planning p, Lesson l, User u2, Teacher t, Subject s where b.IdStudent = st.IdStudent and st.IdUser = u1.IdUser and b.IdPlanning = p.IdPlanning and p.IdLesson = l.IdLesson and l.IdTeacher = t.IdTeacher and t.IdUser = u2.IdUser and l.IdSubject = s.IdSubject and (b.LessonState = 2 or b.LessonState = 3) and p.Date < ?";
 
+    private static final String GET_STUDENT_BY_ID_PLANNING_STATEMENT = "select * from Booking b, User u1, Student st, Planning p, Lesson l, User u2, Teacher t, Subject s where b.IdStudent = st.IdStudent and st.IdUser = u1.IdUser and b.IdPlanning = p.IdPlanning and p.IdLesson = l.IdLesson and l.IdTeacher = t.IdTeacher and t.IdUser = u2.IdUser and l.IdSubject = s.IdSubject and b.IdBooking = ?";
 
     private void configureBooking(Booking booking, Student student, Planning planning, Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
         try {
@@ -201,6 +202,42 @@ public class BookingDao implements BookingDaoInterface {
         } finally {
             DaoFactory.closeDbConnection(conn, rs, prs);
         }
+    }
+
+    @Override
+    public Student findStudentByIdPlanning(Integer idPlanning)  throws DatabaseException {
+        Connection conn = DaoFactory.getConnection();
+        Booking booking = new Booking();
+        Student student = new Student();
+        Planning planning = new Planning();
+        Lesson lesson = new Lesson();
+        Subject subject = new Subject();
+        Teacher teacher = new Teacher();
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(GET_STUDENT_BY_ID_PLANNING_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+
+            prs.setInt(1, idPlanning);
+            rs = prs.executeQuery();
+
+
+            if (rs.next()) {
+                configureBooking(booking, student, planning, lesson, subject, teacher, rs);
+            } else {
+                throw new DatabaseException("rs is empty");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+        return booking.getStudent();
     }
 
     @Override
