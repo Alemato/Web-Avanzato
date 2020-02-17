@@ -19,7 +19,7 @@ public class PlanningBusiness implements PlanningInterface {
 
     @Override
     public void creaPlanning(Planning planning, Teacher teacher) throws PlanningBusinessException {
-        PlanningDaoInterface planningDao = new PlanningDao();
+        PlanningDao planningDao = new PlanningDao();
         List<Planning> planningList = new ArrayList<>();
         List<Planning> planningsOrari = new ArrayList<>();
         SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -37,6 +37,8 @@ public class PlanningBusiness implements PlanningInterface {
                         planning.getStartTime(), planning.getEndTime(), planning.getAvailable(), planning.getRepeatPlanning(), planning.getCreateDate(),
                         planning.getUpdateDate(), planning.getLesson()));
             }
+        } else {
+            planningList.add(planning);
         }
 
         for (Planning planning1 : planningList) {
@@ -72,6 +74,7 @@ public class PlanningBusiness implements PlanningInterface {
         for (Planning planning1 : planningsOrari) {
             planning1.setAvailable(true);
             try {
+
                 planningDao.createPlanning(planning1);
             } catch (DatabaseException e) {
                 e.printStackTrace();
@@ -94,9 +97,18 @@ public class PlanningBusiness implements PlanningInterface {
     @Override
     public void deletePlannings(List<Planning> plannings) throws PlanningBusinessException {
         PlanningDaoInterface planningDao = new PlanningDao();
-        for (Planning planning : plannings) {
+        Integer idFirst;
+        Integer idLast;
+        if (plannings.size() == 1) {
             try {
-                planningDao.deletePlanning(planning);
+                planningDao.deletePlanning(plannings.get(0).getIdPlanning(), plannings.get(0).getIdPlanning());
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new PlanningBusinessException("Errore nell'aggiunta dei plannings");
+            }
+        } else {
+            try {
+                planningDao.deletePlanning(plannings.get(0).getIdPlanning(), plannings.get(plannings.size() - 1).getIdPlanning());
             } catch (DatabaseException e) {
                 e.printStackTrace();
                 throw new PlanningBusinessException("Errore nell'aggiunta dei plannings");
@@ -194,16 +206,16 @@ public class PlanningBusiness implements PlanningInterface {
     @Override
     public void updatePlanning(List<Planning> plannings) throws PlanningBusinessException {
         PlanningDaoInterface planningDao = new PlanningDao();
+        List<Planning> planningList = new ArrayList<>();
         if (plannings.size() > 1) {
-            for (Planning planning : plannings) {
-
-                try {
-                    planningDao.updatePlanning(planning);
-                } catch (DatabaseException e) {
-                    e.printStackTrace();
-                    throw new PlanningBusinessException("Errore nella modifica del planning");
-                }
+            try {
+                planningDao.deletePlanning(plannings.get(0).getIdPlanning(), plannings.get(plannings.size() - 1).getIdPlanning());
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                throw new PlanningBusinessException("Errore nella cancellazione dei planning");
             }
+            planningList.add(plannings.get(0));
+            addPlannings(planningList);
         } else {
             for (Planning planning : plannings) {
 
@@ -286,7 +298,7 @@ public class PlanningBusiness implements PlanningInterface {
 
     @Override
     public List<Planning> findAllPlanningByLessonId(Integer idLesson) throws PlanningBusinessException {
-        PlanningDaoInterface planningDao = new PlanningDao();
+        PlanningDao planningDao = new PlanningDao();
         List<Planning> plannings;
         List<Planning> pFinali = new ArrayList<>();
         try {
@@ -394,7 +406,9 @@ public class PlanningBusiness implements PlanningInterface {
         List<Planning> plannings;
         HashMap<Integer, Planning> hashMap = new HashMap<>();
         List<Planning> pFinali = new ArrayList<>();
-        HashSet<Lesson> hashSet = new HashSet<>();
+        List<Planning> pFinaliAppo = new ArrayList<>();
+        HashSet<Lesson> lessons = new HashSet<>();
+        Planning planningAppo = new Planning();
 
         try {
             plannings = planningDao.getPlanningByTeacher(teacher);
@@ -402,14 +416,16 @@ public class PlanningBusiness implements PlanningInterface {
             e.printStackTrace();
             throw new PlanningBusinessException("Errore nel prendere la lista dei planning");
         }
-        for (Planning planning : plannings) {
-            hashSet.add(planning.getLesson());
-        }
 
         for (Planning p : plannings) {
+            lessons.add(p.getLesson());
             if (p.getDate().getTime() > new java.sql.Date(System.currentTimeMillis()).getTime()) {
                 pFinali.add(p);
-            } else {
+                if (p.getAvailable()) {
+                    pFinaliAppo.add(p);
+                }
+            }
+            else {
                 PlanningDaoInterface planningDaoRep = new PlanningDao();
                 p.setAvailable(false);
                 try {
@@ -421,24 +437,28 @@ public class PlanningBusiness implements PlanningInterface {
             }
         }
 
-        for (int i = pFinali.size() - 1; i >= 0; i--) {
-            hashMap.put(pFinali.get(i).getLesson().getIdLesson(), pFinali.get(i));
+        for (int i = pFinaliAppo.size() - 1; i >= 0; i--) {
+            hashMap.put(pFinaliAppo.get(i).getLesson().getIdLesson(), pFinaliAppo.get(i));
         }
-        List<Lesson> lessons = new ArrayList<>(hashSet);
-        for (Lesson lesson : lessons) {
-            boolean flag = false;
-            for (Planning planning : pFinali) {
-                if (lesson.getIdLesson().equals(planning.getLesson().getIdLesson())) {
+        boolean flag = false;
+        for (Lesson lesson: lessons) {
+            System.out.println(lesson.getIdLesson());
+            for (Planning planning: pFinali) {
+                System.out.println(planning.getLesson().getIdLesson());
+                System.out.println("###############################");
+                planningAppo = planning;
+                if (planning.getLesson().getIdLesson().equals(lesson.getIdLesson())) {
                     flag = true;
-                    break;
+                    System.out.println(flag);
+                    System.out.println("if di dentro");
                 }
             }
             if (!flag) {
-                for (Planning planning : plannings) {
-                    if (planning.getLesson().getIdLesson().equals(lesson.getIdLesson())) {
-                        pFinali.add(planning);
-                    }
-                }
+                System.out.println("if di fuori");
+                System.out.println(flag);
+                planningAppo.setAvailable(false);
+                planningAppo.setLesson(lesson);
+                hashMap.put(lesson.getIdLesson(), planningAppo);
             }
         }
 
