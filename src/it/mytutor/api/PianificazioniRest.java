@@ -193,4 +193,20 @@ public class PianificazioniRest {
         }
         return Response.ok(plannings).build();
     }
+
+    @Path("single/{PID}")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"TEACHER"})
+    public Response getPlanningById(@PathParam("PID") Integer idPlanning) {
+        Planning planning;
+        try {
+            planning = planningService.findPlanningById(idPlanning);
+        } catch (PlanningBusinessException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        }
+        return Response.ok(planning).build();
+    }
 }
