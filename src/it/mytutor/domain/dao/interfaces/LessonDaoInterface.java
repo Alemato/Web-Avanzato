@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface LessonDaoInterface {
 
+    List<Lesson> getAllLessons() throws DatabaseException;
+
     List<Lesson> getLessonsByTeacher(Teacher teacher) throws DatabaseException;
 
     void modifyLesson(Lesson lesson) throws DatabaseException;

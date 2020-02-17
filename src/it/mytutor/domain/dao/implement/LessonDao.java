@@ -17,6 +17,8 @@ import java.util.List;
 
 public class LessonDao implements LessonDaoInterface {
 
+    private static final String GET_ALL_LESSON = "select * from Lesson l, Teacher t, User u,  Subject s Where l.IdTeacher = t.IdTeacher AND t.IdUser = u.IdUser AND l.IdSubject = s.IdSubject";
+
     private static final String GET_LESSON_BY_TEACHER_STATEMENT = "select * from Lesson l, Teacher t, User u, Subject s where l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and l.IdSubject = s.IdSubject and l.IdTeacher = ?";
 
     private static final String CREATE_LESSON_STATEMENT = "insert into Lesson (Name, Price, Description, IdSubject, IdTeacher) values (?, ?, ?, ?, ?)";
@@ -90,6 +92,33 @@ public class LessonDao implements LessonDaoInterface {
     }
 
     @Override
+    public List<Lesson> getAllLessons() throws DatabaseException {
+        List<Lesson> lessons = new ArrayList<>();
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(GET_ALL_LESSON);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            rs = prs.executeQuery();
+            configureLessonList(lessons, rs);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+
+        return lessons;
+    }
+
+    @Override
     public List<Lesson> getLessonsByTeacher(Teacher teacher) throws DatabaseException {
         List<Lesson> lessons = new ArrayList<>();
         Connection conn = DaoFactory.getConnection();
@@ -150,9 +179,7 @@ public class LessonDao implements LessonDaoInterface {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DatabaseException(e.getMessage());
-        }
-
-        finally {
+        } finally {
             DaoFactory.closeDbConnection(conn, rs, prs);
         }
         return i;

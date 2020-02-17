@@ -11,6 +11,7 @@ import it.mytutor.domain.Lesson;
 import it.mytutor.domain.Teacher;
 import it.mytutor.domain.dao.exception.DatabaseException;
 
+import javax.annotation.Generated;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -51,6 +52,21 @@ public class LezioniRest {
         try {
             lessons = new ArrayList<>(lessonService.findAllLessonByTeacher(teacher));
         } catch (LessonBusinessException | DatabaseException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
+        }
+        return Response.ok(lessons).build();
+    }
+    @Path("student")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"STUDENT"})
+    public Response getAllLezioni() {
+        List<Lesson> lessons;
+        try {
+            lessons = new ArrayList<>(lessonService.findAllLesson());
+        } catch (LessonBusinessException e) {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
         }

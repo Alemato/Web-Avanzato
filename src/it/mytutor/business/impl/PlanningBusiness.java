@@ -236,7 +236,7 @@ public class PlanningBusiness implements PlanningInterface {
         List<Planning> plannings;
         List<Planning> pFinali = new ArrayList<>();
         int macroMateriaRelevant = 0;
-        if (macroMateria != null && !macroMateria.equals("null") && !macroMateria.isEmpty() && !macroMateria.equals(" ")) {
+        if (macroMateria != null && !macroMateria.equals("null") && !macroMateria.isEmpty()  && !macroMateria.equals(" ")) {
             macroMateriaRelevant = 1;
         }
         int nomeRelevant = 0;
@@ -252,11 +252,11 @@ public class PlanningBusiness implements PlanningInterface {
             microMateriaRelevant = 1;
         }
         int prezzoRelevant = 0;
-        if (prezzo != null && !prezzo.equals("null") && !prezzo.isEmpty() && !prezzo.equals(" ")) {
+        if (prezzo != null && !prezzo.equals("null") && !prezzo.isEmpty()&& !prezzo.equals(" ")) {
             prezzoRelevant = 1;
         }
         int oraInizioRelevant = 0;
-        if (oraInizio != null && !oraInizio.equals("null") && !oraInizio.isEmpty() && !oraInizio.equals(" ")) {
+        if (oraInizio != null && !oraInizio.equals("null") && !oraInizio.isEmpty()  && !oraInizio.equals(" ")) {
             oraInizioRelevant = 1;
         }
         int oraFineaRelevant = 0;
@@ -279,7 +279,7 @@ public class PlanningBusiness implements PlanningInterface {
             plannings = dayOfWeek(plannings, dom, lun, mar, mer, gio, ven, sab);
         }
 
-        for (Planning p : plannings) {
+        for (Planning p: plannings) {
             if (p.getDate().getTime() > new java.sql.Date(System.currentTimeMillis()).getTime()) {
                 pFinali.add(p);
             } else {
@@ -298,31 +298,15 @@ public class PlanningBusiness implements PlanningInterface {
 
     @Override
     public List<Planning> findAllPlanningByLessonId(Integer idLesson) throws PlanningBusinessException {
-        PlanningDao planningDao = new PlanningDao();
+        PlanningDaoInterface planningDao = new PlanningDao();
         List<Planning> plannings;
-        List<Planning> pFinali = new ArrayList<>();
         try {
             plannings = planningDao.getPlanningByLessonId(idLesson);
         } catch (DatabaseException e) {
             e.printStackTrace();
             throw new PlanningBusinessException("Errore nel prendere la lista dei planning");
         }
-
-        for (Planning p : plannings) {
-            if (p.getDate().getTime() > new java.sql.Date(System.currentTimeMillis()).getTime()) {
-                pFinali.add(p);
-            } else {
-                PlanningDaoInterface planningDaoRep = new PlanningDao();
-                p.setAvailable(false);
-                try {
-                    planningDaoRep.updatePlanning(p);
-                } catch (DatabaseException e) {
-                    e.printStackTrace();
-                    throw new PlanningBusinessException("Errore nel'aggiornare l'oggetto plenning");
-                }
-            }
-        }
-        return pFinali;
+        return plannings;
     }
 
     @Override
@@ -336,6 +320,11 @@ public class PlanningBusiness implements PlanningInterface {
             throw new PlanningBusinessException("Errore nel prendere la lista dei planning");
         }
         return plannings;
+    }
+
+    @Override
+    public List<Planning> findPlanningsOfATeacherAsLesson(Teacher teacher) throws PlanningBusinessException {
+        return null;
     }
 
     private ArrayList<Planning> dayOfWeek(List<Planning> plannings, String dom, String lun, String mar, String mer, String gio, String ven, String sab) {
@@ -400,68 +389,4 @@ public class PlanningBusiness implements PlanningInterface {
         return plannings1;
     }
 
-    @Override
-    public List<Planning> findPlanningsOfATeacherAsLesson(Teacher teacher) throws PlanningBusinessException {
-        PlanningDao planningDao = new PlanningDao();
-        List<Planning> plannings;
-        HashMap<Integer, Planning> hashMap = new HashMap<>();
-        List<Planning> pFinali = new ArrayList<>();
-        List<Planning> pFinaliAppo = new ArrayList<>();
-        HashSet<Lesson> lessons = new HashSet<>();
-        Planning planningAppo = new Planning();
-
-        try {
-            plannings = planningDao.getPlanningByTeacher(teacher);
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-            throw new PlanningBusinessException("Errore nel prendere la lista dei planning");
-        }
-
-        for (Planning p : plannings) {
-            lessons.add(p.getLesson());
-            if (p.getDate().getTime() > new java.sql.Date(System.currentTimeMillis()).getTime()) {
-                pFinali.add(p);
-                if (p.getAvailable()) {
-                    pFinaliAppo.add(p);
-                }
-            }
-            else {
-                PlanningDaoInterface planningDaoRep = new PlanningDao();
-                p.setAvailable(false);
-                try {
-                    planningDaoRep.updatePlanning(p);
-                } catch (DatabaseException e) {
-                    e.printStackTrace();
-                    throw new PlanningBusinessException("Errore nel'aggiornare l'oggetto plenning");
-                }
-            }
-        }
-
-        for (int i = pFinaliAppo.size() - 1; i >= 0; i--) {
-            hashMap.put(pFinaliAppo.get(i).getLesson().getIdLesson(), pFinaliAppo.get(i));
-        }
-        boolean flag = false;
-        for (Lesson lesson: lessons) {
-            System.out.println(lesson.getIdLesson());
-            for (Planning planning: pFinali) {
-                System.out.println(planning.getLesson().getIdLesson());
-                System.out.println("###############################");
-                planningAppo = planning;
-                if (planning.getLesson().getIdLesson().equals(lesson.getIdLesson())) {
-                    flag = true;
-                    System.out.println(flag);
-                    System.out.println("if di dentro");
-                }
-            }
-            if (!flag) {
-                System.out.println("if di fuori");
-                System.out.println(flag);
-                planningAppo.setAvailable(false);
-                planningAppo.setLesson(lesson);
-                hashMap.put(lesson.getIdLesson(), planningAppo);
-            }
-        }
-
-        return new ArrayList<>(hashMap.values());
-    }
 }

@@ -20,6 +20,17 @@ import java.util.List;
 public class LessonBusiness implements LessonInterface {
 
     @Override
+    public List<Lesson> findAllLesson() throws LessonBusinessException {
+        LessonDao lessonDao = new LessonDao();
+        try {
+            return lessonDao.getAllLessons();
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new LessonBusinessException("Errore nel prendere la lista di lezioni");
+        }
+    }
+
+    @Override
     public List<Lesson> findAllLessonByTeacher(Teacher teacher) throws LessonBusinessException {
         LessonDao lessonDao = new LessonDao();
         try {
