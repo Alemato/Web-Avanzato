@@ -11,6 +11,9 @@ import java.util.List;
 
 public interface LessonInterface {
     List<Lesson> findAllLessonByTeacher(Teacher teacher) throws DatabaseException, LessonBusinessException;
+
+    List<Lesson> findlessonWithoutPlanningByTeacher(Teacher teacher) throws DatabaseException, LessonBusinessException;
+
     List<Lesson> findAllLessonBySubject(Subject subject);
     Lesson findLessonByID(Integer idLesson) throws LessonBusinessException;
     void updateLessson(Lesson lesson) throws LessonBusinessException, SubjectBusinessException;

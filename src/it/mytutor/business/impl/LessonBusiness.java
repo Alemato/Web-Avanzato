@@ -9,6 +9,7 @@ import it.mytutor.domain.Subject;
 import it.mytutor.domain.Teacher;
 import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.implement.LessonDao;
+import it.mytutor.domain.dao.implement.PlanningDao;
 import it.mytutor.domain.dao.implement.SubjectDao;
 import it.mytutor.domain.dao.interfaces.LessonDaoInterface;
 import it.mytutor.domain.dao.interfaces.SubjectDaoInterface;
@@ -90,9 +91,23 @@ public class LessonBusiness implements LessonInterface {
     }
 
     @Override
+    public List<Lesson> findlessonWithoutPlanningByTeacher(Teacher teacher) throws LessonBusinessException {
+        List<Lesson> lessons;
+        LessonDao lessonDao = new LessonDao();
+        try {
+            lessons = lessonDao.getLessonWithoutPlanningByTeacher(teacher);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new LessonBusinessException("Errore nel prendere la lista di lezioni");
+        }
+        return lessons;
+    }
+
+    @Override
     public List<Lesson> findAllLessonBySubject(Subject subject) {
         return null;
     }
+
     @Override
     public Lesson findLessonByID(Integer idLesson) throws LessonBusinessException {
         LessonDao lessonDao = new LessonDao();
