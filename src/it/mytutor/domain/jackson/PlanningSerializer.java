@@ -78,7 +78,9 @@ public class PlanningSerializer extends StdSerializer<Planning> {
         long bMillis = planning.getLesson().getTeacher().getBirthday().getTime();
         jsonGenerator.writeNumberField("birthday", bMillis);
         jsonGenerator.writeBooleanField("language", planning.getLesson().getTeacher().getLanguage());
-        jsonGenerator.writeStringField("image", planning.getLesson().getTeacher().getImage());
+        if (planning.getLesson().getTeacher().getImage() != null) {
+            jsonGenerator.writeStringField("image", planning.getLesson().getTeacher().getImage());
+        }
         long createDateMillis = planning.getLesson().getTeacher().getCreateDate().getTime();
         jsonGenerator.writeNumberField("createDate", createDateMillis);
         long updateDateMillis = planning.getLesson().getTeacher().getUpdateDate().getTime();
