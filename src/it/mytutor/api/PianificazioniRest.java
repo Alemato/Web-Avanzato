@@ -27,7 +27,6 @@ public class PianificazioniRest {
 
     private PlanningInterface planningService = new PlanningBusiness();
     private UserInterface userService = new UserBusiness();
-    private LessonInterface lessonInterface = new LessonBusiness();
 
     /**
      * Rest di creazione del planning concesa solamente al professore
@@ -35,12 +34,12 @@ public class PianificazioniRest {
      * @param planning Lista di Pianificazioni della prenotazione della lezione
      * @return Response Status ACCEPTED
      */
+    @Path("create")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"TEACHER"})
     public Response creaPlanning(Planning planning) {
-
         String teacherEmail = securityContext.getUserPrincipal().getName();
         Teacher teacher;
         try {
@@ -64,6 +63,7 @@ public class PianificazioniRest {
      * @param plannings lista di oggetti pianificazione
      * @return Risposta custom con stato 201 Created
      */
+    @Path("modify")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -77,13 +77,6 @@ public class PianificazioniRest {
                 throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
             }
         }
-
-        try {
-            lessonInterface.updateLessson(plannings.get(0).getLesson());
-        } catch (LessonBusinessException | SubjectBusinessException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-        }
         return Response.status(Response.Status.CREATED).build();
     }
 
@@ -92,7 +85,7 @@ public class PianificazioniRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"TEACHER"})
-    public Response deleteLesson(List<Planning> plannings, @QueryParam("id-lesson") Integer idLesson) {
+    public Response deletePlannings(List<Planning> plannings, @QueryParam("id-lesson") Integer idLesson) {
         if (plannings.size() > 0) {
             try {
                 planningService.deletePlannings(plannings);
@@ -100,6 +93,8 @@ public class PianificazioniRest {
                 e.printStackTrace();
                 throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
             }
+        } else {
+            throw new ApiWebApplicationException("lista planning non valida");
         }
         return Response.status(Response.Status.CREATED).build();
     }
