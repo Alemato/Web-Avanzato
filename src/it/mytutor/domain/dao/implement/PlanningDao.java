@@ -31,6 +31,8 @@ public class PlanningDao implements PlanningDaoInterface {
 
     private static final String GET_PLANNING_BY_TEACHER_STATEMENT = "select * from planning p, Lesson l, teacher t, user u, subject s where p.IdLesson = l.IdLesson and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and l.IdSubject = s.IdSubject and t.IdTeacher = ?";
 
+    private static final String GET_PLANNING_BY_ID_STATEMENT = "SELECT from Planning p, Lesson l, Subject s, Teacher t, User u where p.IdLesson = l.IdLesson and l.IdSubject = s.IdSubject and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and p.IdPlanning = ?";
+
     private void configurePlanning(Planning planning, Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
         try {
             planning.setIdPlanning(resultSet.getInt("p.IdPlanning"));
@@ -218,6 +220,37 @@ public class PlanningDao implements PlanningDaoInterface {
         }
     }
 
+    public Planning getPlanningById(Integer idPlanning) throws DatabaseException {
+        Planning planning = new Planning();
+        Lesson lesson = new Lesson();
+        Subject subject = new Subject();
+        Teacher teacher = new Teacher();
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(GET_PLANNING_BY_ID_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            prs.setInt(1, idPlanning);
+            rs = prs.executeQuery();
+
+            if (rs.next()) {
+                configurePlanning(planning, lesson, subject, teacher, rs);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+        return planning;
+    }
 
     @Override
     public List<Planning> getPlanningByTeacher(Teacher teacher) throws DatabaseException {
