@@ -17,5 +17,7 @@ public interface LessonDaoInterface {
 
     int createLesson(Lesson lesson) throws DatabaseException;
 
+    List<Lesson> getLessonWithoutPlanningByTeacher(Teacher teacher) throws DatabaseException;
+
     Lesson getLessonById(Integer idLesson) throws DatabaseException;
 }

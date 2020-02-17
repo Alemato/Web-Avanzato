@@ -25,6 +25,8 @@ public class LessonDao implements LessonDaoInterface {
 
     private static final String GET_LESSON_BY_ID_STATEMENT =  "select * from Lesson l, Teacher t, User u, Subject s where l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and l.IdSubject = s.IdSubject and l.IdLesson = ?";
 
+    private static final String GET_LESSON_WITHOUT_PLANNING_BY_TEACHER_STATEMENT = "SELECT * FROM lesson l, subject s, teacher t, user u where l.IdSubject = s.IdSubject and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and t.IdTeacher = ? and l.IdLesson NOT IN (SELECT planning.IdLesson FROM planning)";
+
     private void configureLesson(Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
         try {
 
@@ -186,6 +188,35 @@ public class LessonDao implements LessonDaoInterface {
     }
 
     @Override
+    public List<Lesson> getLessonWithoutPlanningByTeacher(Teacher teacher) throws DatabaseException {
+        List<Lesson> lessons = new ArrayList<>();
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(GET_LESSON_WITHOUT_PLANNING_BY_TEACHER_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            prs.setInt(1, teacher.getIdTeacher());
+            rs = prs.executeQuery();
+
+            configureLessonList(lessons, rs);
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+        return lessons;
+    }
+
+    @Override
     public Lesson getLessonById(Integer idLesson) throws DatabaseException {
         Lesson lesson = new Lesson();
         Subject subject = new Subject();
@@ -206,8 +237,6 @@ public class LessonDao implements LessonDaoInterface {
 
             if (rs.next()) {
                 configureLesson(lesson, subject,teacher, rs);
-            } else {
-                throw new DatabaseException("rs is empty");
             }
 
         } catch (SQLException e) {
