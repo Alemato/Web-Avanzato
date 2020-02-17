@@ -30,4 +30,6 @@ public interface PlanningInterface {
     List<Planning> findAllPlanningBookedUpByLessonId(Integer idLesson, Integer idStudent) throws PlanningBusinessException;
 
     List<Planning> findPlanningsOfATeacherAsLesson(Teacher teacher) throws PlanningBusinessException;
+
+    Planning findPlanningById(Integer idPlanning) throws PlanningBusinessException;
 }
