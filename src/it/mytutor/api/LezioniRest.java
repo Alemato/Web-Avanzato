@@ -110,7 +110,30 @@ public class LezioniRest {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: "+ e.getMessage());
         }
-        return Response.ok(id).build();
+        return Response.created(URI.create("http://localhost:8080/api/lessons/" + id)).build();
     }
 
+    @Path("noplanning")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"TEACHER"})
+    public Response getLezioniNoPlanning() {
+        String teacherEmail = securityContext.getUserPrincipal().getName();
+        List<Lesson> lessons = new ArrayList<>();
+        Teacher teacher;
+        try {
+            teacher = (Teacher) userService.findUserByUsername(teacherEmail);
+        } catch (UserException | DatabaseException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        }
+        try {
+            lessons = lessonService.findlessonWithoutPlanningByTeacher(teacher);
+        } catch (DatabaseException | LessonBusinessException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        }
+        return Response.ok(lessons).build();
+    }
 }
