@@ -19,24 +19,17 @@ public class PlanningDao implements PlanningDaoInterface {
 
     private static final String DELETE_PLANNING_BY_ID_LESSON_STATEMENT = "delete from Planning where IdLesson = ? and Available = true";
 
-    private static final String DELETE_PLANNING_STATEMENT = "delete from Planning where IdPlanning = ?";
+    private static final String DELETE_PLANNING_STATEMENT = "delete from Planning where IdPlanning between ? and ?";
 
     private static final String UPDATE_PLANNING_STATEMENT = "update Planning set Date=?, StartTime=?, EndTime=?, Available=?, RepeatPlanning =? , IdLesson=? where IdPlanning=?";
 
     private static final String GET_PLANNING_BY_FILTER_STATEMENT = "SELECT * from Planning p, Lesson l, Subject s, Teacher t, User u where p.IdLesson = l.IdLesson and l.IdSubject = s.IdSubject and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and (0 = ? or s.MacroSubject = ?) and (0 = ? or match(l.Name) AGAINST (?)) and (0 = ? or t.City = ?) and (0 = ? or s.MicroSubject = ?) and (0 = ? or l.Price =? ) and (0 = ? or p.StartTime >= ? ) and (0 = ? or p.EndTime <= ?)";
 
-    private static final String GET_PLANNING_BY_LESSON_ID_STATEMENT = "SELECT * from Planning p, Lesson l, Subject s, Teacher t, User u where p.IdLesson = l.IdLesson and l.IdSubject = s.IdSubject and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and p.IdLesson = ? and p.Available = true order by p.Date asc, p.StartTime asc";
+    private static final String GET_PLANNING_BY_LESSON_ID_STATEMENT = "SELECT p.*, l.*, s.*, t.*, u.IdUser, u.Email, u.Roles, u.Name, u.Surname, u.Password, u.Birthday, u.Language, u.CreateDate, u.UpdateDate from Planning p, Lesson l, Subject s, Teacher t, User u where p.IdLesson = l.IdLesson and l.IdSubject = s.IdSubject and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and p.IdLesson = ? and p.Available = true order by p.Date asc, p.StartTime asc";
 
     private static final String GET_PLANNING_BOOKED_UP_BY_LESSONID_STATEMENT = "SELECT * from Planning p, Lesson l, Subject s, Teacher t, User u where p.IdLesson = l.IdLesson and l.IdSubject = s.IdSubject and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and p.IdLesson = ? and b.IdStudent = ? order by p.CreateDate";
 
     private static final String GET_PLANNING_BY_TEACHER_STATEMENT = "select * from planning p, Lesson l, teacher t, user u, subject s where p.IdLesson = l.IdLesson and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and l.IdSubject = s.IdSubject and t.IdTeacher = ?";
-
-    //TODO query per la ricerca nei
-    // campi text. NB settare i campi sul db come indice FULTEXT
-//    select *
-//    from Message
-//    where match(Text) AGAINST ('mondo');
-
 
     private void configurePlanning(Planning planning, Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
         try {
@@ -82,7 +75,11 @@ public class PlanningDao implements PlanningDaoInterface {
             teacher.setSurname(resultSet.getString("u.Surname"));
             teacher.setBirthday(resultSet.getDate("u.Birthday"));
             teacher.setLanguage(resultSet.getBoolean("u.Language"));
-            teacher.setImage(resultSet.getString("u.Image"));
+            try {
+                teacher.setImage(resultSet.getString("u.Image"));
+            } catch (SQLException sqlex) {
+                teacher.setImage(null);
+            }
             teacher.setCreateDate(resultSet.getTimestamp("u.CreateDate"));
             teacher.setUpdateDate(resultSet.getTimestamp("u.UpdateDate"));
 
@@ -197,7 +194,7 @@ public class PlanningDao implements PlanningDaoInterface {
 
 
     @Override
-    public void deletePlanning(Planning planning) throws DatabaseException  {
+    public void deletePlanning(Integer idFirst, Integer idLast) throws DatabaseException  {
         Connection conn = DaoFactory.getConnection();
         if (conn == null) {
             throw new DatabaseException("Connection is null");
@@ -210,7 +207,8 @@ public class PlanningDao implements PlanningDaoInterface {
                 throw new DatabaseException("Statement is null");
             }
 
-            prs.setInt(1, planning.getIdPlanning());
+            prs.setInt(1, idFirst);
+            prs.setInt(2, idLast);
             prs.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
