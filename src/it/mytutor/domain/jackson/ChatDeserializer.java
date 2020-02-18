@@ -51,7 +51,6 @@ public class ChatDeserializer extends StdDeserializer<Chat> {
                 student.setIdUser(userNode.get("idUser").asInt());
                 student.setEmail(userNode.get("email").asText());
                 student.setRoles(userNode.get("roles").asInt());
-                student.setPassword(userNode.get("password").asText());
                 student.setName(userNode.get("name").asText());
                 student.setSurname(userNode.get("surname").asText());
                 Date bDateStudent = new Date(userNode.get("birthday").asLong());
@@ -76,7 +75,6 @@ public class ChatDeserializer extends StdDeserializer<Chat> {
                 teacher.setByography(userNode.get("byography").asText());
                 teacher.setIdUser(userNode.get("idUser").asInt());
                 teacher.setEmail(userNode.get("email").asText());
-                teacher.setPassword(userNode.get("password").asText());
                 teacher.setName(userNode.get("name").asText());
                 teacher.setSurname(userNode.get("surname").asText());
                 Date bDateTeacher = new Date(userNode.get("birthday").asLong());

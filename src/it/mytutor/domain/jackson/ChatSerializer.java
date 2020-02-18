@@ -53,6 +53,7 @@ public class ChatSerializer extends StdSerializer<Chat> {
 
         jsonGenerator.writeNumberField("idUser", student.getIdUser());
         jsonGenerator.writeStringField("email", student.getEmail());
+        jsonGenerator.writeNumberField("roles", student.getRoles());
         jsonGenerator.writeStringField("name", student.getName());
         jsonGenerator.writeStringField("surname", student.getSurname());
         long bMillis = student.getBirthday().getTime();

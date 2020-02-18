@@ -24,7 +24,6 @@ public class MessageDeserializer extends StdDeserializer<Message> {
         super(vc);
     }
 
-    //TODO implementare il deseralizatore per messaggi
     @Override
     public Message deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
