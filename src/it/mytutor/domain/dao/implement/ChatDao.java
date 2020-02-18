@@ -3,14 +3,12 @@ package it.mytutor.domain.dao.implement;
 import it.mytutor.domain.Chat;
 import it.mytutor.domain.Student;
 import it.mytutor.domain.Teacher;
+import it.mytutor.domain.User;
 import it.mytutor.domain.dao.daofactory.DaoFactory;
 import it.mytutor.domain.dao.exception.DatabaseException;
 import it.mytutor.domain.dao.interfaces.ChatDaoInterface;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +16,10 @@ import java.util.List;
 public class ChatDao implements ChatDaoInterface {
     private static final String CREATE_A_CHAT = "insert into Chat(IdUser1, IdUser2) value (?,?)";
 
-private static final String GET_CHATS_BY_ID_USER_STATEMENT = "select * from Chat c, User u1, Student s, User u2, Teacher t where (c.IdUser1 = ? or c.IdUser2 = ?) and u1.IdUser = c.IdUser1 and s.IdUser = u1.IdUser and u2.IdUser = c.IDUser2 and t.IdUser = u2.IdUser";
+    private static final String GET_CHATS_BY_ID_USER_STATEMENT = "select * from Chat c, User u1, Student s, User u2, Teacher t where (c.IdUser1 = ? or c.IdUser2 = ?) and u1.IdUser = c.IdUser1 and s.IdUser = u1.IdUser and u2.IdUser = c.IDUser2 and t.IdUser = u2.IdUser";
+
+    private static final String GET_CHATS_BY_ID_STATEMENT = "select * from Chat c, User u1, Student s, User u2, Teacher t where u1.IdUser = c.IdUser1 and s.IdUser = u1.IdUser and u2.IdUser = c.IDUser2 and t.IdUser = u2.IdUser and c.IdChat = ?";
+
 
     private void configureChat(Chat chat, List<Object> users, ResultSet resultSet) throws DatabaseException {
         try{
@@ -91,7 +92,8 @@ private static final String GET_CHATS_BY_ID_USER_STATEMENT = "select * from Chat
     }
 
     @Override
-    public void crateAChat(Integer idUserS, Integer idUserT) throws DatabaseException {
+    public Integer crateAChat(Integer idS, Integer idT) throws DatabaseException {
+        int id = -1;
         Connection connection = DaoFactory.getConnection();
         if(connection == null){
             throw new DatabaseException("Connection is null");
@@ -99,19 +101,25 @@ private static final String GET_CHATS_BY_ID_USER_STATEMENT = "select * from Chat
         ResultSet rs = null;
         PreparedStatement prs = null;
         try {
-            prs = connection.prepareStatement(CREATE_A_CHAT);
+            prs = connection.prepareStatement(CREATE_A_CHAT, Statement.RETURN_GENERATED_KEYS);
             if (prs == null){
                 throw new DatabaseException("Statement is null");
             }
-            prs.setInt(1, idUserS);
-            prs.setInt(2, idUserT);
+            prs.setInt(1, idS);
+            prs.setInt(2, idT);
             prs.executeUpdate();
+
+            rs = prs.getGeneratedKeys();
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
 
         } catch(SQLException e) {
             throw new DatabaseException(e.getMessage());
         } finally {
             DaoFactory.closeDbConnection(connection, rs, prs);
         }
+        return id;
     }
 
     @Override
@@ -141,5 +149,38 @@ private static final String GET_CHATS_BY_ID_USER_STATEMENT = "select * from Chat
             DaoFactory.closeDbConnection(conn, rs, prs);
         }
         return chatList;
+    }
+
+    @Override
+    public Chat getChatById(Integer idChat) throws DatabaseException {
+        Chat chat = new Chat();
+        List<Object> users = new ArrayList<>();
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+        try {
+            prs = conn.prepareStatement(GET_CHATS_BY_ID_STATEMENT);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            prs.setInt(1, idChat);
+            rs = prs.executeQuery();
+
+            if (rs.next()) {
+                configureChat(chat, users , rs);
+            } else {
+                throw new DatabaseException("rs is empty");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+        return chat;
     }
 }
