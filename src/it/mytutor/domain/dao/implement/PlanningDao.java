@@ -31,7 +31,7 @@ public class PlanningDao implements PlanningDaoInterface {
 
     private static final String GET_PLANNING_BY_TEACHER_STATEMENT = "select * from planning p, Lesson l, teacher t, user u, subject s where p.IdLesson = l.IdLesson and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and l.IdSubject = s.IdSubject and t.IdTeacher = ?";
 
-    private static final String GET_PLANNING_BY_ID_STATEMENT = "SELECT from Planning p, Lesson l, Subject s, Teacher t, User u where p.IdLesson = l.IdLesson and l.IdSubject = s.IdSubject and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and p.IdPlanning = ?";
+    private static final String GET_PLANNING_BY_ID_STATEMENT = "SELECT * from Planning p, Lesson l, Subject s, Teacher t, User u where p.IdLesson = l.IdLesson and l.IdSubject = s.IdSubject and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and p.IdPlanning = ?";
 
     private void configurePlanning(Planning planning, Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
         try {
