@@ -228,7 +228,7 @@ public class PlanningBusiness implements PlanningInterface {
     @Override
     public List<Planning> findPlanningByFilter(String macroMateria, String nome, String zona, String microMateria,
                                                String dom, String lun, String mar, String mer, String gio, String ven, String sab, String prezzo, String oraInizio, String oraFine) throws PlanningBusinessException {
-        PlanningDaoInterface planningDao = new PlanningDao();
+        PlanningDao planningDao = new PlanningDao();
         List<Planning> plannings;
         List<Planning> pFinali = new ArrayList<>();
         int macroMateriaRelevant = 0;
