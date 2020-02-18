@@ -281,22 +281,25 @@ public class PrenotazioniRest {
         return Response.ok(bookings.size()).build();
     }
 
-    @Path("student/{PID}")
+    @Path("planning/{PID}")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"STUDENT", "TEACHER"})
-    public Response getStudentBooking(@PathParam("PID") String idPlanning) {
-        Student student;
+    @RolesAllowed({"TEACHER"})
+    public Response getBookingByIdPlanning(@PathParam("PID") String idPlanning) {
+        Booking booking;
         if (idPlanning != null && !idPlanning.isEmpty() && !idPlanning.equals(" ")) {
             try {
-                 student = bookingService.findStudentByIdPlanning(Integer.parseInt(idPlanning));
+                 booking = bookingService.findStudentByIdPlanning(Integer.parseInt(idPlanning));
             } catch (BookingBusinessException e) {
                 e.printStackTrace();
                 throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
             }
         } else throw new ApiWebApplicationException("Bad request:  id non valido", 400);
-        return Response.ok(student).build();
+        if (booking.getIdBooking() != null){
+            return Response.ok(booking).build();
+        } else {
+            return Response.ok().build();
+        }
     }
-
 }
