@@ -47,7 +47,7 @@ public class MessageBusiness implements MessageInterface {
 
     @Override
     public void crateMessage(Message message) throws MessageBusinessException {
-        MessageDaoInterface messageDao = new MessageDao();
+        MessageDao messageDao = new MessageDao();
         try {
             messageDao.createMessage(message);
         } catch (DatabaseException e) {
