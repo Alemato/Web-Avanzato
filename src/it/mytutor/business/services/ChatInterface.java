@@ -11,9 +11,11 @@ import java.util.List;
 public interface ChatInterface {
     List<Message> findAllChatByUser(String username) throws DatabaseException;
 
+    Chat getChatById(Integer idChat) throws DatabaseException, ChatBusinessException;
+
     boolean getIfExistChat(String username, Integer idUser2) throws ChatBusinessException;
 
     List<Chat> getChatByIdUser(int idUser) throws ChatBusinessException;
 
-    void creationChat(User userCreate, Integer userAddressee) throws ChatBusinessException;
+    Integer creationChat(Chat chat) throws ChatBusinessException;
 }

@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ChatBusiness implements ChatInterface {
 
-    private User getUser(String username) throws DatabaseException{
+    private User getUser(String username) throws DatabaseException {
         UserDao userDao = new UserDao();
         return userDao.getUserByEmail(username);
     }
@@ -37,6 +37,19 @@ public class ChatBusiness implements ChatInterface {
     }
 
     @Override
+    public Chat getChatById(Integer idChat) throws ChatBusinessException {
+        Chat chat;
+        ChatDao chatDao = new ChatDao();
+        try {
+            chat = chatDao.getChatById(idChat);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new ChatBusinessException("Errore nel prendere l'oggetto Chat");
+        }
+        return chat;
+    }
+
+    @Override
     public boolean getIfExistChat(String username, Integer idUser2) throws ChatBusinessException {
         List<Chat> chats;
         ChatDao chatDao = new ChatDao();
@@ -54,27 +67,28 @@ public class ChatBusiness implements ChatInterface {
             chats = chatDao.getChatByIdUser(user.getIdUser());
         } catch (DatabaseException e) {
             e.printStackTrace();
-            throw new ChatBusinessException("Errore nel prendere gli oggetti creates");
+            throw new ChatBusinessException("Errore nel prendere gli oggetti Chat");
         }
-        // io student
-        if (user.getRoles() == 1) {
-            for (Chat chat : chats) {
-                if (((User) chat.getUserListser().get(1)).getIdUser().equals(idUser2)){
-                    ifExist = true;
-                    break;
+        if (!chats.isEmpty()) {
+            // io student
+            if (user.getRoles() == 1) {
+                for (Chat chat : chats) {
+                    if (((User) chat.getUserListser().get(1)).getIdUser().equals(idUser2)) {
+                        ifExist = true;
+                        break;
+                    }
+                }
+            }
+            // io teacher
+            else {
+                for (Chat chat : chats) {
+                    if (((User) chat.getUserListser().get(0)).getIdUser().equals(idUser2)) {
+                        ifExist = true;
+                        break;
+                    }
                 }
             }
         }
-        // io teacher
-        else {
-            for (Chat chat : chats) {
-                if (((User) chat.getUserListser().get(0)).getIdUser().equals(idUser2)){
-                    ifExist = true;
-                    break;
-                }
-            }
-        }
-
         return ifExist;
     }
 
@@ -94,32 +108,16 @@ public class ChatBusiness implements ChatInterface {
     }
 
     @Override
-    public void creationChat(User userCreate, Integer addressee) throws ChatBusinessException {
+    public Integer creationChat(Chat chat) throws ChatBusinessException {
         ChatDao chatDao = new ChatDao();
-        UserDao userDao = new UserDao();
-        User userAddressee;
+        int id = -1;
 
         try {
-            userAddressee = userDao.getUserById(addressee);
+            id = chatDao.crateAChat(((User) chat.getUserListser().get(0)).getIdUser(), ((User) chat.getUserListser().get(1)).getIdUser());
         } catch (DatabaseException e) {
             e.printStackTrace();
-            throw new ChatBusinessException("Errore nel prendere l'user destintario");
+            throw new ChatBusinessException("Errore nella creazione della chat");
         }
-
-        if (userCreate.getRoles() == 1) {
-            try {
-                chatDao.crateAChat(userCreate.getIdUser(), userAddressee.getIdUser());
-            } catch (DatabaseException e) {
-                e.printStackTrace();
-                throw new ChatBusinessException("Errore nella creazione della chat");
-            }
-        } else {
-            try {
-                chatDao.crateAChat(userAddressee.getIdUser(), userCreate.getIdUser());
-            } catch (DatabaseException e) {
-                e.printStackTrace();
-                throw new ChatBusinessException("Errore nella creazione della chat");
-            }
-        }
+        return id;
     }
 }
