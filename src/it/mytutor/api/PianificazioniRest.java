@@ -158,7 +158,7 @@ public class PianificazioniRest {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"TEACHER"})
+    @RolesAllowed({"TEACHER", "STUDENT"})
     public Response getPlanningsForALesson(@PathParam("LID") Integer idLesson) {
         List<Planning> plannings;
             try {

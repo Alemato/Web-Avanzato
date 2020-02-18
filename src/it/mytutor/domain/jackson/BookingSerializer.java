@@ -56,7 +56,7 @@ public class BookingSerializer extends StdSerializer<Booking> {
         jsonGenerator.writeStringField("startTime", booking.getPlanning().getStartTime().toString());
         jsonGenerator.writeStringField("endTime", booking.getPlanning().getEndTime().toString());
         jsonGenerator.writeBooleanField("available", booking.getPlanning().getAvailable());
-        jsonGenerator.writeBooleanField("RepeatPlanning", booking.getPlanning().getRepeatPlanning());
+        jsonGenerator.writeBooleanField("repeatPlanning", booking.getPlanning().getRepeatPlanning());
         long createDatePlanning = booking.getPlanning().getCreateDate().getTime();
         jsonGenerator.writeNumberField("createDate", createDatePlanning);
         long updateDatePlanning = booking.getPlanning().getUpdateDate().getTime();

@@ -58,7 +58,7 @@ public class BookingDeserializer extends StdDeserializer<Booking> {
         planning.setStartTime(java.sql.Time.valueOf(node.findPath("planning").findPath("startTime").asText()));
         planning.setEndTime(java.sql.Time.valueOf(node.findPath("planning").findPath("endTime").asText()));
         planning.setAvailable(node.findPath("planning").get("available").asBoolean());
-        planning.setRepeatPlanning(node.findPath("planning").get("RepeatPlanning").asBoolean());
+        planning.setRepeatPlanning(node.findPath("planning").get("repeatPlanning").asBoolean());
 
         Lesson lesson = new Lesson();
         if (node.findPath("planning").findPath("lesson").findPath("idLesson") != null){

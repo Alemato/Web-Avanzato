@@ -15,7 +15,6 @@ public class RegistrationBusiness implements RegistrationInterface {
 
     @Override
     public void RegistrationStudent(Student student) throws RegistrationException {
-        student.setPassword(SecurityHash.SetHash(student.getPassword()));
         student.setRoles(1);
         try {
             UserDao userDao = new UserDao();
@@ -42,7 +41,6 @@ public class RegistrationBusiness implements RegistrationInterface {
 
     @Override
     public void RegistrationTeacher(Teacher teacher) throws RegistrationException {
-        teacher.setPassword(SecurityHash.SetHash(teacher.getPassword()));
         teacher.setRoles(2);
         try {
             UserDao userDao = new UserDao();
