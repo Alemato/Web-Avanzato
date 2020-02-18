@@ -32,7 +32,7 @@ public interface BookingInterface {
     List<Booking> findHistoricalBookingByStudent(Student student) throws DatabaseException, ParseException, PlanningBusinessException, BookingBusinessException, UserException;
     List<Booking> findHistoricalBookingByTeacher(Teacher teacher) throws Exception;
 
-    Student findStudentByIdPlanning(Integer idPlanning) throws BookingBusinessException;
+    Booking findStudentByIdPlanning(Integer idPlanning) throws BookingBusinessException;
 
     List<Booking> findAllBookingByStudnetAndFilter(Student student, String macroMateria, String nomeLezione, String microMateria, String date, String idProfessore, String stato) throws ParseException, UserException;
 

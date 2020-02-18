@@ -248,17 +248,17 @@ public class BookingBusiness implements BookingInterface {
     }
 
     @Override
-    public Student findStudentByIdPlanning(Integer idPlanning) throws BookingBusinessException {
+    public Booking findStudentByIdPlanning(Integer idPlanning) throws BookingBusinessException {
         BookingDao bookingDao = new BookingDao();
-        Student student;
+        Booking booking;
         try {
-            student = bookingDao.findStudentByIdPlanning(idPlanning);
+            booking = bookingDao.findStudentByIdPlanning(idPlanning);
         } catch (DatabaseException e) {
             e.printStackTrace();
             throw new BookingBusinessException("Errore nel prendere l'oggetto booking");
 
         }
-        return student;
+        return booking;
     }
 
     @Override
