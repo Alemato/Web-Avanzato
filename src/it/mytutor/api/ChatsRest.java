@@ -6,6 +6,7 @@ import it.mytutor.business.impl.ChatBusiness;
 import it.mytutor.business.impl.UserBusiness;
 import it.mytutor.business.services.ChatInterface;
 import it.mytutor.business.services.UserInterface;
+import it.mytutor.domain.Chat;
 import it.mytutor.domain.Message;
 import it.mytutor.domain.User;
 import it.mytutor.domain.dao.exception.DatabaseException;
@@ -16,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.net.URI;
 import java.util.List;
 
 
@@ -86,7 +88,7 @@ public class ChatsRest {
      * Api Rest usata per crere una nuova chat tra l'utente stesso che richiede la
      * Rest e l'utente identificato dalli'id-addressee
      *
-     * @param addressee id user del destinatario
+     * @param chat chat
      * @return Risposta custom con stato 201 Created
      */
     @Path("create")
@@ -94,23 +96,31 @@ public class ChatsRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"STUDENT", "TEACHER"})
-    public Response createChat(@QueryParam("id-addressee") Integer addressee) {
-        User userCreate;
-
-        String email = securityContext.getUserPrincipal().getName();
+    public Response createChat(Chat chat) {
+        Integer id = -1;
         try {
-            userCreate = (User) userService.findUserByUsername(email);
-        } catch (UserException | DatabaseException e) {
-            e.printStackTrace();
-            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
-        }
-        try {
-            chatService.creationChat(userCreate, addressee);
+            id = chatService.creationChat(chat);
         } catch (ChatBusinessException e) {
             e.printStackTrace();
             throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
         }
-        return Response.status(Response.Status.CREATED).build();
+        return Response.created(URI.create("http://localhost:8080/api/chats/" + id)).build();
+    }
+
+    @Path("{CID}")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"STUDENT", "TEACHER"})
+    public Response chatById(@PathParam("CID") Integer idChat) {
+        Chat chat = new Chat();
+        try {
+            chat = chatService.getChatById(idChat);
+        } catch (ChatBusinessException | DatabaseException e) {
+            e.printStackTrace();
+            throw new ApiWebApplicationException("Errore interno al server: " + e.getMessage());
+        }
+        return Response.ok(chat).build();
     }
 
 }
