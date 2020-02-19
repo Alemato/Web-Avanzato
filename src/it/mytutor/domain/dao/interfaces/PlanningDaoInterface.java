@@ -9,6 +9,11 @@ import it.mytutor.domain.dao.exception.DatabaseException;
 import java.util.List;
 
 public interface PlanningDaoInterface {
+    List<Planning> getFullPlanningByFilter(int macroMateriaRelevant, String macroMateria, int nomeRelevant, String nome,
+                                           int zonaRelevant, String zona, int microMateriaRelevant, String microMateria,
+                                           int prezzoRelevant, String prezzo, int oraInizioRelevant, String oraInizio,
+                                           int oraFineRelevant, String oraFine, int dom, int lun, int mar, int mer, int gio, int ven, int sab) throws DatabaseException;
+
     List<Planning> getPlanningByTeacher(Teacher teacher) throws DatabaseException;
 
     List<Planning> getPlanningByFilter(int macroMateriaRelevant, String macroMateria, int nomeRelevant, String nome,

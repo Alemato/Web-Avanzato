@@ -33,6 +33,8 @@ public class PlanningDao implements PlanningDaoInterface {
 
     private static final String GET_PLANNING_BY_ID_STATEMENT = "SELECT * from Planning p, Lesson l, Subject s, Teacher t, User u where p.IdLesson = l.IdLesson and l.IdSubject = s.IdSubject and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and p.IdPlanning = ?";
 
+    private static final String GET_FULL_PLANNING_BY_FILTER = "SELECT * FROM Planning p, Lesson l, Subject s, Teacher t, User u WHERE p.IdLesson = l.IdLesson and l.IdSubject = s.IdSubject and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and p.Available = true and p.Date >= NOW() and p.Date <= DATE_ADD(NOW(), INTERVAL 60 DAY) and p.IdLesson IN (SELECT l.IdLesson from Planning p, Lesson l, Subject s, Teacher t, User u where p.IdLesson = l.IdLesson and l.IdSubject = s.IdSubject and l.IdTeacher = t.IdTeacher and t.IdUser = u.IdUser and p.Available = true and  (0 = ? or s.MacroSubject = ?) and (0 = ? or match(l.Name) AGAINST (?)) and (0 = ? or t.City = ?) and (0 = ? or s.MicroSubject = ?) and (0 = ? or l.Price =? ) and (0 = ? or p.StartTime >= ? ) and (0 = ? or p.EndTime <= ?) and ((1 = ? and DAYOFWEEK(p.Date) = 1) or (1 = ? and DAYOFWEEK(p.Date) = 2) or (1 = ? and DAYOFWEEK(p.Date) = 3) or (1 = ? and DAYOFWEEK(p.Date) = 4) or (1 = ? and DAYOFWEEK(p.Date) = 5) or (1 = ? and DAYOFWEEK(p.Date) = 6) or (1 = ? and DAYOFWEEK(p.Date) = 7) ) and p.Date >= NOW() and p.Date <= DATE_ADD(NOW(), INTERVAL 60 DAY) group BY p.IdLesson) ORDER BY p.IdLesson, p.Date, p.StartTime";
+
     private void configurePlanning(Planning planning, Lesson lesson, Subject subject, Teacher teacher, ResultSet resultSet) throws DatabaseException {
         try {
             planning.setIdPlanning(resultSet.getInt("p.IdPlanning"));
@@ -218,6 +220,57 @@ public class PlanningDao implements PlanningDaoInterface {
         } finally {
             DaoFactory.closeDbConnection(conn, rs, prs);
         }
+    }
+
+    @Override
+    public List<Planning> getFullPlanningByFilter(int macroMateriaRelevant, String macroMateria, int nomeRelevant, String nome,
+                                                  int zonaRelevant, String zona, int microMateriaRelevant, String microMateria,
+                                                  int prezzoRelevant, String prezzo, int oraInizioRelevant, String oraInizio,
+                                                  int oraFineRelevant, String oraFine, int dom, int lun, int mar, int mer, int gio, int ven, int sab) throws DatabaseException {
+        List<Planning> plannings = new ArrayList<>();
+        Connection conn = DaoFactory.getConnection();
+        if (conn == null) {
+            throw new DatabaseException("Connection is null");
+        }
+        ResultSet rs = null;
+        PreparedStatement prs = null;
+
+        try {
+            prs = conn.prepareStatement(GET_FULL_PLANNING_BY_FILTER);
+            if (prs == null) {
+                throw new DatabaseException("Statement is null");
+            }
+            prs.setInt(1, macroMateriaRelevant);
+            prs.setString(2, macroMateria);
+            prs.setInt(3, nomeRelevant);
+            prs.setString(4, nome);
+            prs.setInt(5, zonaRelevant);
+            prs.setString(6, zona);
+            prs.setInt(7, microMateriaRelevant);
+            prs.setString(8, microMateria);
+            prs.setInt(9, prezzoRelevant);
+            prs.setString(10, prezzo);
+            prs.setInt(11, oraInizioRelevant);
+            prs.setString(12, oraInizio);
+            prs.setInt(13, oraFineRelevant);
+            prs.setString(14, oraFine);
+            prs.setInt(15, dom);
+            prs.setInt(16, lun);
+            prs.setInt(17, mar);
+            prs.setInt(18, mer);
+            prs.setInt(19, gio);
+            prs.setInt(20, ven);
+            prs.setInt(21, sab);
+
+            rs = prs.executeQuery();
+            configurelanningList(plannings, rs);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException(e.getMessage());
+        } finally {
+            DaoFactory.closeDbConnection(conn, rs, prs);
+        }
+        return plannings;
     }
 
     public Planning getPlanningById(Integer idPlanning) throws DatabaseException {

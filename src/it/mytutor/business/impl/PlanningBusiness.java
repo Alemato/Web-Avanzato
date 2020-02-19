@@ -260,15 +260,44 @@ public class PlanningBusiness implements PlanningInterface {
             oraFineaRelevant = 1;
         }
 
-        try {
-            plannings = planningDao.getPlanningByFilter(macroMateriaRelevant, macroMateria, nomeRelevant, nome, zonaRelevant, zona, microMateriaRelevant, microMateria, prezzoRelevant, prezzo, oraInizioRelevant, oraInizio, oraFineaRelevant, oraFine);
+        int domRelevant = 1;
+        if (dom != null && !dom.equals("null") && !dom.isEmpty() && !dom.equals(" ") && dom.equals("0")) {
+            domRelevant = 0;
+        }
+        int lunRelevant = 1;
+        if (lun != null && !lun.equals("null") && !lun.isEmpty() && !lun.equals(" ") && lun.equals("0")) {
+            lunRelevant = 0;
+        }
+        int marRelevant = 1;
+        if (mar != null && !mar.equals("null") && !mar.isEmpty() && !mar.equals(" ") && mar.equals("0")) {
+            marRelevant = 0;
+        }
+        int merRelevant = 1;
+        if (mer != null && !mer.equals("null") && !mer.isEmpty() && !mer.equals(" ") && mer.equals("0")) {
+            merRelevant = 0;
+        }
+        int gioRelevant = 1;
+        if (gio != null && !gio.equals("null") && !gio.isEmpty() && !gio.equals(" ") && gio.equals("0")) {
+            gioRelevant = 0;
+        }
+        int venRelevant = 1;
+        if (ven != null && !ven.equals("null") && !ven.isEmpty() && !ven.equals(" ") && ven.equals("0")) {
+            venRelevant = 0;
+        }
+        int sabRelevant = 1;
+        if (sab != null && !sab.equals("null") && !sab.isEmpty() && !sab.equals(" ") && sab.equals("0")) {
+            sabRelevant = 0;
+        }
 
+        try {
+            // plannings = planningDao.getPlanningByFilter(macroMateriaRelevant, macroMateria, nomeRelevant, nome, zonaRelevant, zona, microMateriaRelevant, microMateria, prezzoRelevant, prezzo, oraInizioRelevant, oraInizio, oraFineaRelevant, oraFine);
+            plannings = planningDao.getFullPlanningByFilter(macroMateriaRelevant, macroMateria, nomeRelevant, nome, zonaRelevant, zona, microMateriaRelevant, microMateria, prezzoRelevant, prezzo, oraInizioRelevant, oraInizio, oraFineaRelevant, oraFine, domRelevant, lunRelevant, marRelevant, merRelevant, gioRelevant, venRelevant, sabRelevant);
 
         } catch (DatabaseException e) {
             e.printStackTrace();
             throw new PlanningBusinessException("Errore nel prendere la lista dei planning");
         }
-        if (dom != null && !dom.isEmpty() && !dom.equals(" ") && !dom.equals("0") || lun != null && !lun.isEmpty() && !lun.equals(" ") && !lun.equals("0") ||
+        /*if (dom != null && !dom.isEmpty() && !dom.equals(" ") && !dom.equals("0") || lun != null && !lun.isEmpty() && !lun.equals(" ") && !lun.equals("0") ||
                 mar != null && !mar.isEmpty() && !mar.equals(" ") && !mar.equals("0") || mer != null && !mer.isEmpty() && !mer.equals(" ") && !mer.equals("0") ||
                 gio != null && !gio.isEmpty() && !gio.equals(" ") && !gio.equals("0") || ven != null && !ven.isEmpty() && !ven.equals(" ") && !ven.equals("0") ||
                 sab != null && !sab.isEmpty() && !sab.equals(" ") && !sab.equals("0")) {
@@ -290,6 +319,9 @@ public class PlanningBusiness implements PlanningInterface {
             }
         }
         return pFinali;
+        */
+
+        return plannings;
     }
 
     @Override
